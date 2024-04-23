@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall -Werror -Wextra-semi -O1 -g -fsanitize=address -fno-omit-frame-pointer CMakeFiles/task-1-test.dir/src/main.cpp.o -o task-1-test 

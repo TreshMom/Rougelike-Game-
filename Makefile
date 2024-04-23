@@ -117,41 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named task-1-test
+# Target rules for targets named bigProject_2
 
 # Build rule for target.
-task-1-test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 task-1-test
-.PHONY : task-1-test
+bigProject_2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 bigProject_2
+.PHONY : bigProject_2
 
 # fast build rule for target.
-task-1-test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/task-1-test.dir/build.make CMakeFiles/task-1-test.dir/build
-.PHONY : task-1-test/fast
+bigProject_2/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigProject_2.dir/build.make CMakeFiles/bigProject_2.dir/build
+.PHONY : bigProject_2/fast
 
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
+src/main/main.o: src/main/main.cpp.o
+.PHONY : src/main/main.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/task-1-test.dir/build.make CMakeFiles/task-1-test.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+src/main/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigProject_2.dir/build.make CMakeFiles/bigProject_2.dir/src/main/main.cpp.o
+.PHONY : src/main/main.cpp.o
 
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
+src/main/main.i: src/main/main.cpp.i
+.PHONY : src/main/main.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/task-1-test.dir/build.make CMakeFiles/task-1-test.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+src/main/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigProject_2.dir/build.make CMakeFiles/bigProject_2.dir/src/main/main.cpp.i
+.PHONY : src/main/main.cpp.i
 
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
+src/main/main.s: src/main/main.cpp.s
+.PHONY : src/main/main.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/task-1-test.dir/build.make CMakeFiles/task-1-test.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+src/main/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigProject_2.dir/build.make CMakeFiles/bigProject_2.dir/src/main/main.cpp.s
+.PHONY : src/main/main.cpp.s
 
 # Help Target
 help:
@@ -161,10 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... task-1-test"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... bigProject_2"
+	@echo "... src/main/main.o"
+	@echo "... src/main/main.i"
+	@echo "... src/main/main.s"
 .PHONY : help
 
 

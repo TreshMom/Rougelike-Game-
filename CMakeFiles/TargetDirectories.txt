@@ -1,3 +1,0 @@
-/home/ilya_zolotukhin/prj2/Rougelike-Game-/CMakeFiles/task-1-test.dir
-/home/ilya_zolotukhin/prj2/Rougelike-Game-/CMakeFiles/edit_cache.dir
-/home/ilya_zolotukhin/prj2/Rougelike-Game-/CMakeFiles/rebuild_cache.dir
