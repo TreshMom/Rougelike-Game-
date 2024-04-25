@@ -92,3 +92,111 @@ template <typename T, typename... Ts>
 struct has_type<T, std::tuple<T, Ts...>> {
     constexpr static bool value = true;
 };
+
+// maybe
+template<class T>
+struct Just
+{
+    using type = T;
+};
+
+struct Nothing
+{};
+
+template<class...T>
+struct MayBe;
+
+template<class T>
+struct MayBe<T> : Just<T>
+{};
+
+template<>
+struct MayBe<> : Nothing
+{};
+
+// Maybe a -> bool
+template<class...args>
+struct MayBeToBool;
+
+template<class T>
+struct MayBeToBool<MayBe<T>>
+{
+    constexpr static bool value = true;
+};
+
+template<>
+struct MayBeToBool<MayBe<>>
+{
+    constexpr static bool value = false;
+};
+
+// M a -> (a -> bool) -> Maybe a
+template<class ListType, template<typename> class FuncType, class... a>
+struct find;
+
+// [a] -> (a -> bool) -> Maybe a
+template<template<typename> class FuncType>
+struct find<List<>, FuncType>
+{
+    using type = MayBe<>; 
+};
+
+template<template<typename> class FuncType, class head, class... tail>
+struct find<List<head, tail...>, FuncType>
+{
+    using type = std::conditional_t<FuncType<head>::value, MayBe<head>, typename find<List<tail...>, FuncType>::type>;
+};
+
+template<class ListType, template<typename> class FuncType, class... a>
+using find_t = typename find<ListType, FuncType, a...>::type ;
+
+template<class Type, class Other, class...T>
+struct is_equal_head
+{
+    constexpr static bool value = false; 
+};
+
+template<class Type>
+struct is_equal_head<Type, List<>>
+{
+    constexpr static bool value = false; 
+};
+
+template<class Type, class a, class...args>
+struct is_equal_head<Type, List<a, args...>>
+{
+    constexpr static bool value = std::is_same_v<Type,a>; 
+};
+
+template<template <typename...> class TemplateFunction,class Type>
+struct curry_two_impl_end
+{
+    template<class... Types>
+    using type =  TemplateFunction<Type,Types...>;
+};
+
+
+template<template <typename...> class TemplateFunction, class... Types>
+concept is_invocable_type = requires{TemplateFunction<Types...>::value;};
+
+template<template <typename...> class TemplateFunction, class... OtherTypes>
+struct curry_impl;
+
+template<template <typename...> class TemplateFunction, class... OtherTypes> 
+requires (is_invocable_type<TemplateFunction,OtherTypes...>)
+struct curry_impl<TemplateFunction, OtherTypes...>
+{
+    constexpr static bool value = TemplateFunction<OtherTypes...>::value;
+};
+
+template<template <typename...> class TemplateFunction, class... OtherTypes>
+requires (!is_invocable_type<TemplateFunction,OtherTypes...>)
+struct curry_impl<TemplateFunction, OtherTypes...>
+{
+    template<class Type>
+    using type = curry_impl<TemplateFunction, OtherTypes...,Type>;
+
+};
+
+template<template <typename...> class TemplateFunction>
+using curry = curry_impl<TemplateFunction>;

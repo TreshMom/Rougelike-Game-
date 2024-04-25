@@ -19,20 +19,19 @@ namespace ECS {
         
     private:
         static int idEntityInc;
-
+     public:
         using EntityTest = Entity<int>;
         using EntityTest2 = Entity<double>;
 
-        using test = List<
+        using data = List<
         List<EntityTest,List<std::string>>,
-        List<EntityTest,List<int, float>>
+        List<EntityTest2,List<int, float>>
         >;
 
-        std::unordered_map<EntityId, ComponentId> data_; 
-    public:
-        std::unordered_map<EntityId, ListToVariant_t<typename for_earch_with_concate<test>::type>> mp;
-        // template<class... ComponentsTypes>
-        // void for_each(T&& f) {   
+        std::unordered_map<EntityId, ListToVariant_t<typename for_earch_with_concate<data>::type>> mp;
+        
+        // template<class... ComponentsTypes,class F>
+        // void for_each(F&& f) {   
         //     for (auto&& it : data_) {
         //         if (has_components<ComponentsTypes...>(it.first)) {
         //             f(get_component<ComponentsTypes>(it.first)...);
@@ -40,9 +39,18 @@ namespace ECS {
         //     }
         // }
         
+        // template<typename V>
+        // bool v = MayBeToBool<typename find<data, typename carry<is_equal_head>::type<V>::type>::type>::value;
+
+
         template<class EntityType, class ComponentType>
         constexpr bool has_component() const {
-            return FoundType<ComponentType, test>::value;
+            return MayBeToBool<
+            find_t<typename 
+            find_t<data, 
+            curry<is_equal_head>::template type<EntityType>::template type>::type::tail_::head_, 
+            curry<std::is_same>::template type<ComponentType>::template type>>
+            ::value;
         }
 
         template<class EntityType, class ...ComponentType>
