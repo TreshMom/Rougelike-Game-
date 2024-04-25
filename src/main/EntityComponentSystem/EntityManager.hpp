@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <variant>
 #include "FpUtility.hpp"
+#include <vector>
 
 namespace ECS {
     class ComponentBase;
@@ -15,29 +16,40 @@ namespace ECS {
     template<class T>
     class Entity;
 
+    template<class T>
+    class Component;
+
     class EntityManager {
         
     private:
         static int idEntityInc;
      public:
-        using EntityTest = Entity<int>;
+        using EntityTest1 = Entity<int>;
         using EntityTest2 = Entity<double>;
 
-        using data = List<
-        List<EntityTest,List<std::string>>,
-        List<EntityTest2,List<int, float>>
+        using Component1 = Component<int>;
+        using Component2 = Component<double>;
+
+        using data = List <
+            List<EntityTest1, List<Component1, Component2>>,
+            List<EntityTest2, List<Component2>>
         >;
 
-        std::unordered_map<EntityId, ListToVariant_t<typename for_earch_with_concate<data>::type>> mp;
+        using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
+        using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;
+
+        std::unordered_map<EntityId, component_types_variant> mp;
+        std::unordered_map<EntityId, entityes_types_variant> entityes;
         
-        // template<class... ComponentsTypes,class F>
-        // void for_each(F&& f) {   
-        //     for (auto&& it : data_) {
-        //         if (has_components<ComponentsTypes...>(it.first)) {
-        //             f(get_component<ComponentsTypes>(it.first)...);
-        //         }
-        //     }
-        // }
+        template<class T>
+        struct some_func {
+            constexpr static bool value = typename composition<, get_tail>::type::value;
+        };
+
+        template<class... ComponentsTypes, class F>
+        void update(F&& f) {   
+            filter<some_func, data>;
+        }
         
         // template<typename V>
         // bool v = MayBeToBool<typename find<data, typename carry<is_equal_head>::type<V>::type>::type>::value;
@@ -61,12 +73,14 @@ namespace ECS {
         template<class ComponentType>
         ComponentType& get_component(EntityId id) 
         {
+            std::cout << mp.size() << std::endl;
             return std::visit(
-            []<typename... Args>(std::tuple<Args...>& tpl) -> ComponentType&
+            []<typename Tpl>(Tpl& tpl) -> ComponentType&
             {
-                if constexpr (has_type<ComponentType,std::tuple<Args...>>::value)
+                if constexpr (MayBeToBool<find_t<Tpl, 
+                curry<std::is_same>::template type<ComponentType*>::template type>>::value)
                 {
-                    return std::get<ComponentType>(tpl);
+                    return *std::get<ComponentType*>(tpl);
                 }
                 else
                 {
@@ -81,10 +95,17 @@ namespace ECS {
             return std::tie(get_component<ComponentType>(id)...);
         }
         
+        template<class >
+        void fmap() {
+            
+        }
+
         template<class EidType>
         void allocEntity()
         {
-            idEntityInc++;
+            // idEntityInc++;
+            // Entity<EidType> value(idEntityInc);
+            // entityes[idEntityInc] = value;
             return;
         }
 
