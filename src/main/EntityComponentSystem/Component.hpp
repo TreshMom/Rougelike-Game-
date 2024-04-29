@@ -11,16 +11,22 @@ class Familyid {
 
 namespace ECS {
 
-    template<class T>
+    template<class TypeHook, class DataType>
     class Component  {
+        public:
+        static ComponentId idsCounter;
 
-        constexpr static Familyid<T> id{};   
-        T data;
+        constexpr static Familyid<DataType> id{}; 
+        ComponentId id_;
 
-        // get_data()
-        // {
+        DataType data;
+        using Hook = TypeHook;
 
-        // }      
+        Component(EntityManager& e): em_{e} {
+            id_ = em_.get_and_inc_id();
+        } 
+
+        EntityManager& em_;
     };
 
 }

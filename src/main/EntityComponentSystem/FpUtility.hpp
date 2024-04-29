@@ -170,7 +170,32 @@ struct curry_impl<TemplateFunction, OtherTypes...>
 template<template <typename...> class TemplateFunction>
 using curry = curry_impl<TemplateFunction>;
 
+///////////////////////// unique ///////////////
+
+template<class Left, class Right>
+struct is_no_same
+{
+    constexpr static bool value = !std::is_same_v<Left,Right>;
+};
+
+template<class... Types>
+struct unique;
+
+template<>
+struct unique<List<>>
+{
+    using type = List<>;
+};
+
+template<class Type, class... Types>
+struct unique<List<Type, Types...>>
+{
+    using type = concate_t<List<Type>, typename unique<typename filter<List<Types...>, curry<is_no_same>::template type<Type>::template type>::type>::type>;
+};
+
+
 /////////////////////// SOME SHIT ///////////////
+
 template<class T>
 struct get_tail
 {
@@ -190,18 +215,36 @@ struct to_list
 };
 
 template<class T>
+struct Identity
+{
+    using type = T;
+};
+
+template<class T>
+struct to_ptr
+{
+    using type = std::shared_ptr<T>;
+};
+
+template<class ListType>
+struct list_types_to_pointers
+{
+    using type = typename map<to_ptr, ListType>::type;
+};
+
+template<class T>
 struct tail_to_pointer_to_tuple {
-    using type = typename composition<ListToTuple, to_list, std::add_pointer, get_head, get_head, get_tail>::type<T>;
+    using type = typename composition<ListToTuple, list_types_to_pointers , get_head, get_tail>::type<T>;
 };
 
 template<class ListType>
 struct for_each_with_concate_tail {
-    using type = typename map<tail_to_pointer_to_tuple, ListType>::type;
+    using type = typename unique<typename map<tail_to_pointer_to_tuple, ListType>::type>::type;
 };
 
 template<class T>
 struct head_to_pointer {
-     using type = typename composition<std::add_pointer, get_head>::type<T>;
+     using type = typename composition<to_ptr, get_head>::type<T>;
 };
 
 template<class ListType>

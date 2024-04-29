@@ -3,37 +3,59 @@
 #include <type_traits>
 #include "Component.hpp"
 
-void process(int v, float r) {
-    v += 1;
-    r += 1;
-}
+using namespace ECS;
 
-template<class T>
-struct to_map
-{
-    using type = T::tail_::head_;
-};
-
-using ls = List<List<int,float>,List<int,float>,List<int,float>>;
+using v = int;
 
 int main()
 {
-    ECS::EntityManager em;
-    std::unique_ptr<ECS::EntityManager::Component1> v{new ECS::EntityManager::Component1{}};
-    em.mp[1] = std::make_tuple(v.get());
-    em.get_component<ECS::EntityManager::Component1>(1);
-    std::cout << em.has_component<ECS::EntityManager::EntityTest1, ECS::EntityManager::Component1>() << std::endl;
-    // std::cout << em.has_component<ECS::EntityManager::EntityTest,int>() << std::endl;
-    // std::cout << em.has_component<ECS::EntityManager::EntityTest,std::string>() << std::endl;
-    // std::cout << em.has_component<ECS::EntityManager::EntityTest2,float>() << std::endl;
-    // std::cout << "--> "<< em.get_component<int>(3) << std::endl;
-    // std::cout << em.get_component<float>(3) << std::endl;
-    // std::cout << em.get_component<std::string>(1) << std::endl;
-    // std::cout << em.get_component<std::string>(2) << std::endl;
-    // em.get_component<std::string>(2) = "wowowow";
-    // std::cout << em.get_component<std::string>(2) << std::endl;
-    // std::cout << "------" << std::is_same_v<typename map<to_map, ls>::type, List<float,float,float>> << std::endl;
+    EntityManager em;
+    auto val1 = em.allocEntity<DogEntity>();
+    auto val2 = em.allocEntity<DogEntity>();
+    auto val3 = em.allocEntity<DogEntity>();
+    auto val4 = em.allocEntity<DogEntity>();
+    std::cout << val4->get_component<PositionComponent>().data.x << std::endl;
+    std::cout << val4->get_component<MoveComponent>().data.x << std::endl;
+    val4->get_component<PositionComponent>().data.x += 1;
+    val4->get_component<PositionComponent>().data.y += 1;
+
+    em.update<PositionComponent>([](auto& ent, PositionComponent &vl){
+        std::cout << ent.get_id() << " <<id---------------" << std::endl;
+        std::cout << vl.data.x << std::endl;
+        std::cout << vl.data.y << std::endl;
+    });
+
+    em.update<PositionComponent, MoveComponent>([](auto& ent, PositionComponent &vl, MoveComponent& mv){
+        std::cout << ent.get_id() << " <<id---------------" << std::endl;
+        std::cout << vl.data.x << std::endl;
+        std::cout << vl.data.y << std::endl;
+        std::cout << mv.data.x << std::endl;
+        std::cout << mv.data.y << std::endl;
+    });
+
+
+    std::cout << "id after" << std::endl;
+    em.update<>([](auto& ent){
+        std::cout << ent.get_id() << std::endl;
+    });
+
+    em.removeEntity(1);
+    em.removeEntity(4);
     
+    std::cout << "id after" << std::endl;
+    em.update<>([](auto& ent){
+        std::cout << ent.get_id() << std::endl;
+    });
+
+
+
+
+    // std::cout << "-----------" <<std::endl;
+    // em.update<MoveComponent>([](auto& ent, MoveComponent &vl){
+    //     std::cout << ent.get_id() << " " << vl.data.x << std::endl;
+    //     std::cout << ent.get_id() << " " << vl.data.x << std::endl;
+    // });
+    // std::cout << "-----------" <<std::endl;
 
     return 0;
 }

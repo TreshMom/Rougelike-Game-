@@ -9,30 +9,19 @@
 #include <variant>
 #include "FpUtility.hpp"
 #include <vector>
-
+#include "Data.hpp"
 namespace ECS {
-    class ComponentBase;
     
-    template<class T>
-    class Entity;
-
-    template<class T>
-    class Component;
 
     class EntityManager {
         
     private:
-        static int idEntityInc;
-     public:
-        using EntityTest1 = Entity<int>;
-        using EntityTest2 = Entity<double>;
-
-        using Component1 = Component<int>;
-        using Component2 = Component<double>;
+        int idEntityInc{1};
+    public:
 
         using data = List <
-            List<EntityTest1, List<Component1, Component2>>,
-            List<EntityTest2, List<Component2>>
+            List<DogEntity, List<MoveComponent, PositionComponent>>,
+            List<NpcEntity, List<MoveComponent, PositionComponent>>
         >;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
@@ -41,18 +30,47 @@ namespace ECS {
         std::unordered_map<EntityId, component_types_variant> mp;
         std::unordered_map<EntityId, entityes_types_variant> entityes;
         
-        template<class T>
-        struct some_func {
-            constexpr static bool value = typename composition<, get_tail>::type::value;
+        template<class EqType, class ListType>
+        struct is_same_head_type
+        {
+            constexpr static bool value = std::is_same_v<EqType, typename ListType::head_>;
         };
+
+        template<class ComponentType, class... Args>
+        ComponentType init_component(Args&&... args)
+        {
+            return ComponentType{new ComponentType::element_type{std::forward<Args>(args)...}};
+        }
+
+        template<class ...ComponentTypes, class... Args>
+        std::tuple<ComponentTypes...> init_components_list(List<ComponentTypes...>&& ls, Args&&...args)
+        {
+            return std::make_tuple(init_component<ComponentTypes>(std::forward<Args>(args)...)...);
+        }
+
+        template<class EntityType>
+        decltype(auto) get_init_components()
+        {
+            return init_components_list(typename map<to_ptr, 
+            typename filter<data, curry<is_same_head_type>::template 
+            type<EntityType>::template type>::type::head_::tail_::head_>::type{},*this);
+        }
 
         template<class... ComponentsTypes, class F>
         void update(F&& f) {   
-            filter<some_func, data>;
+            for(auto& entity_pair : entityes)
+            {
+                 std::visit(
+                    [this, f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void
+                    {
+                        if (ent->template has_components<ComponentsTypes...>())
+                        {
+                            f(*ent, ent->template get_component<ComponentsTypes>()...);
+                        }
+                    }
+                    , entity_pair.second);
+            }
         }
-        
-        // template<typename V>
-        // bool v = MayBeToBool<typename find<data, typename carry<is_equal_head>::type<V>::type>::type>::value;
 
 
         template<class EntityType, class ComponentType>
@@ -73,14 +91,13 @@ namespace ECS {
         template<class ComponentType>
         ComponentType& get_component(EntityId id) 
         {
-            std::cout << mp.size() << std::endl;
             return std::visit(
             []<typename Tpl>(Tpl& tpl) -> ComponentType&
             {
                 if constexpr (MayBeToBool<find_t<Tpl, 
-                curry<std::is_same>::template type<ComponentType*>::template type>>::value)
+                curry<std::is_same>::template type<typename to_ptr<ComponentType>::type>::template type>>::value)
                 {
-                    return *std::get<ComponentType*>(tpl);
+                    return *std::get<typename to_ptr<ComponentType>::type>(tpl);
                 }
                 else
                 {
@@ -101,22 +118,52 @@ namespace ECS {
         }
 
         template<class EidType>
-        void allocEntity()
+        typename to_ptr<EidType>::type allocEntity()
         {
-            // idEntityInc++;
-            // Entity<EidType> value(idEntityInc);
-            // entityes[idEntityInc] = value;
+            typename to_ptr<EidType>::type ptr = typename to_ptr<EidType>::type (new EidType(*this));
+            entityes[ptr->get_id()] = ptr;
+            mp[ptr->get_id()] = get_init_components<EidType>();
+            return ptr;
+        }
+
+        void removeEntity(EntityId eid)
+        {
+            std::visit(
+                [eid]<typename EntPtr> (EntPtr& ent) -> void
+                {
+                    ent->invalid();
+                }
+            , entityes[eid]);
+            entityes.erase(eid);
             return;
         }
 
-        template<class EidType>
-        void removeEntity()
+        int get_and_inc_id() noexcept
         {
-            
-            return;
+            int tmp = idEntityInc;
+            idEntityInc++;
+            return tmp;
+        }
+
+        template<typename EidType>
+        typename to_ptr<EidType>::type get_entity(EntityId id)
+        {
+            return std::visit(
+                    []<typename EntPtr> (EntPtr& ent) -> typename to_ptr<EidType>::type
+                    {
+                        if constexpr (std::is_same_v<typename to_ptr<EidType>::type,  std::decay_t<decltype(ent)>>)
+                        {
+                            typename to_ptr<EidType>::type res = ent;
+                            return res;
+                        }
+                        else
+                        {
+                            throw std::runtime_error("error type!");
+                        }
+                    }
+                , entityes[id]);
+
         }
     };
-
-    int EntityManager::idEntityInc = 0;
 
 }

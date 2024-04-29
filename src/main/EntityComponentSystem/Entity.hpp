@@ -6,19 +6,23 @@
 #include <memory>
 #include "EntityManager.hpp"
 #include "EngineDefs.h"
+#include <cassert>
 
 namespace ECS {
 
     static EntityId INVALID = 0;
 
-    template<class T>
+    template<class Hook>
     class Entity {
     public:
-        Entity(EntityId id) : id_{id} {
-            if(id == 0) {
-                throw std::runtime_error("ivalid entity id :" + std::to_string(id));
+        Entity(EntityManager& manager): manager_{manager} {
+            id_ = manager_.get_and_inc_id();
+            if(id_ == 0) {
+                throw std::runtime_error("ivalid entity id :" + std::to_string(id_));
             }
         }
+
+        using TypeEntity = Entity<Hook>;
 
         template<class ComponentType>
         ComponentType& get() {
@@ -26,7 +30,7 @@ namespace ECS {
         }
 
         bool valid() const { 
-            return id_ == INVALID;
+            return id_ != INVALID;
         }
 
         void unvalidate() {
@@ -35,31 +39,41 @@ namespace ECS {
         
         template<class ComponentType>
         constexpr bool has_component() const {
-            static_assert(valid());
-            return manager_->has_component<ComponentType>(id_);
+            assert(valid());
+            return manager_.has_component<TypeEntity, ComponentType>();
         } 
 
         template<class ...ComponentType>
         constexpr bool has_components() const {
-            static_assert(valid());
-            return manager_->has_components<ComponentType...>(id_);
+            assert(valid());
+            return manager_.has_components<TypeEntity, ComponentType...>();
         }
 
         template<class ComponentType>
-        constexpr bool get_component() const {
-            static_assert(valid());
-            return manager_->get_component<ComponentType>(id_);
+        constexpr ComponentType& get_component() const {
+            assert(valid());
+            return manager_.get_component<ComponentType>(id_);
         }
 
         template<class...ComponentType>
         const std::tuple<ComponentType&...> get_components() const {
-            static_assert(valid());
-            return manager_->get_components<ComponentType...>(id_);
+            assert(valid());
+            return manager_.get_components<TypeEntity, ComponentType...>(id_);
+        }
+
+        EntityId get_id()
+        {
+            return id_;
+        }
+
+        void invalid()
+        {
+            id_ = INVALID;
         }
 
     private:
+        EntityManager& manager_;
         EntityId id_;
-        std::shared_ptr<EntityManager> manager_;
     };
     
 }
