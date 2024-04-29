@@ -14,8 +14,11 @@ int main()
     auto val2 = em.allocEntity<DogEntity>();
     auto val3 = em.allocEntity<DogEntity>();
     auto val4 = em.allocEntity<DogEntity>();
+    auto val5 = em.allocEntity<NpcEntity>();
+
     std::cout << val4->get_component<PositionComponent>().data.x << std::endl;
     std::cout << val4->get_component<MoveComponent>().data.x << std::endl;
+    std::cout << val5->get_component<MoveComponent>().data.x << std::endl;
     val4->get_component<PositionComponent>().data.x += 1;
     val4->get_component<PositionComponent>().data.y += 1;
 
@@ -33,16 +36,30 @@ int main()
         std::cout << mv.data.y << std::endl;
     });
 
+    std::vector<EntityId> ents;
 
-    std::cout << "id after" << std::endl;
-    em.update<>([](auto& ent){
-        std::cout << ent.get_id() << std::endl;
+    em.update<PositionComponent>([&](auto& ent, PositionComponent& comp)
+    {
+        ents.push_back(ent.get_id());
     });
 
-    em.removeEntity(1);
-    em.removeEntity(4);
+    for(auto& vl : ents)
+    {
+        em.removeEntity(vl);
+    }
+
+    ents.clear();
+    em.update<>([&](auto& ent){
+        std::cout << ent.get_id() << std::endl;
+        ents.push_back(ent.get_id());
+    });
+
+    for(auto& vl : ents)
+    {
+        em.removeEntity(vl);
+    }
     
-    std::cout << "id after" << std::endl;
+    std::cout << "id before" << std::endl;
     em.update<>([](auto& ent){
         std::cout << ent.get_id() << std::endl;
     });

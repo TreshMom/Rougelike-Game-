@@ -21,7 +21,7 @@ namespace ECS {
 
         using data = List <
             List<DogEntity, List<MoveComponent, PositionComponent>>,
-            List<NpcEntity, List<MoveComponent, PositionComponent>>
+            List<NpcEntity, List<MoveComponent>>
         >;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
@@ -128,6 +128,10 @@ namespace ECS {
 
         void removeEntity(EntityId eid)
         {
+            if (!entityes.contains(eid))
+            {
+                throw std::runtime_error("eid not exists");
+            }
             std::visit(
                 [eid]<typename EntPtr> (EntPtr& ent) -> void
                 {
@@ -135,6 +139,7 @@ namespace ECS {
                 }
             , entityes[eid]);
             entityes.erase(eid);
+            mp.erase(eid);
             return;
         }
 
