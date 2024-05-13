@@ -10,6 +10,7 @@
 #include "FpUtility.hpp"
 #include <vector>
 #include "Data.hpp"
+
 namespace ECS {
     
 
@@ -29,12 +30,6 @@ namespace ECS {
 
         std::unordered_map<EntityId, component_types_variant> mp;
         std::unordered_map<EntityId, entityes_types_variant> entityes;
-        
-        template<class EqType, class ListType>
-        struct is_same_head_type
-        {
-            constexpr static bool value = std::is_same_v<EqType, typename ListType::head_>;
-        };
 
         template<class ComponentType, class... Args>
         ComponentType init_component(Args&&... args)
@@ -151,8 +146,7 @@ namespace ECS {
         }
 
         template<typename EidType>
-        typename to_ptr<EidType>::type get_entity(EntityId id)
-        {
+        typename to_ptr<EidType>::type get_entity(EntityId id) {
             return std::visit(
                     []<typename EntPtr> (EntPtr& ent) -> typename to_ptr<EidType>::type
                     {

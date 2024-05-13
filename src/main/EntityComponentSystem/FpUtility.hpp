@@ -297,3 +297,9 @@ struct is_equal_head<Type, List<a, args...>>
 {
     constexpr static bool value = std::is_same_v<Type,a>; 
 };
+
+template<class EqType, class ListType>
+struct is_same_head_type
+{
+    constexpr static bool value = std::is_same_v<EqType, typename ListType::head_>;
+};
