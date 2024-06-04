@@ -106,11 +106,6 @@ namespace ECS {
         std::tuple<ComponentType&...> get_components(EntityId id) {
             return std::tie(get_component<ComponentType>(id)...);
         }
-        
-        template<class >
-        void fmap() {
-            
-        }
 
         template<class EidType>
         typename to_ptr<EidType>::type allocEntity()
