@@ -1,10 +1,10 @@
 #include <iostream>
-#include "Engine.hpp"
+#include "ECS/Engine.hpp"
 #include <type_traits>
-#include "Component.hpp"
-#include <EventManager.hpp>
-#include "System.hpp"
-#include "SystemManager.hpp"
+#include "ECS/Component.hpp"
+#include "ECS/EventManager.hpp"
+#include "ECS/System.hpp"
+#include "ECS/SystemManager.hpp"
 #include <chrono>
 #include <thread>
 #include <SFML/Graphics.hpp>
@@ -40,9 +40,18 @@ public:
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode(200,200), "Hello From SFML");
+    sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
+    sf::Text text;
+
+//    text.setFont();
+    text.setString("Ilya loh");
+    text.setCharacterSize(100);
+    text.setFillColor(sf::Color::Yellow);
+    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Magenta);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -53,7 +62,9 @@ int main() {
             }
         }
         window.clear();
-        window.draw(shape);
+        window.draw(text);
+//        window.draw(shape);
+
         window.display();
     }
     return 0;

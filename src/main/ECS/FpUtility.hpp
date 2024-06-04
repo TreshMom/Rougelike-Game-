@@ -25,7 +25,7 @@ struct ListToTuple<List<Components...>>
 };
 
 template<class T>
-using ListToTuple_t = ListToTuple<T>::type;
+using ListToTuple_t = typename ListToTuple<T>::type;
 
 
 ///////////// CONCATE ///////////////
@@ -38,7 +38,7 @@ struct concate <List<Ts1...>, List<Ts2...>>{
 };
 
 template<class T1, class T2>
-using concate_t = concate<T1, T2>::type;
+using concate_t = typename concate<T1, T2>::type;
 
 
 /////////////// COMPOSITION ////////////////////////

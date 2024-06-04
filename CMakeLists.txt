@@ -1,6 +1,5 @@
-cmake_minimum_required (VERSION 3.14)
-
-project(bigProject_2)
+cmake_minimum_required(VERSION 3.28)
+project(Rougelike_Game_)
 
 set(CMAKE_CXX_STANDARD 20)
 set(SFML_DIR "/usr/lib/x86_64-linux-gnu/cmake/SFML")
@@ -16,5 +15,5 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(${PROJECT_NAME} src/main/main.cpp)
 
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE src/main/EntityComponentSystem)
+target_include_directories(${PROJECT_NAME} PRIVATE src/main/ECS)
 target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio)
