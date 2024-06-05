@@ -1,2 +1,4 @@
 #pragma once
-#include "ShapeComponent.hpp"
+#include "ShapeInfo.hpp"
+#include "MoveData.hpp"
+#include "CoordsInfo.hpp"

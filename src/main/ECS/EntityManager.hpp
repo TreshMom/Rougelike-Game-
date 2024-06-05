@@ -22,7 +22,7 @@ namespace ECS {
 
         using data = List <
             List<DogEntity, List<MoveComponent, PositionComponent, ShapeComponent>>,
-            List<NpcEntity, List<MoveComponent>>
+            List<NpcEntity, List<MoveComponent, PositionComponent, ShapeComponent>>
         >;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
@@ -69,6 +69,10 @@ namespace ECS {
 
         template<class... ComponentsTypes, class F>
         void update_by_id(EntityId id, F&& f) {   
+                if (!entityes.contains(id))
+                {
+                    throw std::runtime_error("does't exists");
+                }
                 std::visit(
                 [this, f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void
                 {
@@ -135,7 +139,7 @@ namespace ECS {
                 throw std::runtime_error("eid not exists");
             }
             std::visit(
-                [eid]<typename EntPtr> (EntPtr& ent) -> void
+                [eid]<typename EntPtr> (EntPtr ent) -> void
                 {
                     ent->invalid();
                 }

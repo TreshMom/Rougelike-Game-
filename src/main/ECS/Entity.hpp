@@ -32,10 +32,6 @@ namespace ECS {
         bool valid() const { 
             return id_ != INVALID;
         }
-
-        void unvalidate() {
-            id_ = INVALID;
-        }
         
         template<class ComponentType>
         constexpr bool has_component() const {
@@ -68,7 +64,12 @@ namespace ECS {
 
         void invalid()
         {
-            id_ = INVALID;
+            if(valid())
+            {
+                EntityId ent = id_;
+                id_ = INVALID;
+                manager_.removeEntity(ent);
+            }
         }
 
     private:

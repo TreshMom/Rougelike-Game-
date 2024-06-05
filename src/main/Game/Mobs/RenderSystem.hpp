@@ -15,7 +15,7 @@ class RenderSystem : public ECS::SystemHandle, public ECS::SystemInterface {
     {
         evm.subscribe<createEvent>(ptr);
     }
-    void update(ECS::EventManager&, ECS::EntityManager& em, ECS::SystemManager&) {
+    void update(ECS::EventManager&, ECS::EntityManager& em, ECS::SystemManager&, sf::Time) {
 
         for(auto const& id : entityVector)
         {

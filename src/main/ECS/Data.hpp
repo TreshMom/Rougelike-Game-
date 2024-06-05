@@ -1,12 +1,6 @@
 #pragma once
 #include "../Components/include.hpp"
 
-struct Coords
-{
-    int x = 2;
-    int y = 5;
-};
-
 namespace ECS
 {
     template<class T>
@@ -25,8 +19,8 @@ namespace ECS
     using DogEntity = Entity<dog_tag>;
     using NpcEntity = Entity<npc_tag>;
 
-    using PositionComponent = Component<pos_tag, Coords>;
-    using MoveComponent = Component<move_tag, Coords>;
+    using PositionComponent = Component<pos_tag, CoordsInfo>;
+    using MoveComponent = Component<move_tag, MoveData>;
     using ShapeComponent = Component<shape_tag, ShapeInfo>;
 
     

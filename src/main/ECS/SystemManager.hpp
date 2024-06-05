@@ -10,8 +10,14 @@ namespace ECS {
         EventManager em;
         EntityManager ent;
         std::vector<std::shared_ptr<SystemInterface>> systems;
+        sf::Clock clock;
 
         public:
+        SystemManager()
+        {
+            clock.restart();
+        }
+
         template<class T>
         void make_system()
         {
@@ -25,7 +31,7 @@ namespace ECS {
         {
             for(auto& system : systems)
             {
-                system->update(em, ent, *this);
+                system->update(em, ent, *this, clock.getElapsedTime());
             }
         }
     };

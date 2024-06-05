@@ -25,7 +25,7 @@ namespace ECS {
     class SystemInterface {
     public:
         virtual void init(std::shared_ptr<SystemInterface>, EventManager&, EntityManager&, SystemManager&){}
-        virtual void update(EventManager&, EntityManager&, SystemManager&) = 0;
+        virtual void update(EventManager&, EntityManager&, SystemManager&, sf::Time) = 0;
         virtual ~SystemInterface(){}
     };
 
