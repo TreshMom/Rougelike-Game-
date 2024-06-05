@@ -48,6 +48,8 @@
 
 int main() {
 
+        sf::Clock clock;
+
         SystemManager sm;
         sm.make_system<GeneratorSystem>();
         sm.make_system<RenderSystem>();

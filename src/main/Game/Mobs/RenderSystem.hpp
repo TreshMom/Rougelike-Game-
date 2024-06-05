@@ -8,7 +8,9 @@ class RenderSystem : public ECS::SystemHandle, public ECS::SystemInterface {
     sf::RenderWindow window;
 
     public:
-    RenderSystem() : window{sf::RenderWindow(sf::VideoMode(2000,2000), "Hello From SFML")}{}
+    RenderSystem() : window{sf::RenderWindow(sf::VideoMode(1000,500), "Hello From SFML")}{
+        window.setFramerateLimit(60);
+    }
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&)
     {
         evm.subscribe<createEvent>(ptr);
@@ -19,7 +21,7 @@ class RenderSystem : public ECS::SystemHandle, public ECS::SystemInterface {
         {
             em.update_by_id<ShapeComponent>(id,
             [&](auto& entity, ShapeComponent& shapeData){
-                sf::CircleShape shape(100.f);
+                sf::CircleShape shape(5.f);
                 shapeData.data.shape = shape;
                 shape.setFillColor(sf::Color::Magenta);
             });
