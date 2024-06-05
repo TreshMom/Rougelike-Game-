@@ -9,10 +9,14 @@ using namespace ECS;
 class GeneratorSystem : public SystemHandle, public SystemInterface {
 private:
     int counter = 0;
+    int counterPlayer = 0;
 public:
 
     void update(EventManager & evm, EntityManager &em, SystemManager &, sf::Time t) {
-        if (counter < 100000) {
+        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { 
+        //         std::cout << 2323 << std::endl;
+        //     } 
+        if (counter < 2) {
             auto ptr = em.allocEntity<DogEntity>();
             ptr->get_component<PositionComponent>().data.x = 0;
             ptr->get_component<PositionComponent>().data.y = 0;
@@ -24,6 +28,21 @@ public:
             };
             evm.notify(createEvent(ptr->get_id()));
             counter += 1;
+        }
+
+        if(counterPlayer < 1)
+        {
+            auto ptr = em.allocEntity<PlayerEntity>();
+            ptr->get_component<PositionComponent>().data.x = 0;
+            ptr->get_component<PositionComponent>().data.y = 0;
+            ptr->get_component<MoveComponent>().data.x = [v = (rand() % 1000)/100.0, rs = t.asMilliseconds()](double tm){
+                return 0;
+            };
+            ptr->get_component<MoveComponent>().data.y = [v = (rand() % 1000)/100.0, rs = t.asMilliseconds()](double tm){
+                return 0;
+            };
+            evm.notify(createEvent(ptr->get_id()));
+            counterPlayer += 1;
         }
     }
 };
