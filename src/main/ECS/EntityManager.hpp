@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <cstdint>
 #include <functional>
-#include "EngineDefs.h"
+#include "EngineDefs.hpp"
 #include <memory>
 #include <type_traits>
 #include <variant>
@@ -21,7 +21,7 @@ namespace ECS {
     public:
 
         using data = List <
-            List<DogEntity, List<MoveComponent, PositionComponent>>,
+            List<DogEntity, List<MoveComponent, PositionComponent, ShapeComponent>>,
             List<NpcEntity, List<MoveComponent>>
         >;
 
@@ -67,6 +67,18 @@ namespace ECS {
             }
         }
 
+        template<class... ComponentsTypes, class F>
+        void update_by_id(EntityId id, F&& f) {   
+                std::visit(
+                [this, f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void
+                {
+                    if (ent->template has_components<ComponentsTypes...>())
+                    {
+                        f(*ent, ent->template get_component<ComponentsTypes>()...);
+                    }
+                }
+                , entityes[id]);
+        }
 
         template<class EntityType, class ComponentType>
         constexpr bool has_component() const {

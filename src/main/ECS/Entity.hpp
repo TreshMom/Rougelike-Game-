@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <memory>
 #include "EntityManager.hpp"
-#include "EngineDefs.h"
+#include "EngineDefs.hpp"
 #include <cassert>
 
 namespace ECS {

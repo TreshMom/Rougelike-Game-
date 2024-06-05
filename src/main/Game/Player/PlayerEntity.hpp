@@ -2,5 +2,5 @@
 
 #include "../../"
  
-class PlayerEntity :  {}
+class PlayerEntity {};
 

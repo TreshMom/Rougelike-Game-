@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
-#include "EngineDefs.h"
+#include "EngineDefs.hpp"
 #include "System.hpp"
 
 
@@ -37,7 +37,7 @@ namespace ECS {
             event_to_system[EventType::getFamily()].push_back(system);
         }   
 
-        template<class EventType, class ...Args>
+        template<class EventType>
         void notify(EventType const& event) {
             for (auto& system : event_to_system[EventType::getFamily()]) {
                 system->receive(event);

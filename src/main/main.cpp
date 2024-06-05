@@ -8,66 +8,83 @@
 #include <chrono>
 #include <thread>
 #include <SFML/Graphics.hpp>
+#include "Game/Mobs/include.hpp"
 
-namespace ECS
-{
-    struct collisionEvent : public Event<ECS::collisionEvent> {
-        collisionEvent(int x, int y) : x_{x}, y_{y} {} 
-        int x_;
-        int y_;
-    };
-}
+// namespace ECS
+// {
+//     struct collisionEvent : public Event<ECS::collisionEvent> {
+//         collisionEvent(int x, int y) : x_{x}, y_{y} {} 
+//         int x_;
+//         int y_;
+//     };
+// }
 
-using namespace ECS;
+// using namespace ECS;
 
 
-class CollisionSystem2 : public SystemHandle, public SystemInterface {
-public:
-    void update(EventManager&, EntityManager&, SystemManager&) {}
-};
+// class CollisionSystem2 : public SystemHandle, public SystemInterface {
+// public:
+//     void init(std::shared_ptr<CollisionSystem2> ptr, EventManager& em, EntityManager&, SystemManager&) {
+//         em.subscribe<createEvent>(ptr);
+//     }
+//     void update(EventManager&, EntityManager&, SystemManager&) {}
+//     // void receive(collisionEvent const& ev)
+//     // {
+//     //     std::cout << ev.first_ << " " << ev.second_ << std::endl;
+//     // }
+// };
 
-class PrintSystem : public SystemHandle, public SystemInterface {
-public:
-    void update(EventManager&, EntityManager& em, SystemManager&) {
-        std::cout << "--------------------------" << std::endl;
-        em.update<PositionComponent>([](auto&, PositionComponent const& comp)
-        {
-            std::cout << comp.data.x << " " << comp.data.y << std::endl;
-        }
-        );
-    }
-};
+// class PrintSystem : public SystemHandle, public SystemInterface {
+// public:
+//     void update(EventManager&, EntityManager& em, SystemManager&) {
+//         std::cout << "--------------------------" << std::endl;
+//         em.update<PositionComponent>([](auto&, PositionComponent const& comp)
+//         {
+//             std::cout << comp.data.x << " " << comp.data.y << std::endl;
+//         }
+//         );
+//     }
+// };
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
-    sf::Text text;
-
-//    text.setFont();
-    text.setString("Ilya loh");
-    text.setCharacterSize(100);
-    text.setFillColor(sf::Color::Yellow);
-    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Magenta);
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
+        SystemManager sm;
+        sm.make_system<GeneratorSystem>();
+        sm.make_system<RenderSystem>();
+        sm.make_system<MoveSystem>();
+        while(true)
         {
-            if(event.type == sf::Event::Closed){
-                window.close();
-            }
+            sm.update();
         }
-        window.clear();
-        window.draw(text);
-//        window.draw(shape);
+        
+//     sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
+//     sf::Text text;
 
-        window.display();
-    }
-    return 0;
+// //    text.setFont();
+//     text.setString("Ilya loh");
+//     text.setCharacterSize(100);
+//     text.setFillColor(sf::Color::Yellow);
+//     text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+//     sf::CircleShape shape(100.f);
+//     shape.setFillColor(sf::Color::Magenta);
+
+//     while (window.isOpen())
+//     {
+//         sf::Event event;
+//         while (window.pollEvent(event))
+//         {
+//             if(event.type == sf::Event::Closed){
+//                 window.close();
+//             }
+//         }
+//         window.clear();
+//         window.draw(text);
+// //        window.draw(shape);
+
+//         window.display();
+//     }
+//     return 0;
 
     // ECS::SystemManager sm;
     // sm.add_system(std::make_unique<GeneratorSystem>());
@@ -99,6 +116,10 @@ int main() {
     // std::cout << val5->get_component<MoveComponent>().data.x << std::endl;
     // val4->get_component<PositionComponent>().data.x += 1;
     // val4->get_component<PositionComponent>().data.y += 1;
+
+    // em.update_by_id(val4->get_id(),[](auto& ent){
+    //     std::cout << "wow" << std::endl;
+    // });
 
     // em.update<PositionComponent>([](auto& ent, PositionComponent &vl){
     //     std::cout << ent.get_id() << " <<id---------------" << std::endl;

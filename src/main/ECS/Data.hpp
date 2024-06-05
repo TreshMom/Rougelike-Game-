@@ -1,4 +1,5 @@
 #pragma once
+#include "../Components/include.hpp"
 
 struct Coords
 {
@@ -19,10 +20,14 @@ namespace ECS
     struct npc_tag;
     struct pos_tag;
     struct move_tag;
+    struct shape_tag;
 
     using DogEntity = Entity<dog_tag>;
     using NpcEntity = Entity<npc_tag>;
 
     using PositionComponent = Component<pos_tag, Coords>;
     using MoveComponent = Component<move_tag, Coords>;
+    using ShapeComponent = Component<shape_tag, ShapeInfo>;
+
+    
 }

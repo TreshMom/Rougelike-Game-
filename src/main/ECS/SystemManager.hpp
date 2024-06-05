@@ -9,14 +9,18 @@ namespace ECS {
         private:
         EventManager em;
         EntityManager ent;
-        std::vector<std::unique_ptr<SystemInterface>> systems;
+        std::vector<std::shared_ptr<SystemInterface>> systems;
 
         public:
-        void add_system(std::unique_ptr<SystemInterface> si)
+        template<class T>
+        void make_system()
         {
-            systems.emplace_back(std::move(si));
-        }
+            auto ptr = std::make_shared<T>();
+            systems.emplace_back(ptr);
+            ptr->init(ptr, em, ent, *this);
 
+        }
+        
         void update()
         {
             for(auto& system : systems)

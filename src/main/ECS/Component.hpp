@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <typeinfo>
-#include "EngineDefs.h"
+#include "EngineDefs.hpp"
 
 template<class T>
 class Familyid {
@@ -12,8 +12,8 @@ class Familyid {
 namespace ECS {
 
     template<class TypeHook, class DataType>
-    class Component  {
-        public:
+    class Component {
+    public:
         static ComponentId idsCounter;
 
         constexpr static Familyid<DataType> id{}; 
