@@ -2,11 +2,11 @@
 #include "../Components/include.hpp"
 
 namespace ECS {
-template <class T>
-class Entity;
+    template <class T>
+    class Entity;
 
-template <class TypeHook, class DataType>
-class Component;
+    template <class TypeHook, class DataType>
+    class Component;
 
     // тэги, чтобы отличать типы между собой на этапе компиляции
     struct dog_tag;
@@ -25,5 +25,4 @@ class Component;
     using ShapeComponent = Component<shape_tag, ShapeInfo>;
     using PlayerComponent = Component<player_tag, PlayerData>;
 
-}
-
+} // namespace ECS

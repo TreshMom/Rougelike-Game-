@@ -10,29 +10,25 @@
 #include <thread>
 #include <type_traits>
 
-
 int main() {
 
     sf::Clock clock;
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        std::cout << 2323 << std::endl;
+    }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { 
-            std::cout << 2323 << std::endl;
-        } 
+    SystemManager sm;
+    sm.make_system<GeneratorSystem>();
+    sm.make_system<RenderSystem>();
+    sm.make_system<MoveSystem>();
+    sm.make_system<KeySystem>();
+    while (true) {
+        sm.update();
+    }
 
-        SystemManager sm;
-        sm.make_system<GeneratorSystem>();
-        sm.make_system<RenderSystem>();
-        sm.make_system<MoveSystem>();
-        sm.make_system<KeySystem>();
-        while(true)
-        {
-            sm.update();
-        }
-        
-//     sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
-//     sf::Text text;
-
+    //     sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
+    //     sf::Text text;
 
     //     sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
     //     sf::Text text;
