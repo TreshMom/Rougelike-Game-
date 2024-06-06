@@ -6,4 +6,3 @@ struct SpriteData {
     sf::Texture texture;
     sf::Sprite sprite;
 };
-    

@@ -1,6 +1,3 @@
 #pragma once
 
-enum class MobType {
-    Player,
-    DogMob
-};
+enum class MobType { Player, DogMob };

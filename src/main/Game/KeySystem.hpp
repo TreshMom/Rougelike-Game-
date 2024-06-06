@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Constants.hpp"
 #include "System.hpp"
 #include <iostream>
-#include "Constants.hpp"
 
 class KeySystem : public SystemHandle, public SystemInterface {
 public:
@@ -24,8 +24,7 @@ public:
                                  rs = t.asMilliseconds()](double tm) {
                         return 6 * (down - up) * std::exp((rs - tm) / 50.0);
                     };
-                }
-            );
+                });
         }
     }
 };

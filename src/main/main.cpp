@@ -23,5 +23,4 @@ int main() {
     while (true) {
         sm.update();
     }
-
 }
