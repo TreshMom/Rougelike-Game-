@@ -10,53 +10,29 @@
 #include <thread>
 #include <type_traits>
 
-// namespace ECS
-// {
-//     struct collisionEvent : public Event<ECS::collisionEvent> {
-//         collisionEvent(int x, int y) : x_{x}, y_{y} {}
-//         int x_;
-//         int y_;
-//     };
-// }
-
-// using namespace ECS;
-
-// class CollisionSystem2 : public SystemHandle, public SystemInterface {
-// public:
-//     void init(std::shared_ptr<CollisionSystem2> ptr, EventManager& em,
-//     EntityManager&, SystemManager&) {
-//         em.subscribe<createEvent>(ptr);
-//     }
-//     void update(EventManager&, EntityManager&, SystemManager&) {}
-//     // void receive(collisionEvent const& ev)
-//     // {
-//     //     std::cout << ev.first_ << " " << ev.second_ << std::endl;
-//     // }
-// };
-
-// class PrintSystem : public SystemHandle, public SystemInterface {
-// public:
-//     void update(EventManager&, EntityManager& em, SystemManager&) {
-//         std::cout << "--------------------------" << std::endl;
-//         em.update<PositionComponent>([](auto&, PositionComponent const& comp)
-//         {
-//             std::cout << comp.data.x << " " << comp.data.y << std::endl;
-//         }
-//         );
-//     }
-// };
 
 int main() {
 
     sf::Clock clock;
 
-    SystemManager sm;
-    sm.make_system<GeneratorSystem>();
-    sm.make_system<RenderSystem>();
-    sm.make_system<MoveSystem>();
-    while (true) {
-        sm.update();
-    }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { 
+            std::cout << 2323 << std::endl;
+        } 
+
+        SystemManager sm;
+        sm.make_system<GeneratorSystem>();
+        sm.make_system<RenderSystem>();
+        sm.make_system<MoveSystem>();
+        sm.make_system<KeySystem>();
+        while(true)
+        {
+            sm.update();
+        }
+        
+//     sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
+//     sf::Text text;
+
 
     //     sf::RenderWindow window(sf::VideoMode(2000,2000), "Hello From SFML");
     //     sf::Text text;
