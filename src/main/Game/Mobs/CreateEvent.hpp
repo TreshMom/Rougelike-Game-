@@ -4,6 +4,6 @@
 using namespace ECS;
 
 struct createEvent : public ECS::Event<createEvent> {
-    createEvent(ECS::EntityId first) : first_{first} {} 
-        ECS::EntityId first_;
+    createEvent(ECS::EntityId first) : first_{first} {}
+    ECS::EntityId first_;
 };

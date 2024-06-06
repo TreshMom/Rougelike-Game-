@@ -1,8 +1,5 @@
 #pragma once
-#include "EntityManager.hpp"
 #include "Entity.hpp"
+#include "EntityManager.hpp"
 
-class Engine
-{
-
-};
+class Engine {};

@@ -1,6 +1,5 @@
 #pragma once
 
 #include "../../"
- 
-class PlayerEntity {};
 
+class PlayerEntity {};

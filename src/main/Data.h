@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntityComponentSystem/Entity.hpp"
+#include "ECS/Entity.hpp"
 
 namespace data
 {

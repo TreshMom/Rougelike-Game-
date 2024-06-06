@@ -7,11 +7,10 @@ using namespace ECS;
 
 class GeneratorPlayerSystem : public SystemHandle, public SystemInterface {
 public:
+    void update(EventManager&, EntityManager& em, SystemManager&) {
 
-    void update(EventManager &, EntityManager &em, SystemManager &) {
-        
         if (!em.thereIsPlayer) {
-            
+
             auto ptr = em.allocEntity<PlayerEntity>();
 
             ptr->get_component<PositionComponent>().data.x = 4;
@@ -19,9 +18,6 @@ public:
 
             ptr->get_component<MoveComponent>().data.x = 0;
             ptr->get_component<MoveComponent>().data.y = 0;
-
         }
-
-
     }
 };

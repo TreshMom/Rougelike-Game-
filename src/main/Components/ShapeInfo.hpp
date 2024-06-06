@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-struct ShapeInfo
-{
+struct ShapeInfo {
     sf::CircleShape shape;
 };

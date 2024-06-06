@@ -12,7 +12,10 @@ endif()
 
 file(GLOB SOURCES "src/*.cpp")
 
-add_executable(${PROJECT_NAME} src/main/main.cpp)
+add_executable(${PROJECT_NAME} src/main/main.cpp
+        src/main/src/Character.cpp
+        src/main/src/Player.cpp
+        src/main/src/PlayerController.cpp)
 
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE src/main/ECS)
