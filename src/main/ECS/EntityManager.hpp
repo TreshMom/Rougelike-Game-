@@ -21,11 +21,12 @@ namespace ECS {
     public:
         using data =
             List<List<DogEntity,
-                      List<MoveComponent, PositionComponent, ShapeComponent>>,
+                      List<MoveComponent, PositionComponent, SpriteComponent>>,
                  List<NpcEntity,
-                      List<MoveComponent, PositionComponent, ShapeComponent>>,
+                      List<MoveComponent, PositionComponent, SpriteComponent>>,
                  List<PlayerEntity,
-                      List<MoveComponent, PositionComponent, ShapeComponent>>>;
+                      List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent>>
+            >;
 
         using component_types_variant =
             ListToVariant_t<typename for_each_with_concate_tail<data>::type>;

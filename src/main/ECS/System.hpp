@@ -16,7 +16,7 @@ namespace ECS {
     //
     class SystemHandle {
     public:
-        virtual void receive(createEvent const&) {}
+        // virtual void receive(createEvent const&) {}
         virtual ~SystemHandle() {}
     };
 
