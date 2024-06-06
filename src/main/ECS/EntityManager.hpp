@@ -25,7 +25,9 @@ namespace ECS {
                  List<NpcEntity,
                       List<MoveComponent, PositionComponent, SpriteComponent>>,
                  List<PlayerEntity,
-                      List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent>>
+                      List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent>>,
+                 List<MapEntity,
+                      List<PositionComponent, GridComponent>>
             >;
 
         using component_types_variant =

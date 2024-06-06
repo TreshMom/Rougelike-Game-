@@ -1,7 +1,7 @@
 #pragma once
 
 // all events
-struct createEvent;
+struct CollisionEvent;
 
 namespace ECS {
 
@@ -16,7 +16,7 @@ namespace ECS {
     //
     class SystemHandle {
     public:
-        // virtual void receive(createEvent const&) {}
+        virtual void receive(CollisionEvent const&) {}
         virtual ~SystemHandle() {}
     };
 

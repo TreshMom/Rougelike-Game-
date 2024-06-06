@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ECS/System.hpp"
+#include "System.hpp"
 
 using namespace ECS;
 

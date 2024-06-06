@@ -1,6 +1,7 @@
 
 #include "EntityManager.hpp"
 #include "System.hpp"
+#include "Constants.hpp"
 
 class RenderSystem : public ECS::SystemHandle, public ECS::SystemInterface {
 private:
@@ -10,7 +11,7 @@ private:
 public:
     RenderSystem()
         : window{
-              sf::RenderWindow(sf::VideoMode(1000, 1000), "Hello From SFML")} {
+              sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "MEGA GAME")} {
         window.setFramerateLimit(60);
     }
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em,
