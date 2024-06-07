@@ -16,12 +16,10 @@ public:
         if (left || right || up || down) {
             em.update<PlayerComponent, MoveComponent>(
                 [&](auto& entity, PlayerComponent& pl, MoveComponent& mv) {
-                    mv.data.x = [=, v = (rand() % 1000) / 100.0,
-                                 rs = t.asMilliseconds()](double tm) {
+                    mv.data.x = [=, rs = t.asMilliseconds()](double tm) {
                         return 6 * (right - left) * std::exp((rs - tm) / 50.0);
                     };
-                    mv.data.y = [=, v = (rand() % 1000) / 100.0,
-                                 rs = t.asMilliseconds()](double tm) {
+                    mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
                         return 6 * (down - up) * std::exp((rs - tm) / 50.0);
                     };
                 });

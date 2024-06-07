@@ -1,4 +1,6 @@
 #pragma once
+#include <SFML/Graphics.hpp>
+#include <memory>
 
 // all events
 struct CollisionEvent;

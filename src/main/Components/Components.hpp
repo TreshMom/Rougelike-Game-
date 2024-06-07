@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BorderData.hpp"
 #include "CoordsInfo.hpp"
 #include "GridData.hpp"
 #include "MoveData.hpp"

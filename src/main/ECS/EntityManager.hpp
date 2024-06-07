@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <ranges>
 #include <type_traits>
 #include <unordered_map>
 #include <variant>
@@ -26,7 +27,9 @@ namespace ECS {
                       List<MoveComponent, PositionComponent, SpriteComponent>>,
                  List<PlayerEntity, List<MoveComponent, PositionComponent,
                                          SpriteComponent, PlayerComponent>>,
-                 List<MapEntity, List<PositionComponent, GridComponent>>>;
+                 List<MapEntity, List<GridComponent, SpriteComponent>>,
+                 List<WallEntity, List<PositionComponent, SpriteComponent,
+                                       BorderComponent>>>;
 
         using component_types_variant =
             ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
@@ -76,6 +79,30 @@ namespace ECS {
             }
         }
 
+        template <class... ComponentsTypes, class F, class P>
+        void update_by_p(F&& f, P&& p) {
+
+            auto tmp = entityes | std::views::transform([](auto const& pair) {
+                           return pair.first;
+                       });
+            std::vector<EntityId> ent_vector(tmp.begin(), tmp.end());
+
+            std::sort(ent_vector.begin(), ent_vector.end(), std::forward<P>(p));
+
+            for (auto& entity_id : ent_vector) {
+                std::visit(
+                    [this, f = std::forward<F>(f)]<typename EntityType>(
+                        EntityType&& ent) -> void {
+                        if (ent->template has_components<
+                                ComponentsTypes...>()) {
+                            f(*ent, ent->template get_component<
+                                        ComponentsTypes>()...);
+                        }
+                    },
+                    entityes[entity_id]);
+            }
+        }
+
         template <class... ComponentsTypes, class F>
         void update_by_id(EntityId id, F&& f) {
             if (!entityes.contains(id)) {
@@ -105,6 +132,23 @@ namespace ECS {
         template <class EntityType, class... ComponentType>
         constexpr bool has_components() const {
             return (has_component<EntityType, ComponentType>() && ...);
+        }
+
+        template <class ComponentType>
+        bool has_component(EntityId id) {
+            return std::visit(
+                []<typename Tpl>(Tpl& tpl) -> bool {
+                    if constexpr (MayBeToBool<find_t<
+                                      Tpl,
+                                      curry<std::is_same>::template type<
+                                          typename to_ptr<ComponentType>::
+                                              type>::template type>>::value) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                mp[id]);
         }
 
         template <class ComponentType>
@@ -148,7 +192,6 @@ namespace ECS {
                 entityes[eid]);
             entityes.erase(eid);
             mp.erase(eid);
-            return;
         }
 
         int get_and_inc_id() noexcept {

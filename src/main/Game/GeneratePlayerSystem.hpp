@@ -32,6 +32,11 @@ public:
                     shapeData.data.texture.loadFromFile(
                         "src/main/Assets/tile_0100.png");
                     shapeData.data.sprite.setTexture(shapeData.data.texture);
+                    shapeData.data.sprite.setScale(
+                        SPRITE_SIZE /
+                            shapeData.data.sprite.getLocalBounds().width,
+                        SPRITE_SIZE /
+                            shapeData.data.sprite.getLocalBounds().height);
                 });
         }
     }
