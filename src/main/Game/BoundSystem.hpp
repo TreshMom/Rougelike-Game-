@@ -3,11 +3,11 @@
 #include "EngineDefs.hpp"
 #include "System.hpp"
 #include "Utils.hpp"
+#include "events/ChangedMoveEvent.hpp"
 #include <cmath>
 #include <limits>
 #include <queue>
 #include <utility>
-#include "events/ChangedMoveEvent.hpp"
 
 using namespace ECS;
 
@@ -68,11 +68,9 @@ public:
                         mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
                             return 5 * vector_between.y_ * std::exp((rs - tm) / 40.0);
                         };
-
                     }
                 });
         });
         evm.notify(ChangedMoveEvent(snd));
     }
-
 };

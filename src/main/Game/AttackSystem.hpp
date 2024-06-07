@@ -20,7 +20,7 @@ public:
         evm.subscribe<LeftMouseEvent>(ptr);
     }
 
-    void update(EventManager&, EntityManager& em, SystemManager&, sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
         const float radius_of_attack = 50;
         for (auto const& id : attackEnts) {
             em.update_by_id<AttackComponent, PositionComponent, SpriteComponent>(
@@ -48,6 +48,7 @@ public:
                                         return 12 * vector_between.y_ * std::exp((rs - tm) / 100.0);
                                     };
                                 }
+                                evm.notify(ChangedMoveEvent(defence_entity.get_id()));
                             }
                         });
                 });

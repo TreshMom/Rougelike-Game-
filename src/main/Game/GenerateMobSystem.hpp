@@ -3,9 +3,9 @@
 #include "Constants.hpp"
 #include "Entity.hpp"
 #include "System.hpp"
+#include "events/ChangedMoveEvent.hpp"
 #include <algorithm>
 #include <cmath>
-#include "events/ChangedMoveEvent.hpp"
 #include <queue>
 
 using namespace ECS;
@@ -15,6 +15,8 @@ private:
     int counter = 0;
     int counterPlayer = 0;
     std::queue<EntityId> mobs;
+
+    const int MAX_MON_COUNTER = 100;
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
@@ -26,9 +28,9 @@ public:
             EntityId id_ = mobs.front();
             mobs.pop();
             set_up_speed(em, id_);
-        } 
+        }
 
-        if (counter < 20) {
+        if (counter < MAX_MON_COUNTER) {
             auto ptr = em.allocEntity<DogEntity>();
             ptr->get_component<PositionComponent>().data = {MOB_SPAWN_X, MOB_SPAWN_Y, MOB_SPAWN_X, MOB_SPAWN_Y};
             set_up_speed(em, ptr->get_id());
@@ -47,12 +49,16 @@ public:
     }
 
     void set_up_speed(EntityManager& em, EntityId id) {
-        em.template get_component<MoveComponent>(id).data.x = [](double tm) { return (rand() % 1000) / 75.0 - 500 / 75.0; };
-        em.template get_component<MoveComponent>(id).data.y = [](double tm) { return (rand() % 1000) / 75.0 - 500 / 75.0; };
+        em.template get_component<MoveComponent>(id).data.x = [](double tm) {
+            return (rand() % 1000) / 75.0 - 500 / 75.0;
+        };
+        em.template get_component<MoveComponent>(id).data.y = [](double tm) {
+            return (rand() % 1000) / 75.0 - 500 / 75.0;
+        };
     }
 
     void receive(ChangedMoveEvent const& ev) {
+
         mobs.push(ev.id_);
     }
-
 };
