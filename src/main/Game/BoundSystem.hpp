@@ -1,4 +1,5 @@
 #pragma once
+
 #include "EngineDefs.hpp"
 #include "System.hpp"
 #include <cmath>
@@ -13,8 +14,7 @@ private:
     std::queue<std::pair<EntityId, EntityId>> coll_pairs;
 
 public:
-    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em,
-              ECS::SystemManager&) {
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
         evm.subscribe<CollisionEvent>(ptr);
     }
 
@@ -24,13 +24,15 @@ public:
             auto [fst, snd] = coll_pairs.front();
             coll_pairs.pop();
 
-            if (!em.template has_component<MoveComponent>(fst) &&
-                !em.template has_component<MoveComponent>(snd)) {
+            if (!em.template has_component<MoveComponent>(fst) && !em.template has_component<MoveComponent>(snd)) {
                 continue;
             }
 
-            if (em.template has_component<MoveComponent>(fst) &&
-                em.template has_component<MoveComponent>(snd)) {
+            if (em.template has_component<MoveComponent>(fst) && em.template has_component<MoveComponent>(snd)) {
+//                auto& pos_fst = em.template get_component<PositionComponent>(fst);
+//                auto& pos_snd = em.template get_component<PositionComponent>(snd);
+//                pos_fst.data.x = pos_fst.data.x + 5;
+//                pos_snd.data.y = pos_snd.data.y - 5;
                 continue;
             }
 
@@ -38,56 +40,41 @@ public:
                 std::swap(fst, snd);
             }
 
-            std::pair<double, double> v_fst;
-            std::vector<std::pair<double, double>> v_snd;
+            auto& pos = em.template get_component<PositionComponent>(fst);
+            pos.data.x = pos.data.x_prev;
+            pos.data.y = pos.data.y_prev;
 
-            auto& move = em.template get_component<MoveComponent>(fst);
-            v_fst = {move.data.x(t.asMilliseconds()),
-                     move.data.y(t.asMilliseconds())};
-            v_snd = {
-                {-1, 0},
-                {0, 1},
-                {1, 0},
-                {0, -1},
-            };
 
-            double res = std::numeric_limits<double>::max();
-            int norm_index = -1;
-            for (size_t i = 0; i < v_snd.size(); ++i) {
-                double tmp = v_fst.first * v_snd[i].first +
-                             v_fst.second * v_snd[i].second;
-                if (tmp < res) {
-                    res = tmp;
-                    norm_index = i;
-                }
-            }
+//            std::pair<double, double> v_fst;
+//            std::vector<std::pair<double, double>> v_snd;
+//
+//            auto& move = em.template get_component<MoveComponent>(fst);
+//            v_fst = {move.data.x(t.asMilliseconds()), move.data.y(t.asMilliseconds())};
+//            v_snd = {
+//                {-1, 0},
+//                {0, 1},
+//                {1, 0},
+//                {0, -1},
+//            };
+//
+//            double velAlongNormal = std::numeric_limits<double>::max();
+//            int norm_index = -1;
+//            for (size_t i = 0; i < v_snd.size(); ++i) {
+//                double tmp = v_fst.first * v_snd[i].first + v_fst.second * v_snd[i].second;
+//                if (tmp < velAlongNormal) {
+//                    velAlongNormal = tmp;
+//                    norm_index = i;
+//                }
+//            }
+//
+//            move.data.x = [=, rs = t.asMilliseconds()](double tm) {
+//                return - 1;
+//            };
+//
+//            move.data.y = [=, rs = t.asMilliseconds()](double tm) {
+//                return  -1;
+//            };
 
-            move.data.x = [=, rs = t.asMilliseconds()](double tm) {
-                return 12 * v_snd[norm_index].first *
-                       std::exp((rs - tm) / 50.0);
-            };
-            move.data.y = [=, rs = t.asMilliseconds()](double tm) {
-                return 12 * v_snd[norm_index].second *
-                       std::exp((rs - tm) / 50.0);
-            };
-
-            // if (em.template has_component<MoveComponent>(fst)) {
-            //     auto& move = em.template get_component<MoveComponent>(fst);
-            //     move.data.x = [](double t){return 0;};
-            //     move.data.y = [](double t){return 0;};
-            // }
-
-            //  if (em.template has_component<MoveComponent>(snd)) {
-            //     auto& move = em.template get_component<MoveComponent>(snd);
-            //     move.data.x = [](double t){return 0;};
-            //     move.data.y = [](double t){return 0;};
-            // }
-
-            em.update<PositionComponent, MoveComponent>(
-                [&](auto&, PositionComponent& pos, MoveComponent& move) {
-                    pos.data.x += move.data.x(t.asMilliseconds());
-                    pos.data.y += move.data.y(t.asMilliseconds());
-                });
         }
     }
 

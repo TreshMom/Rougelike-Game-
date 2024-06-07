@@ -1,6 +1,9 @@
 #pragma once
 
 struct CoordsInfo {
-    float x;
-    float y;
+    double x;
+    double y;
+
+    double x_prev;
+    double y_prev;
 };
