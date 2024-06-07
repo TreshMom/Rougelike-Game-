@@ -5,6 +5,8 @@
 #include "System.hpp"
 #include <algorithm>
 #include <cmath>
+#include "events/ChangedMoveEvent.hpp"
+#include <queue>
 
 using namespace ECS;
 
@@ -12,34 +14,45 @@ class GenerateMobSystem : public SystemHandle, public SystemInterface {
 private:
     int counter = 0;
     int counterPlayer = 0;
+    std::queue<EntityId> mobs;
 
 public:
-    void update(EventManager& evm, EntityManager& em, SystemManager&,
-                sf::Time t) {
-        if (counter < 20) {
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
+        evm.subscribe<ChangedMoveEvent>(ptr);
+    }
 
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
+        while (!mobs.empty()) {
+            EntityId id_ = mobs.front();
+            mobs.pop();
+            set_up_speed(em, id_);
+        } 
+
+        if (counter < 20) {
             auto ptr = em.allocEntity<DogEntity>();
-            ptr->get_component<PositionComponent>().data = {MOB_SPAWN_X,
-                                                            MOB_SPAWN_Y};
-            ptr->get_component<MoveComponent>().data.x =
-                [v = (rand() % 1000) / 10.0, rs = t.asMilliseconds()](
-                    double tm) { return (rand() % 1000) / 75.0 - 5; };
-            ptr->get_component<MoveComponent>().data.y =
-                [v = (rand() % 1000) / 10.0, rs = t.asMilliseconds()](
-                    double tm) { return (rand() % 1000) / 75.0 - 5; };
+            ptr->get_component<PositionComponent>().data = {MOB_SPAWN_X, MOB_SPAWN_Y, MOB_SPAWN_X, MOB_SPAWN_Y};
+            set_up_speed(em, ptr->get_id());
             counter++;
 
-            em.update_by_id<SpriteComponent>(
-                ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData) {
-                    shapeData.data.texture.loadFromFile(
-                        "src/main/Assets/tile_0096.png");
+            em.update_by_id<SpriteComponent, HealthComponent>(
+                ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, HealthComponent& health) {
+                    shapeData.data.texture.loadFromFile("src/main/Assets/tile_0096.png");
+                    health.data.hp = 100;
+                    health.data.start_hp = 100;
                     shapeData.data.sprite.setTexture(shapeData.data.texture);
-                    shapeData.data.sprite.setScale(
-                        SPRITE_SIZE /
-                            shapeData.data.sprite.getLocalBounds().width,
-                        SPRITE_SIZE /
-                            shapeData.data.sprite.getLocalBounds().height);
+                    shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
+                                                   SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
                 });
         }
     }
+
+    void set_up_speed(EntityManager& em, EntityId id) {
+        em.template get_component<MoveComponent>(id).data.x = [](double tm) { return (rand() % 1000) / 75.0 - 500 / 75.0; };
+        em.template get_component<MoveComponent>(id).data.y = [](double tm) { return (rand() % 1000) / 75.0 - 500 / 75.0; };
+    }
+
+    void receive(ChangedMoveEvent const& ev) {
+        mobs.push(ev.id_);
+    }
+
 };

@@ -50,8 +50,7 @@ struct composition<Func> {
 template <template <typename> class Func1, template <typename> class... Func2>
 struct composition<Func1, Func2...> {
     template <class T>
-    using type =
-        typename Func1<typename composition<Func2...>::template type<T>>::type;
+    using type = typename Func1<typename composition<Func2...>::template type<T>>::type;
 };
 
 ////////////////////// MAP //////////////////
@@ -65,8 +64,7 @@ struct map<Func, List<>> {
 
 template <template <typename> class Func, class T, class... Ts>
 struct map<Func, List<T, Ts...>> {
-    using type = concate_t<List<typename Func<T>::type>,
-                           typename map<Func, List<Ts...>>::type>;
+    using type = concate_t<List<typename Func<T>::type>, typename map<Func, List<Ts...>>::type>;
 };
 
 /////////////////////// MAYBE ////////////////////
@@ -99,10 +97,9 @@ struct filter<List<>, FuncType> {
 
 template <template <typename> class FuncType, class head, class... tail>
 struct filter<List<head, tail...>, FuncType> {
-    using type = std::conditional_t<
-        FuncType<head>::value,
-        concate_t<List<head>, typename filter<List<tail...>, FuncType>::type>,
-        typename filter<List<tail...>, FuncType>::type>;
+    using type =
+        std::conditional_t<FuncType<head>::value, concate_t<List<head>, typename filter<List<tail...>, FuncType>::type>,
+                           typename filter<List<tail...>, FuncType>::type>;
 };
 
 /////////////////////// find ////////////////////
@@ -119,9 +116,7 @@ struct find<List<>, FuncType> {
 
 template <template <typename> class FuncType, class head, class... tail>
 struct find<List<head, tail...>, FuncType> {
-    using type =
-        std::conditional_t<FuncType<head>::value, MayBe<head>,
-                           typename find<List<tail...>, FuncType>::type>;
+    using type = std::conditional_t<FuncType<head>::value, MayBe<head>, typename find<List<tail...>, FuncType>::type>;
 };
 
 template <template <typename> class FuncType>
@@ -132,8 +127,7 @@ struct find<std::tuple<>, FuncType> {
 template <template <typename> class FuncType, class head, class... tail>
 struct find<std::tuple<head, tail...>, FuncType> {
     using type =
-        std::conditional_t<FuncType<head>::value, MayBe<head>,
-                           typename find<std::tuple<tail...>, FuncType>::type>;
+        std::conditional_t<FuncType<head>::value, MayBe<head>, typename find<std::tuple<tail...>, FuncType>::type>;
 };
 
 template <class ListType, template <typename> class FuncType, class... a>
@@ -150,14 +144,12 @@ template <template <typename...> class TemplateFunction, class... OtherTypes>
 struct curry_impl;
 
 template <template <typename...> class TemplateFunction, class... OtherTypes>
-requires(is_invocable_type<TemplateFunction, OtherTypes...>) struct curry_impl<
-    TemplateFunction, OtherTypes...> {
+requires(is_invocable_type<TemplateFunction, OtherTypes...>) struct curry_impl<TemplateFunction, OtherTypes...> {
     constexpr static bool value = TemplateFunction<OtherTypes...>::value;
 };
 
 template <template <typename...> class TemplateFunction, class... OtherTypes>
-requires(!is_invocable_type<TemplateFunction, OtherTypes...>) struct curry_impl<
-    TemplateFunction, OtherTypes...> {
+requires(!is_invocable_type<TemplateFunction, OtherTypes...>) struct curry_impl<TemplateFunction, OtherTypes...> {
     template <class Type>
     using type = curry_impl<TemplateFunction, OtherTypes..., Type>;
 };
@@ -183,10 +175,8 @@ struct unique<List<>> {
 template <class Type, class... Types>
 struct unique<List<Type, Types...>> {
     using type =
-        concate_t<List<Type>,
-                  typename unique<typename filter<
-                      List<Types...>, curry<is_no_same>::template type<
-                                          Type>::template type>::type>::type>;
+        concate_t<List<Type>, typename unique<typename filter<
+                                  List<Types...>, curry<is_no_same>::template type<Type>::template type>::type>::type>;
 };
 
 /////////////////////// SOME SHIT ///////////////
@@ -223,14 +213,12 @@ struct list_types_to_pointers {
 
 template <class T>
 struct tail_to_pointer_to_tuple {
-    using type = typename composition<ListToTuple, list_types_to_pointers,
-                                      get_head, get_tail>::type<T>;
+    using type = typename composition<ListToTuple, list_types_to_pointers, get_head, get_tail>::type<T>;
 };
 
 template <class ListType>
 struct for_each_with_concate_tail {
-    using type = typename unique<
-        typename map<tail_to_pointer_to_tuple, ListType>::type>::type;
+    using type = typename unique<typename map<tail_to_pointer_to_tuple, ListType>::type>::type;
 };
 
 template <class T>
@@ -285,6 +273,5 @@ struct is_equal_head<Type, List<a, args...>> {
 
 template <class EqType, class ListType>
 struct is_same_head_type {
-    constexpr static bool value =
-        std::is_same_v<EqType, typename ListType::head_>;
+    constexpr static bool value = std::is_same_v<EqType, typename ListType::head_>;
 };

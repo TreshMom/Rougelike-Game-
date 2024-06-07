@@ -2,10 +2,12 @@
 
 #include "EngineDefs.hpp"
 #include "System.hpp"
+#include "Utils.hpp"
 #include <cmath>
 #include <limits>
 #include <queue>
 #include <utility>
+#include "events/ChangedMoveEvent.hpp"
 
 using namespace ECS;
 
@@ -18,7 +20,7 @@ public:
         evm.subscribe<CollisionEvent>(ptr);
     }
 
-    void update(EventManager&, EntityManager& em, SystemManager&, sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
 
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
@@ -29,10 +31,8 @@ public:
             }
 
             if (em.template has_component<MoveComponent>(fst) && em.template has_component<MoveComponent>(snd)) {
-//                auto& pos_fst = em.template get_component<PositionComponent>(fst);
-//                auto& pos_snd = em.template get_component<PositionComponent>(snd);
-//                pos_fst.data.x = pos_fst.data.x + 5;
-//                pos_snd.data.y = pos_snd.data.y - 5;
+                push(fst, snd, evm, em, t);
+                push(snd, fst, evm, em, t);
                 continue;
             }
 
@@ -43,44 +43,36 @@ public:
             auto& pos = em.template get_component<PositionComponent>(fst);
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
-
-
-//            std::pair<double, double> v_fst;
-//            std::vector<std::pair<double, double>> v_snd;
-//
-//            auto& move = em.template get_component<MoveComponent>(fst);
-//            v_fst = {move.data.x(t.asMilliseconds()), move.data.y(t.asMilliseconds())};
-//            v_snd = {
-//                {-1, 0},
-//                {0, 1},
-//                {1, 0},
-//                {0, -1},
-//            };
-//
-//            double velAlongNormal = std::numeric_limits<double>::max();
-//            int norm_index = -1;
-//            for (size_t i = 0; i < v_snd.size(); ++i) {
-//                double tmp = v_fst.first * v_snd[i].first + v_fst.second * v_snd[i].second;
-//                if (tmp < velAlongNormal) {
-//                    velAlongNormal = tmp;
-//                    norm_index = i;
-//                }
-//            }
-//
-//            move.data.x = [=, rs = t.asMilliseconds()](double tm) {
-//                return - 1;
-//            };
-//
-//            move.data.y = [=, rs = t.asMilliseconds()](double tm) {
-//                return  -1;
-//            };
-
         }
     }
 
     void receive(CollisionEvent const& col) {
-        // std::cout << "----------------" << std::endl;
-        // std::cout << col.first_ << " "  << col.second_ << std::endl;
         coll_pairs.emplace(col.first_, col.second_);
     }
+
+    void push(EntityId fst, EntityId snd, EventManager& evm, EntityManager& em, sf::Time t) {
+        em.update_by_id<PositionComponent, SpriteComponent>(fst, [&](auto& left, PositionComponent const& pos_left,
+                                                                     SpriteComponent const& sprite_left) {
+            em.update_by_id<PositionComponent, SpriteComponent, MoveComponent>(
+                snd,
+                [&](auto& right, PositionComponent const& pos_right, SpriteComponent& sprite_right, MoveComponent& mv) {
+                    if (left.get_id() != right.get_id()) {
+
+                        auto left_ = center_of_mass(sprite_left.data.sprite, pos_left);
+                        auto right_ = center_of_mass(sprite_right.data.sprite, pos_right);
+                        auto vector_between = right_ - left_;
+                        vector_between.normalize();
+                        mv.data.x = [=, rs = t.asMilliseconds()](double tm) {
+                            return 5 * vector_between.x_ * std::exp((rs - tm) / 40.0);
+                        };
+                        mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
+                            return 5 * vector_between.y_ * std::exp((rs - tm) / 40.0);
+                        };
+
+                    }
+                });
+        });
+        evm.notify(ChangedMoveEvent(snd));
+    }
+
 };

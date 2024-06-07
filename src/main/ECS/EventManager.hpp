@@ -27,8 +27,7 @@ namespace ECS {
         using ptrToSystem = std::shared_ptr<T>;
 
         // type event <-> id
-        std::unordered_map<EventId, std::vector<ptrToSystem<ECS::SystemHandle>>>
-            event_to_system;
+        std::unordered_map<EventId, std::vector<ptrToSystem<ECS::SystemHandle>>> event_to_system;
 
     public:
         template <class EventType, class System>

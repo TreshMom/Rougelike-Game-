@@ -12,31 +12,22 @@ private:
     int counterPlayer = 0;
 
 public:
-    void update(EventManager& evm, EntityManager& em, SystemManager&,
-                sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
 
         if (counterPlayer < 1) {
             auto ptr = em.allocEntity<PlayerEntity>();
-            ptr->get_component<PositionComponent>().data = {PLAYER_START_X,
-                                                            PLAYER_START_Y};
-            ptr->get_component<MoveComponent>().data.x = [](double tm) {
-                return 0;
-            };
-            ptr->get_component<MoveComponent>().data.y = [](double tm) {
-                return 0;
-            };
+            ptr->get_component<PositionComponent>().data = {PLAYER_START_X, PLAYER_START_Y};
+            ptr->get_component<MoveComponent>().data.x = [](double tm) { return 0; };
+            ptr->get_component<MoveComponent>().data.y = [](double tm) { return 0; };
             ++counterPlayer;
 
-            em.update_by_id<SpriteComponent>(
-                ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData) {
-                    shapeData.data.texture.loadFromFile(
-                        "src/main/Assets/tile_0100.png");
+            em.update_by_id<SpriteComponent, AttackComponent>(
+                ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, AttackComponent& attack) {
+                    shapeData.data.texture.loadFromFile("src/main/Assets/tile_0100.png");
                     shapeData.data.sprite.setTexture(shapeData.data.texture);
-                    shapeData.data.sprite.setScale(
-                        SPRITE_SIZE /
-                            shapeData.data.sprite.getLocalBounds().width,
-                        SPRITE_SIZE /
-                            shapeData.data.sprite.getLocalBounds().height);
+                    shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
+                                                   SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
+                    attack.data.damage = 2;
                 });
         }
     }

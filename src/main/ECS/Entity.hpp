@@ -18,8 +18,7 @@ namespace ECS {
         Entity(EntityManager& manager) : manager_{manager} {
             id_ = manager_.get_and_inc_id();
             if (id_ == 0) {
-                throw std::runtime_error("ivalid entity id :" +
-                                         std::to_string(id_));
+                throw std::runtime_error("ivalid entity id :" + std::to_string(id_));
             }
         }
 

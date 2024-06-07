@@ -19,6 +19,8 @@ namespace ECS {
     struct grid_tag;
     struct wall_tag;
     struct border_tag;
+    struct health_tag;
+    struct attack_tag;
 
     using DogEntity = Entity<dog_tag>;
     using NpcEntity = Entity<npc_tag>;
@@ -32,5 +34,7 @@ namespace ECS {
     using SpriteComponent = Component<texture_tag, SpriteData>;
     using GridComponent = Component<grid_tag, GridData>;
     using BorderComponent = Component<border_tag, BorderData>;
+    using AttackComponent = Component<attack_tag, AttackData>;
+    using HealthComponent = Component<health_tag, HealthData>;
 
 } // namespace ECS

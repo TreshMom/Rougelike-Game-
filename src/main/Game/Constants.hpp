@@ -24,4 +24,4 @@ constexpr sf::Keyboard::Key DOWN = sf::Keyboard::Down;
 
 constexpr uint32_t GRID_DENSITY = 300;
 
-const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
+const std::string BUG = "src/main/Assets/";

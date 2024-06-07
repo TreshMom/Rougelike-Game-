@@ -30,21 +30,18 @@ public:
                 shapeData.data.sprite.setPosition(0, 0);
             });
             created = true;
-            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WINDOW_WIDTH, 2 * SPRITE_SIZE),
-                       BUG + "tile_0040.png");
+            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WINDOW_WIDTH, 2 * SPRITE_SIZE), BUG + "tile_0040.png");
             createWall(em, ptr_map, {0, WINDOW_HEIGHT - 4 * SPRITE_SIZE},
                        sf::IntRect(0, 0, WINDOW_WIDTH, 2 * SPRITE_SIZE), BUG + "tile_0040.png");
             createWall(em, ptr_map, {0, 4 * SPRITE_SIZE},
                        sf::IntRect(0, 0, 2 * SPRITE_SIZE, WINDOW_HEIGHT - 12 * SPRITE_SIZE), BUG + "tile_0040.png");
             createWall(em, ptr_map, {WINDOW_WIDTH - 4 * SPRITE_SIZE, 4 * SPRITE_SIZE},
                        sf::IntRect(0, 0, 2 * SPRITE_SIZE, WINDOW_HEIGHT - 12 * SPRITE_SIZE), BUG + "tile_0040.png");
-            createWall(em, ptr_map, {(WINDOW_WIDTH - 4 * SPRITE_SIZE) / 2, 4 * SPRITE_SIZE},
-                       sf::IntRect(0, 0, 0.01 * SPRITE_SIZE, WINDOW_HEIGHT / 4), BUG + "tile_0040.png");
         }
     }
 
     void createWall(EntityManager& em, auto& map_ptr, std::pair<int, int> position, sf::IntRect rect,
-                    const std::string &texture_path) {
+                    const std::string& texture_path) {
         auto ptr_wall = em.allocEntity<WallEntity>();
         em.update_by_id<SpriteComponent, PositionComponent>(
             ptr_wall->get_id(), [&](auto& entity, SpriteComponent& shapeData, PositionComponent& pos) {
