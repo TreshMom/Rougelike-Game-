@@ -21,7 +21,9 @@ constexpr sf::Keyboard::Key LEFT = sf::Keyboard::Left;
 constexpr sf::Keyboard::Key RIGHT = sf::Keyboard::Right;
 constexpr sf::Keyboard::Key UP = sf::Keyboard::Up;
 constexpr sf::Keyboard::Key DOWN = sf::Keyboard::Down;
+constexpr sf::Keyboard::Key COLLECT = sf::Keyboard::E;
+constexpr sf::Mouse::Button ATTACK = sf::Mouse::Button::Left;
 
 constexpr uint32_t GRID_DENSITY = 300;
 
-const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
+const std::string BUG = "src/main/Assets/";

@@ -6,3 +6,4 @@
 #include "KeySystem.hpp"
 #include "MoveSystem.hpp"
 #include "RenderSystem.hpp"
+#include "CollectSystem.hpp"

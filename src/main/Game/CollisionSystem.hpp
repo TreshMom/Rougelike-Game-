@@ -25,10 +25,12 @@ public:
 
         std::unordered_map<std::tuple<int, int, int>, std::vector<EntityId>, tuple_hash> grid_map;
 
+        int counter = 0;
         em.update<PositionComponent, MoveComponent, SpriteComponent>([&](auto& ent, PositionComponent& pos,
                                                                          MoveComponent const&,
                                                                          SpriteComponent& sprite) {
             for (auto& [entId, grid_ptr] : maps) {
+                counter++;
                 auto& grid = *grid_ptr;
                 std::pair<int, int> x_bound_coords = {pos.data.x,
                                                       pos.data.x + sprite.data.sprite.getGlobalBounds().width};
@@ -74,14 +76,16 @@ public:
                 for (std::size_t j = i + 1; j < vector_entities.size(); j++) {
                     st[std::max(vector_entities[i], vector_entities[j])].insert(
                         std::min(vector_entities[i], vector_entities[j]));
+                    counter++;
                 }
             }
         }
-
         for (auto& left : st) {
             for (auto& right : left.second) {
                 evm.notify(CollisionEvent(left.first, right));
+                counter++;
             }
         }
-    }
+        std::cout << counter << std::endl;
+    }   
 };

@@ -3,7 +3,6 @@
 #include "Constants.hpp"
 #include "Entity.hpp"
 #include "System.hpp"
-#include "events/ChangedMoveEvent.hpp"
 #include <algorithm>
 #include <cmath>
 #include <queue>
@@ -12,7 +11,7 @@ using namespace ECS;
 
 class GenerateMobSystem : public SystemHandle, public SystemInterface {
 private:
-    int counter = 100;
+    int counter = 50;
     int counterPlayer = 0;
     std::queue<EntityId> mobs;
 
@@ -20,15 +19,9 @@ private:
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
-        evm.subscribe<ChangedMoveEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
-        while (!mobs.empty()) {
-            EntityId id_ = mobs.front();
-            mobs.pop();
-            set_up_speed(em, id_);
-        }
 
         if (counter > 0) {
             auto ptr = em.allocEntity<DogEntity>();
@@ -55,10 +48,5 @@ public:
         em.template get_component<MoveComponent>(id).data.y = [](double tm) {
             return (rand() % 1000) / 75.0 - 500 / 75.0;
         };
-    }
-
-    void receive(ChangedMoveEvent const& ev) {
-
-        mobs.push(ev.id_);
     }
 };

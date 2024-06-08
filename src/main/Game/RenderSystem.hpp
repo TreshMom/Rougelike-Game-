@@ -12,30 +12,33 @@ private:
 
 public:
     RenderSystem()
-        : window{sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "MEGA GAME",
+        : window{sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "TOLYA VS MUHI",
                                   sf::Style::Titlebar | sf::Style::Close)} {
         window.setFramerateLimit(60);
     }
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {
-        evm.subscribe<LeftMouseEvent>(ptr);
+        evm.subscribe<AttackEvent>(ptr);
     }
 
     void update(ECS::EventManager&, ECS::EntityManager& em, ECS::SystemManager&, sf::Time) {
         window.clear();
 
-//        if (!animation.empty()) {
-//            //            std::cout << "here\n";
-//            auto id = animation.front();
-//            animation.pop();
-//
-//            auto& sprite = em.template get_component<SpriteComponent>(id);
-//            //            auto &attack = em.template get_component<PlayerComponent>(id);
-//            //            attack.data.attack_sprite.sprite.
-//            sprite.data.texture.loadFromFile(BUG + "_Attack.png");
-//            sprite.data.sprite.setTexture(sprite.data.texture);
-//            sprite.data.sprite.setScale(SPRITE_SIZE / sprite.data.sprite.getLocalBounds().width,
-//                                        SPRITE_SIZE / sprite.data.sprite.getLocalBounds().height);
-//        }
+            //    while (!animation.empty()) {
+            //        //            std::cout << "here\n";
+            //        auto id = animation.front();
+            //        animation.pop();
+        
+            //      auto& sprite = em.template get_component<SpriteComponent>(id);
+            //         std::cout << sprite.id_ << std::endl;
+            //     // //   auto &attack = em.template get_component<PlayerComponent>(id);
+            //     //             //   attack.data.attack_sprite.sprite.
+            //         sprite.data.texture.loadFromFile(BUG + "_Attack.png");
+            //         sprite.data.sprite.setTexture(sprite.data.texture);
+            //         sprite.data.sprite.setColor(sf::Color::Red);
+            //         sprite.data.sprite.setTextureRect(sf::IntRect(0,0,500,100));
+            //     // //    sprite.data.sprite.setScale(SPRITE_SIZE / sprite.data.sprite.getLocalBounds().width,
+            //     // //                                SPRITE_SIZE / sprite.data.sprite.getLocalBounds().height);
+            //    }
 
         em.update<SpriteComponent, PositionComponent>([&](auto& ent, SpriteComponent& comp, PositionComponent& pos) {
             comp.data.sprite.setPosition(pos.data.x, pos.data.y);
@@ -54,7 +57,7 @@ public:
         window.display();
     }
 
-    void receive(LeftMouseEvent const& col) {
+    void receive(AttackEvent const& col) {
         animation.push(col.entId_);
     }
 };

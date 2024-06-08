@@ -10,8 +10,6 @@
 
 namespace ECS {
 
-    static EntityId INVALID = 0;
-
     template <class Hook>
     class Entity {
     public:
@@ -36,25 +34,25 @@ namespace ECS {
         template <class ComponentType>
         constexpr bool has_component() const {
             assert(valid());
-            return manager_.has_component<TypeEntity, ComponentType>();
+            return manager_.template has_component<TypeEntity, ComponentType>();
         }
 
         template <class... ComponentType>
         constexpr bool has_components() const {
             assert(valid());
-            return manager_.has_components<TypeEntity, ComponentType...>();
+            return manager_.template has_components<TypeEntity, ComponentType...>();
         }
 
         template <class ComponentType>
         constexpr ComponentType& get_component() const {
             assert(valid());
-            return manager_.get_component<ComponentType>(id_);
+            return manager_.template get_component<ComponentType>(id_);
         }
 
         template <class... ComponentType>
         const std::tuple<ComponentType&...> get_components() const {
             assert(valid());
-            return manager_.get_components<TypeEntity, ComponentType...>(id_);
+            return manager_.template get_components<TypeEntity, ComponentType...>(id_);
         }
 
         EntityId get_id() {
