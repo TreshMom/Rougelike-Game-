@@ -1,3 +1,7 @@
 #pragma once
 
-struct PlayerData {};
+#include "SpriteData.hpp"
+
+struct PlayerData {
+    SpriteData attack_sprite;
+};

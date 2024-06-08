@@ -15,11 +15,8 @@
 namespace ECS {
 
     class EntityManager {
-
-    private:
         int idEntityInc{1};
 
-    public:
         using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
                           List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
                           List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
@@ -31,8 +28,10 @@ namespace ECS {
         using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;
 
         std::unordered_map<EntityId, component_types_variant> mp;
-        std::unordered_map<EntityId, entityes_types_variant> entityes;
+        std::unordered_map<EntityId, entityes_types_variant> entities;
+        std::vector<EntityId> deleted;
 
+    public:
         template <class ComponentType, class... Args>
         ComponentType init_component(Args&&... args) {
             return ComponentType{new ComponentType::element_type{std::forward<Args>(args)...}};
@@ -53,48 +52,56 @@ namespace ECS {
 
         template <class... ComponentsTypes, class F>
         void update(F&& f) {
-            for (auto& entity_pair : entityes) {
+            for (auto& entity_pair : entities) {
                 std::visit(
-                    [this, f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
+                    [f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
                         if (ent->template has_components<ComponentsTypes...>()) {
                             f(*ent, ent->template get_component<ComponentsTypes>()...);
                         }
                     },
                     entity_pair.second);
             }
+            for (EntityId id : deleted) {
+                removeEntity(id);
+            }
+            deleted.clear();
         }
 
         template <class... ComponentsTypes, class F, class P>
         void update_by_p(F&& f, P&& p) {
 
-            auto tmp = entityes | std::views::transform([](auto const& pair) { return pair.first; });
+            auto tmp = entities | std::views::transform([](auto const& pair) { return pair.first; });
             std::vector<EntityId> ent_vector(tmp.begin(), tmp.end());
 
             std::sort(ent_vector.begin(), ent_vector.end(), std::forward<P>(p));
 
             for (auto& entity_id : ent_vector) {
                 std::visit(
-                    [this, f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
+                    [f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
                         if (ent->template has_components<ComponentsTypes...>()) {
                             f(*ent, ent->template get_component<ComponentsTypes>()...);
                         }
                     },
-                    entityes[entity_id]);
+                    entities[entity_id]);
             }
+        }
+
+        bool hasEntity(EntityId id) {
+            return entities.contains(id);
         }
 
         template <class... ComponentsTypes, class F>
         void update_by_id(EntityId id, F&& f) {
-            if (!entityes.contains(id)) {
+            if (!entities.contains(id)) {
                 throw std::runtime_error("does't exists");
             }
             std::visit(
-                [this, f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
+                [f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
                     if (ent->template has_components<ComponentsTypes...>()) {
                         f(*ent, ent->template get_component<ComponentsTypes>()...);
                     }
                 },
-                entityes[id]);
+                entities[id]);
         }
 
         template <class EntityType, class ComponentType>
@@ -145,18 +152,13 @@ namespace ECS {
         template <class EidType>
         typename to_ptr<EidType>::type allocEntity() {
             typename to_ptr<EidType>::type ptr = typename to_ptr<EidType>::type(new EidType(*this));
-            entityes[ptr->get_id()] = ptr;
+            entities[ptr->get_id()] = ptr;
             mp[ptr->get_id()] = get_init_components<EidType>();
             return ptr;
         }
 
-        void removeEntity(EntityId eid) {
-            if (!entityes.contains(eid)) {
-                throw std::runtime_error("eid not exists");
-            }
-            std::visit([eid]<typename EntPtr>(EntPtr ent) -> void { ent->invalid(); }, entityes[eid]);
-            entityes.erase(eid);
-            mp.erase(eid);
+        void toDelete(EntityId eid) {
+            deleted.push_back(eid);
         }
 
         int get_and_inc_id() noexcept {
@@ -176,7 +178,16 @@ namespace ECS {
                         throw std::runtime_error("error type!");
                     }
                 },
-                entityes[id]);
+                entities[id]);
+        }
+
+        void removeEntity(EntityId eid) {
+            if (!entities.contains(eid)) {
+                throw std::runtime_error("eid not exists");
+            }
+            std::visit([eid]<typename EntPtr>(EntPtr ent) -> void { ent->invalid(); }, entities[eid]);
+            entities.erase(eid);
+            mp.erase(eid);
         }
     };
 

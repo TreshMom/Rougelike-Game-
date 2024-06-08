@@ -43,4 +43,4 @@ namespace ECS {
         }
     };
 
-}; // namespace ECS
+} // namespace ECS

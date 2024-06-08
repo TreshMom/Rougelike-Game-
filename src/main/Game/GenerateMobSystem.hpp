@@ -12,11 +12,11 @@ using namespace ECS;
 
 class GenerateMobSystem : public SystemHandle, public SystemInterface {
 private:
-    int counter = 0;
+    int counter = 100;
     int counterPlayer = 0;
     std::queue<EntityId> mobs;
 
-    const int MAX_MON_COUNTER = 100;
+    //    const int MAX_MON_COUNTER = 100;
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
@@ -30,15 +30,15 @@ public:
             set_up_speed(em, id_);
         }
 
-        if (counter < MAX_MON_COUNTER) {
+        if (counter > 0) {
             auto ptr = em.allocEntity<DogEntity>();
             ptr->get_component<PositionComponent>().data = {MOB_SPAWN_X, MOB_SPAWN_Y, MOB_SPAWN_X, MOB_SPAWN_Y};
             set_up_speed(em, ptr->get_id());
-            counter++;
+            counter--;
 
             em.update_by_id<SpriteComponent, HealthComponent>(
                 ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, HealthComponent& health) {
-                    shapeData.data.texture.loadFromFile("src/main/Assets/tile_0096.png");
+                    shapeData.data.texture.loadFromFile(BUG + "tile_0096.png");
                     health.data.hp = 100;
                     health.data.start_hp = 100;
                     shapeData.data.sprite.setTexture(shapeData.data.texture);

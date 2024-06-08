@@ -25,6 +25,9 @@ public:
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
             coll_pairs.pop();
+            if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
+                continue;
+            }
 
             if (!em.template has_component<MoveComponent>(fst) && !em.template has_component<MoveComponent>(snd)) {
                 continue;
@@ -51,6 +54,9 @@ public:
     }
 
     void push(EntityId fst, EntityId snd, EventManager& evm, EntityManager& em, sf::Time t) {
+        if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
+            return;
+        }
         em.update_by_id<PositionComponent, SpriteComponent>(fst, [&](auto& left, PositionComponent const& pos_left,
                                                                      SpriteComponent const& sprite_left) {
             em.update_by_id<PositionComponent, SpriteComponent, MoveComponent>(
@@ -71,6 +77,8 @@ public:
                     }
                 });
         });
-        evm.notify(ChangedMoveEvent(snd));
+        if (!em.has_component<PlayerComponent>(snd)) {
+            evm.notify(ChangedMoveEvent(snd));
+        }
     }
 };

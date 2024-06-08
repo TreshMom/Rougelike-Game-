@@ -23,20 +23,22 @@ public:
                                                                      std::vector<ECS::EntityId>(GRID_DENSITY + 1));
 
             em.update_by_id<SpriteComponent>(ptr_map->get_id(), [&](auto& entity, SpriteComponent& shapeData) {
-                shapeData.data.texture.loadFromFile(BUG + "map.png");
+                shapeData.data.texture.loadFromFile(BUG + "tile_0049.png");
                 shapeData.data.sprite.setTexture(shapeData.data.texture);
                 shapeData.data.sprite.setScale(WINDOW_WIDTH / shapeData.data.sprite.getLocalBounds().width,
                                                WINDOW_HEIGHT / shapeData.data.sprite.getLocalBounds().height);
                 shapeData.data.sprite.setPosition(0, 0);
             });
             created = true;
-            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WINDOW_WIDTH, 2 * SPRITE_SIZE), BUG + "tile_0040.png");
-            createWall(em, ptr_map, {0, WINDOW_HEIGHT - 4 * SPRITE_SIZE},
-                       sf::IntRect(0, 0, WINDOW_WIDTH, 2 * SPRITE_SIZE), BUG + "tile_0040.png");
-            createWall(em, ptr_map, {0, 4 * SPRITE_SIZE},
-                       sf::IntRect(0, 0, 2 * SPRITE_SIZE, WINDOW_HEIGHT - 12 * SPRITE_SIZE), BUG + "tile_0040.png");
-            createWall(em, ptr_map, {WINDOW_WIDTH - 4 * SPRITE_SIZE, 4 * SPRITE_SIZE},
-                       sf::IntRect(0, 0, 2 * SPRITE_SIZE, WINDOW_HEIGHT - 12 * SPRITE_SIZE), BUG + "tile_0040.png");
+            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WINDOW_WIDTH, SPRITE_SIZE),
+                       BUG + "tile_0040.png");                        // upper wall
+            createWall(em, ptr_map, {0, WINDOW_HEIGHT - SPRITE_SIZE}, // lower wall
+                       sf::IntRect(0, 0, WINDOW_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
+            createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WINDOW_HEIGHT - 2 * SPRITE_SIZE),
+                       BUG + "tile_0040.png"); // left wall
+            createWall(em, ptr_map, {WINDOW_WIDTH - SPRITE_SIZE, SPRITE_SIZE},
+                       sf::IntRect(0, 0, SPRITE_SIZE, WINDOW_HEIGHT - 2 * SPRITE_SIZE),
+                       BUG + "tile_0040.png"); // right wall
         }
     }
 
@@ -50,7 +52,6 @@ public:
                 shapeData.data.sprite.setTexture(shapeData.data.texture);
                 shapeData.data.sprite.setTextureRect(rect);
                 shapeData.data.sprite.setPosition(position.first, position.second);
-                shapeData.data.sprite.setScale(2, 2);
                 pos.data.x = position.first;
                 pos.data.y = position.second;
 

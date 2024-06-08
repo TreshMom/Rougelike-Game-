@@ -36,6 +36,8 @@ int main() {
 
     sf::Clock clock;
     while (true) {
-        FPS(sm.update());
+        //        FPS(
+        sm.update();
+        //                );
     }
 }

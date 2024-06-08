@@ -28,6 +28,7 @@ public:
                 });
         }
 
+        // дребезг кнопок есть:(
         if (left_mouse_pressed) {
             em.update<PlayerComponent>(
                 [&](auto& ent, PlayerComponent& player) { evm.notify(LeftMouseEvent(ent.get_id())); });
