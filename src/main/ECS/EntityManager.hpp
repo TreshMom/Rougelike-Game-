@@ -20,7 +20,7 @@ namespace ECS {
         using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
                           List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
                           List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
-                                                  AttackComponent, HealthComponent, InventoryComponent>>,
+                                                  AttackComponent, HealthComponent>>,
                           List<MapEntity, List<GridComponent, SpriteComponent>>,
                           List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
                           List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>>;
