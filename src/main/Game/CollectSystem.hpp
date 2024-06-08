@@ -54,7 +54,6 @@ public:
     }
 
     void receive(CollectEvent const& event) {
-        std::cout << event.entId_ << std::endl;
         players_ids.push(event.entId_);
     }
 };

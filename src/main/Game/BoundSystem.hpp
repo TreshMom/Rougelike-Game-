@@ -47,7 +47,7 @@ public:
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
         }
-        std::cout << counter << std::endl;
+        // std::cout << counter << std::endl;
     }
 
     void receive(CollisionEvent const& col) {

@@ -11,7 +11,7 @@ using namespace ECS;
 
 class GenerateMobSystem : public SystemHandle, public SystemInterface {
 private:
-    int counter = 100;
+    int counter = 200;
     int counterPlayer = 0;
     std::queue<EntityId> mobs;
 
