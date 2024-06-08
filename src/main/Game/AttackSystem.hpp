@@ -76,17 +76,17 @@ public:
 
     double calc_radius(EntityManager& em, InventoryComponent & inv, AttackComponent& attack) {
         double res = attack.data.attack_radius;
-        for (auto& item : inv.data.putted_on) {
-            res += em.template get_component<ItemComponent>(item).data.attack_radius;
-        }
+        // for (auto& item : inv.data.putted_on) {
+            // res += em.template get_component<ItemComponent>(item).data.attack_radius;
+        // }
         return res; 
     }
 
     double calc_attack(EntityManager& em, InventoryComponent & inv, AttackComponent& attack) {
         double res = attack.data.damage;
-        for (auto &item : inv.data.putted_on) {
-            res += em.template get_component<ItemComponent>(item).data.damage;
-        }
+        // for (auto &item : inv.data.putted_on) {
+            // res += em.template get_component<ItemComponent>(item).data.damage;
+        // }
         return res;
     }
 

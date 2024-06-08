@@ -86,6 +86,5 @@ public:
                 counter++;
             }
         }
-        std::cout << counter << std::endl;
     }   
 };

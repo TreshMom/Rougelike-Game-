@@ -11,7 +11,7 @@ using namespace ECS;
 
 class GenerateMobSystem : public SystemHandle, public SystemInterface {
 private:
-    int counter = 50;
+    int counter = 100;
     int counterPlayer = 0;
     std::queue<EntityId> mobs;
 
@@ -19,6 +19,7 @@ private:
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
+        // evm.subscribe<ChangedMoveEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {

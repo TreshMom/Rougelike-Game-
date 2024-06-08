@@ -31,15 +31,15 @@ public:
             });
             created = true;
 
-            // createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE),
-            //            BUG + "tile_0040.png");                        // upper wall
-            // createWall(em, ptr_map, {0, WORLD_HEIGHT - SPRITE_SIZE}, // lower wall
-            //            sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
-            // createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
-            //            BUG + "tile_0040.png"); // left wall
-            // createWall(em, ptr_map, {WORLD_WIDTH - SPRITE_SIZE, SPRITE_SIZE},
-            //            sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
-            //            BUG + "tile_0040.png"); // right wall
+            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE),
+                       BUG + "tile_0040.png");                        // upper wall
+            createWall(em, ptr_map, {0, WORLD_HEIGHT - SPRITE_SIZE}, // lower wall
+                       sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
+            createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
+                       BUG + "tile_0040.png"); // left wall
+            createWall(em, ptr_map, {WORLD_WIDTH - SPRITE_SIZE, SPRITE_SIZE},
+                       sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
+                       BUG + "tile_0040.png"); // right wall
 
             createItem(em, ptr_map, {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, SPRITE_SIZE),
                        BUG + "tile_0118.png");

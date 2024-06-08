@@ -20,21 +20,10 @@ public:
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
-
+        int counter = 0;
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
-            auto __left =  em.template get_component<SpriteComponent>(fst);
-            auto __right = em.template get_component<SpriteComponent>(snd);
-
-            // std::cout << "--------------------------------------------" << std::endl;
-            // std::cout << "("<< __left.data.sprite.getPosition().x << " "  << __left.data.sprite.getPosition().y << ")" << 
-            //  "("<< __left.data.sprite.getPosition().x + __left.data.sprite.getGlobalBounds().width << " "  << 
-            //   __left.data.sprite.getPosition().y + __left.data.sprite.getGlobalBounds().height  << ")" <<  std::endl;
-            // std::cout << "("<< __right.data.sprite.getPosition().x << " "  << __right.data.sprite.getPosition().y << ")" << 
-            //  "("<< __right.data.sprite.getPosition().x + __right.data.sprite.getGlobalBounds().width << " "  << 
-            //   __right.data.sprite.getPosition().y + __right.data.sprite.getGlobalBounds().height  << ")" <<  std::endl;
-            
-
+            counter++;
             coll_pairs.pop();
             if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
                 continue;
@@ -58,6 +47,7 @@ public:
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
         }
+        std::cout << counter << std::endl;
     }
 
     void receive(CollisionEvent const& col) {
