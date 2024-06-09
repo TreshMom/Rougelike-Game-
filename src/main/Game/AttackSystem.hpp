@@ -52,13 +52,13 @@ public:
                             mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
                                 tm /= 1000;
                                 double alpha = sigmoid(tm, 3, rs);
-                                return (1 - alpha) * 10 * vector_between.x_ * std::exp((rs - tm) / 50.0) +
+                                return OPRTIMIZE_MULT_ZERO((1 - alpha) ,10 * vector_between.x_ * std::exp((rs - tm) / 50.0)) +
                                        OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
                             };
                             mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
                                 tm /= 1000;
                                 double alpha = sigmoid(tm, 3, rs);
-                                return (1 - alpha) * 10 * vector_between.y_ * std::exp((rs - tm) / 50.0) +
+                                return OPRTIMIZE_MULT_ZERO((1 - alpha) , 10 * vector_between.y_ * std::exp((rs - tm) / 50.0)) +
                                        OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
                             };
                         }
