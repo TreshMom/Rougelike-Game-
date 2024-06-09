@@ -1,7 +1,9 @@
 #pragma once
 
-struct CoordsInfo
-{
-    float x = 2;
-    float y = 5;
+struct CoordsInfo {
+    double x;
+    double y;
+
+    double x_prev;
+    double y_prev;
 };
