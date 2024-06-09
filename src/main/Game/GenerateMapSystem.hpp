@@ -16,8 +16,8 @@ public:
     void update(EventManager&, EntityManager& em, SystemManager&, sf::Time) override {
         if (!created) {
             auto ptr_map = em.allocEntity<MapEntity>();
-            ptr_map->get_component<GridComponent>().data.left_up = {0, 0};
-            ptr_map->get_component<GridComponent>().data.right_down = {WORLD_WIDTH, WORLD_HEIGHT};
+            ptr_map->get_component<GridComponent>().data.left_up = CoordsInfo(0, 0);
+            ptr_map->get_component<GridComponent>().data.right_down = CoordsInfo(WORLD_WIDTH, WORLD_HEIGHT);
             ptr_map->get_component<GridComponent>().data.grid_density = GRID_DENSITY;
             ptr_map->get_component<GridComponent>().data.mesh.resize(GRID_DENSITY + 1,
                                                                      std::vector<ECS::EntityId>(GRID_DENSITY + 1));
@@ -42,13 +42,14 @@ public:
                        sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
                        BUG + "tile_0040.png"); // right wall
 
-            for (int i = 0; i < 6; ++i) {
+            for (int i = 0; i < 4; ++i) {
                 createItem(em, {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE}, BUG + "axe.png",
-                           {100, 0, 200, WEAPON});
+                           {100, 0, 200, ECS::ITEM_ID::WEAPON});
             }
 
-            for (int i = 0; i < 3; ++i) {
-                createItem(em, {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, BUG + "helmet.png", {0, 1000, 0, ARMOR});
+            for (int i = 0; i < 4; ++i) {
+                createItem(em, {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, BUG + "helmet.png",
+                           {0, 1000, 0, ECS::ITEM_ID::ARMOR});
             }
 
             createMenu(em, {WORLD_WIDTH, 0}, BUG + "menu.png");
@@ -108,8 +109,8 @@ public:
 
     void createMenu(EntityManager& em, const std::pair<double, double>& position, const std::string& texture_path) {
         auto ptr = em.allocEntity<MenuEntity>();
-        em.update_by_id<SpriteComponent, PositionComponent>(
-            ptr->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos) -> void {
+        em.update_by_id<SpriteComponent, PositionComponent, MenuComponent>(
+            ptr->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos, MenuComponent& menu) -> void {
                 shape.data.texture.loadFromFile(texture_path);
                 shape.data.sprite.setTexture(shape.data.texture);
                 shape.data.sprite.setScale((WINDOW_WIDTH - WORLD_WIDTH) / shape.data.sprite.getLocalBounds().width,
@@ -119,6 +120,27 @@ public:
 
                 pos.data.x = position.first;
                 pos.data.y = position.second;
+
+                menu.data.backpack_grid.N_width = 4;
+                menu.data.backpack_grid.N_height = 2;
+                menu.data.backpack_grid.width = 476;
+                menu.data.backpack_grid.height = 236;
+                menu.data.backpack_grid.local_left_up_coords = {1385, 468};
+
+                menu.data.putted_on_grid.N_width = 4;
+                menu.data.putted_on_grid.N_height = 1;
+                menu.data.putted_on_grid.width = 476;
+                menu.data.putted_on_grid.height = 65;
+                menu.data.putted_on_grid.local_left_up_coords = {1385, 268};
+
+                shape.data.font.loadFromFile(BUG + "Sansation-Bold.ttf");
+                shape.data.text.setFont(shape.data.font);
+                shape.data.text.setCharacterSize(15);
+                shape.data.text.setStyle(sf::Text::Bold);
+                shape.data.text.setFillColor(sf::Color::Black);
+
+                shape.data.text.setPosition(1361, 68);
+                shape.data.text.setString("TOLIA > MUHI!");
             });
     }
 };

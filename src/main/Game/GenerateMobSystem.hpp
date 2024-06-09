@@ -24,7 +24,7 @@ public:
 
         if (counter > 0) {
             auto ptr = em.allocEntity<DogEntity>();
-            ptr->get_component<PositionComponent>().data = {MOB_SPAWN_X, MOB_SPAWN_Y, MOB_SPAWN_X, MOB_SPAWN_Y};
+            ptr->get_component<PositionComponent>().data = CoordsInfo(MOB_SPAWN_X, MOB_SPAWN_Y);
             set_up_speed(em, ptr->get_id());
             counter--;
 

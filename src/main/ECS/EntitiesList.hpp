@@ -43,5 +43,6 @@ namespace ECS {
     using HealthComponent = Component<health_tag, HealthData>;
     using InventoryComponent = Component<inventory_tag, InventoryData>;
     using ItemComponent = Component<item_tag, ItemData>;
+    using MenuComponent = Component<menu_tag, MenuData>;
 
 } // namespace ECS

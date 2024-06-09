@@ -23,35 +23,36 @@ public:
 
     void update(ECS::EventManager&, ECS::EntityManager& em, ECS::SystemManager&, sf::Time) override {
         window.clear();
-
-        //    while (!animation.empty()) {
-        //        //            std::cout << "here\n";
-        //        auto id = animation.front();
-        //        animation.pop();
-
-        //      auto& sprite = em.template get_component<SpriteComponent>(id);
-        //         std::cout << sprite.id_ << std::endl;
-        //     // //   auto &attack = em.template get_component<PlayerComponent>(id);
-        //     //             //   attack.data.attack_sprite.sprite.
-        //         sprite.data.texture.loadFromFile(BUG + "_Attack.png");
-        //         sprite.data.sprite.setTexture(sprite.data.texture);
-        //         sprite.data.sprite.setColor(sf::Color::Red);
-        //         sprite.data.sprite.setTextureRect(sf::IntRect(0,0,500,100));
-        //     // //    sprite.data.sprite.setScale(SPRITE_SIZE / sprite.data.sprite.getLocalBounds().width,
-        //     // //                                SPRITE_SIZE / sprite.data.sprite.getLocalBounds().height);
-        //    }
-
         em.update<SpriteComponent, PositionComponent>([&](auto& ent, SpriteComponent& comp, PositionComponent& pos) {
             comp.data.sprite.setPosition(pos.data.x, pos.data.y);
         });
 
-        em.update_by_p<SpriteComponent>([&](auto& ent, SpriteComponent& comp) { window.draw(comp.data.sprite); },
-                                        [&](auto const& left, auto const& right) {
-                                            auto& left_p = em.template get_component<SpriteComponent>(left);
-                                            auto& right_p = em.template get_component<SpriteComponent>(right);
-                                            return left_p.data.render_priority < right_p.data.render_priority;
-                                        });
+        em.update_by_p<SpriteComponent>(
+            [&](auto& ent, SpriteComponent& comp) {
+                window.draw(comp.data.sprite);
+                window.draw(comp.data.text);
+            },
+            [&](auto const& left, auto const& right) {
+                auto& left_p = em.template get_component<SpriteComponent>(left);
+                auto& right_p = em.template get_component<SpriteComponent>(right);
+                return left_p.data.render_priority < right_p.data.render_priority;
+            });
 
+        std::ostringstream ss;
+
+        ss << sf::Mouse::getPosition(window).x << "\t" << sf::Mouse::getPosition(window).y << "\n";
+        // std::cout << sf::Mouse::getPosition(window).x << "\t" << sf::Mouse::getPosition(window).y << "\n";
+        sf::Text atext;
+        sf::Font font;
+        font.loadFromFile(BUG + "Sansation-Bold.ttf");
+        atext.setFont(font);
+        atext.setCharacterSize(20);
+        atext.setStyle(sf::Text::Bold);
+        atext.setFillColor(sf::Color::Black);
+        atext.setPosition(0, 0);
+        atext.setString(ss.str()); // ss.str() converts the string buffer into a regular string
+        // draw the string
+        window.draw(atext);
         window.display();
     }
 

@@ -7,6 +7,7 @@
 #include "HealthData.hpp"
 #include "InventoryData.hpp"
 #include "ItemData.hpp"
+#include "MenuData.hpp"
 #include "MoveData.hpp"
 #include "PlayerData.hpp"
 #include "SpriteData.hpp"

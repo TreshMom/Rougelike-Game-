@@ -47,4 +47,16 @@ int main() {
 
         sm.update();
     }
+
+    // Grid grid({1,1},10,10,5,5);
+    // std::vector<double> vals = {0.1,2.3,9.8,9.9999, 9.99999};
+    // for(double val : vals)
+    // {
+    //     // std::cout << grid.pos_to_index({val, 9.0}) << std::endl;
+    // }
+    // for(int i = 0; i < 25;i++)
+    // {
+    //     auto ptr = grid.get_cell_by_index(i);
+    //     std::cout << ptr.x_ << " __ " << ptr.y_ << std::endl;
+    // }
 }
