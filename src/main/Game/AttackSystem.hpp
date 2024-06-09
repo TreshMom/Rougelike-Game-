@@ -25,7 +25,6 @@ public:
             auto& attack_left = em.template get_component<AttackComponent>(id);
             auto& pos_left = em.template get_component<PositionComponent>(id);
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
-
             
             em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
                 [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,

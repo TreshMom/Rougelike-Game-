@@ -12,7 +12,7 @@ private:
     int counterPlayer = 0;
 
 public:
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
         if (counterPlayer < 1) {
             auto ptr = em.allocEntity<PlayerEntity>();
@@ -23,11 +23,13 @@ public:
 
             em.update_by_id<SpriteComponent, AttackComponent, PlayerComponent>(
                 ptr->get_id(),
-                [&](auto& entity, SpriteComponent& shapeData, AttackComponent& attack, PlayerComponent& player) {
-                    shapeData.data.texture.loadFromFile(BUG + "tile_0100.png");
-                    shapeData.data.sprite.setTexture(shapeData.data.texture);
-                    shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
-                                                   SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
+                [&](auto& entity, SpriteComponent& shape, AttackComponent& attack, PlayerComponent& player) {
+                    shape.data.texture.loadFromFile(BUG + "tile_0100.png");
+                    shape.data.sprite.setTexture(shape.data.texture);
+                    shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
+                                                   SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+                    shape.data.render_priority = 3;
+
                     attack.data.damage = 50;
                     attack.data.default_damage = 50;
                     attack.data.attack_radius = 50;
@@ -36,8 +38,8 @@ public:
                     player.data.attack_sprite.texture.loadFromFile(BUG + "_Attack.png");
                     player.data.attack_sprite.sprite.setTexture(player.data.attack_sprite.texture);
                     player.data.attack_sprite.sprite.setScale(
-                        SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
-                        SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
+                        SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
+                        SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                 });
         }
     }

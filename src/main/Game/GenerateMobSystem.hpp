@@ -21,7 +21,7 @@ public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
     }
 
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
         if (counter > 0) {
             auto ptr = em.allocEntity<DogEntity>();
@@ -30,13 +30,14 @@ public:
             counter--;
 
             em.update_by_id<SpriteComponent, HealthComponent>(
-                ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, HealthComponent& health) {
-                    shapeData.data.texture.loadFromFile(BUG + "tile_0096.png");
+                ptr->get_id(), [&](auto& entity, SpriteComponent& shape, HealthComponent& health) {
+                    shape.data.texture.loadFromFile(BUG + "tile_0096.png");
                     health.data.current_hp = 100;
                     health.data.default_hp = 100;
-                    shapeData.data.sprite.setTexture(shapeData.data.texture);
-                    shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
-                                                   SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
+                    shape.data.sprite.setTexture(shape.data.texture);
+                    shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
+                                                   SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+                    shape.data.render_priority = 3;
                 });
         }
     }

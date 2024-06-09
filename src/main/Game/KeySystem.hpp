@@ -14,7 +14,7 @@ private:
     std::unordered_map<ECS::EntityId, sf::Time> time_to_left_click;
 
 public:
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
         bool left = sf::Keyboard::isKeyPressed(LEFT);
         bool right = sf::Keyboard::isKeyPressed(RIGHT);
@@ -22,8 +22,7 @@ public:
         bool down = sf::Keyboard::isKeyPressed(DOWN);
 
         bool attack = sf::Mouse::isButtonPressed(ATTACK);
-        bool collect = sf::Keyboard::isKeyPressed(COLLECT);
-
+        bool collect = sf::Mouse::isButtonPressed(COLLECT);
 
         if (left || right || up || down) {
             em.update<PlayerComponent, MoveComponent, SpriteComponent>(

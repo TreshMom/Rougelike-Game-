@@ -23,7 +23,8 @@ namespace ECS {
                                                   AttackComponent, HealthComponent, InventoryComponent>>,
                           List<MapEntity, List<GridComponent, SpriteComponent>>,
                           List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
-                          List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>>;
+                          List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>,
+                          List<MenuEntity, List<PositionComponent, SpriteComponent>>>;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
         using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;

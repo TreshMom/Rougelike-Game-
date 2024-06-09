@@ -19,7 +19,7 @@ public:
         evm.subscribe<CollisionEvent>(ptr);
     }
 
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
         int counter = 0;
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
