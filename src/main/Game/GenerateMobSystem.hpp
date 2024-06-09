@@ -18,8 +18,7 @@ private:
     //    const int MAX_MON_COUNTER = 100;
 
 public:
-    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
-    }
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {}
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
@@ -36,7 +35,7 @@ public:
                     health.data.default_hp = 100;
                     shape.data.sprite.setTexture(shape.data.texture);
                     shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                                                   SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+                                               SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                     shape.data.render_priority = 3;
                 });
         }

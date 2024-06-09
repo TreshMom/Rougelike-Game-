@@ -32,12 +32,12 @@ public:
                     mv.data.x = [=, rs = t.asMilliseconds()](double tm) {
                         double alpha = sigmoid(tm, 0.1, rs);
                         return alpha * 6 * (right - left) * std::exp((rs - tm) / 50.0) +
-                            OPRTIMIZE_MULT_ZERO((1 - alpha), tmpx(tm) );
+                               OPRTIMIZE_MULT_ZERO((1 - alpha), tmpx(tm));
                     };
                     mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
                         double alpha = sigmoid(tm, 0.1, rs);
                         return alpha * 6 * (down - up) * std::exp((rs - tm) / 50.0) +
-                                OPRTIMIZE_MULT_ZERO((1 - alpha), tmpy(tm) );
+                               OPRTIMIZE_MULT_ZERO((1 - alpha), tmpy(tm));
                     };
                 });
         }

@@ -8,7 +8,7 @@ constexpr float VIEW_HEIGHT = 720.0;
 
 constexpr float SPRITE_SIZE = 32.0;
 
-constexpr float WORLD_WIDTH =  1280.0;  // this should be bigger then 'VIEW_WIDTH'
+constexpr float WORLD_WIDTH = 1280.0; // this should be bigger then 'VIEW_WIDTH'
 constexpr float WORLD_HEIGHT = 720.0; // this should be bigger then 'VIEW_HEIGHT'
 
 constexpr float PLAYER_START_X = WORLD_WIDTH / 2 - SPRITE_SIZE;

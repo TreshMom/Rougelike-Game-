@@ -27,7 +27,7 @@ public:
                     shape.data.texture.loadFromFile(BUG + "tile_0100.png");
                     shape.data.sprite.setTexture(shape.data.texture);
                     shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                                                   SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+                                               SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                     shape.data.render_priority = 3;
 
                     attack.data.damage = 50;
@@ -37,9 +37,8 @@ public:
 
                     player.data.attack_sprite.texture.loadFromFile(BUG + "_Attack.png");
                     player.data.attack_sprite.sprite.setTexture(player.data.attack_sprite.texture);
-                    player.data.attack_sprite.sprite.setScale(
-                        SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                        SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+                    player.data.attack_sprite.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
+                                                              SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                 });
         }
     }

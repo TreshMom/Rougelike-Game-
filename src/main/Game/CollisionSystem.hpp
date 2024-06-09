@@ -86,5 +86,5 @@ public:
                 counter++;
             }
         }
-    }   
+    }
 };

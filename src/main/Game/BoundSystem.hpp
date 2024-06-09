@@ -67,22 +67,26 @@ public:
 
                         auto left_ = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto right_ = center_of_mass(sprite_right.data.sprite, pos_right);
-                    
+
                         auto vector_between = right_ - left_;
                         vector_between.normalize();
                         auto tmp_x = mv.data.x;
                         auto tmp_y = mv.data.y;
-                        mv.data.x = [=, rs = t.asMilliseconds()/1000](double tm) {
+                        mv.data.x = [=, rs = t.asMilliseconds() / 1000](double tm) {
                             tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return  OPRTIMIZE_MULT_ZERO((1 - alpha) ,5 * vector_between.x_ * std::exp((rs - tm) / 40.0)) + OPRTIMIZE_MULT_ZERO(alpha , tmp_x(tm * 1000));
+                            return OPRTIMIZE_MULT_ZERO((1 - alpha),
+                                                       5 * vector_between.x_ * std::exp((rs - tm) / 40.0)) +
+                                   OPRTIMIZE_MULT_ZERO(alpha, tmp_x(tm * 1000));
                         };
-                        mv.data.y = [=, rs = t.asMilliseconds()/1000](double tm) {
+                        mv.data.y = [=, rs = t.asMilliseconds() / 1000](double tm) {
                             tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return  OPRTIMIZE_MULT_ZERO((1 - alpha) ,5 * vector_between.y_ * std::exp((rs - tm) / 40.0)) + OPRTIMIZE_MULT_ZERO(alpha, tmp_y(tm * 1000));
+                            return OPRTIMIZE_MULT_ZERO((1 - alpha),
+                                                       5 * vector_between.y_ * std::exp((rs - tm) / 40.0)) +
+                                   OPRTIMIZE_MULT_ZERO(alpha, tmp_y(tm * 1000));
                         };
-                        }
+                    }
                 });
         });
     }

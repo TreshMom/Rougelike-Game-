@@ -13,7 +13,7 @@ private:
     bool created = false;
 
 public:
-    void update(EventManager &, EntityManager &em, SystemManager &, sf::Time) override {
+    void update(EventManager&, EntityManager& em, SystemManager&, sf::Time) override {
         if (!created) {
             auto ptr_map = em.allocEntity<MapEntity>();
             ptr_map->get_component<GridComponent>().data.left_up = {0, 0};
@@ -22,7 +22,7 @@ public:
             ptr_map->get_component<GridComponent>().data.mesh.resize(GRID_DENSITY + 1,
                                                                      std::vector<ECS::EntityId>(GRID_DENSITY + 1));
 
-            em.update_by_id<SpriteComponent>(ptr_map->get_id(), [&](auto &entity, SpriteComponent &shape) {
+            em.update_by_id<SpriteComponent>(ptr_map->get_id(), [&](auto& entity, SpriteComponent& shape) {
                 shape.data.texture.loadFromFile(BUG + "tile_0049.png");
                 shape.data.sprite.setTexture(shape.data.texture);
                 shape.data.sprite.setScale(WORLD_WIDTH / shape.data.sprite.getLocalBounds().width,
@@ -33,7 +33,7 @@ public:
             created = true;
 
             createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE),
-                       BUG + "tile_0040.png");                        // upper wall
+                       BUG + "tile_0040.png");                       // upper wall
             createWall(em, ptr_map, {0, WORLD_HEIGHT - SPRITE_SIZE}, // lower wall
                        sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
             createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
@@ -43,94 +43,82 @@ public:
                        BUG + "tile_0040.png"); // right wall
 
             for (int i = 0; i < 6; ++i) {
-                createItem(em, {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE},
-                           BUG + "axe.png",
+                createItem(em, {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE}, BUG + "axe.png",
                            {100, 0, 200, WEAPON});
             }
 
             for (int i = 0; i < 3; ++i) {
-                createItem(em, {2 * SPRITE_SIZE, 2 * SPRITE_SIZE},
-                           BUG + "helmet.png",
-                           {0, 1000, 0, ARMOR});
+                createItem(em, {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, BUG + "helmet.png", {0, 1000, 0, ARMOR});
             }
 
             createMenu(em, {WORLD_WIDTH, 0}, BUG + "menu.png");
         }
     }
 
-    void
-    createWall(EntityManager &em, auto &map_ptr, const std::pair<double, double> &position, const sf::IntRect &rect,
-               const std::string &texture_path) {
+    void createWall(EntityManager& em, auto& map_ptr, const std::pair<double, double>& position,
+                    const sf::IntRect& rect, const std::string& texture_path) {
         auto ptr_wall = em.allocEntity<WallEntity>();
         em.update_by_id<SpriteComponent, PositionComponent>(
-                ptr_wall->get_id(), [&](auto &entity, SpriteComponent &shape, PositionComponent &pos) {
-                    shape.data.texture.loadFromFile(texture_path);
-                    shape.data.texture.setRepeated(true);
-                    shape.data.sprite.setTexture(shape.data.texture);
-                    shape.data.sprite.setTextureRect(rect);
-                    shape.data.sprite.setPosition(position.first, position.second);
-                    shape.data.render_priority = 1;
-                    pos.data.x = position.first;
-                    pos.data.y = position.second;
+            ptr_wall->get_id(), [&](auto& entity, SpriteComponent& shape, PositionComponent& pos) {
+                shape.data.texture.loadFromFile(texture_path);
+                shape.data.texture.setRepeated(true);
+                shape.data.sprite.setTexture(shape.data.texture);
+                shape.data.sprite.setTextureRect(rect);
+                shape.data.sprite.setPosition(position.first, position.second);
+                shape.data.render_priority = 1;
+                pos.data.x = position.first;
+                pos.data.y = position.second;
 
-                    auto to_x_map = ECS::to_x(map_ptr->template get_component<GridComponent>().data);
-                    auto to_y_map = ECS::to_y(map_ptr->template get_component<GridComponent>().data);
+                auto to_x_map = ECS::to_x(map_ptr->template get_component<GridComponent>().data);
+                auto to_y_map = ECS::to_y(map_ptr->template get_component<GridComponent>().data);
 
-                    std::pair<int, int> x_bound = {to_x_map(pos.data.x),
-                                                   to_x_map(
-                                                           pos.data.x + shape.data.sprite.getGlobalBounds().width)};
-                    std::pair<int, int> y_bound = {to_y_map(pos.data.y),
-                                                   to_y_map(pos.data.y +
-                                                            shape.data.sprite.getGlobalBounds().height)};
-                    for (int x_ind = x_bound.first; x_ind <= x_bound.second; x_ind++) {
-                        for (int y_ind = y_bound.first; y_ind <= y_bound.second; y_ind++) {
-                            map_ptr->template get_component<GridComponent>().data.mesh.at(x_ind).at(y_ind) =
-                                    entity.get_id();
-                        }
+                std::pair<int, int> x_bound = {to_x_map(pos.data.x),
+                                               to_x_map(pos.data.x + shape.data.sprite.getGlobalBounds().width)};
+                std::pair<int, int> y_bound = {to_y_map(pos.data.y),
+                                               to_y_map(pos.data.y + shape.data.sprite.getGlobalBounds().height)};
+                for (int x_ind = x_bound.first; x_ind <= x_bound.second; x_ind++) {
+                    for (int y_ind = y_bound.first; y_ind <= y_bound.second; y_ind++) {
+                        map_ptr->template get_component<GridComponent>().data.mesh.at(x_ind).at(y_ind) =
+                            entity.get_id();
                     }
-                });
+                }
+            });
     }
 
-    void createItem(EntityManager &em, const std::pair<double, double> &position,
-                    const std::string &texture_path, ItemData &&data) {
+    void createItem(EntityManager& em, const std::pair<double, double>& position, const std::string& texture_path,
+                    ItemData&& data) {
         auto ptr_wall = em.allocEntity<ItemEntity>();
         em.update_by_id<SpriteComponent, PositionComponent, ItemComponent>(
-                ptr_wall->get_id(),
-                [&](auto &, SpriteComponent &shape, PositionComponent &pos, ItemComponent &ic) {
-                    shape.data.texture.loadFromFile(texture_path);
-                    shape.data.sprite.setTexture(shape.data.texture);
-                    shape.data.sprite.setPosition(position.first, position.second);
-                    shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                                               SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
-                    shape.data.render_priority = 2;
-                    pos.data.x = position.first;
-                    pos.data.y = position.second;
+            ptr_wall->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos, ItemComponent& ic) {
+                shape.data.texture.loadFromFile(texture_path);
+                shape.data.sprite.setTexture(shape.data.texture);
+                shape.data.sprite.setPosition(position.first, position.second);
+                shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
+                                           SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+                shape.data.render_priority = 2;
+                pos.data.x = position.first;
+                pos.data.y = position.second;
 
-                    ic.data.damage = data.damage;
-                    ic.data.health = data.health;
-                    ic.data.attack_radius = data.attack_radius;
-                    ic.data.id = data.id;
-                });
+                ic.data.damage = data.damage;
+                ic.data.health = data.health;
+                ic.data.attack_radius = data.attack_radius;
+                ic.data.id = data.id;
+            });
     }
 
-    void createMenu(EntityManager &em, const std::pair<double, double> &position, const std::string &texture_path) {
+    void createMenu(EntityManager& em, const std::pair<double, double>& position, const std::string& texture_path) {
         auto ptr = em.allocEntity<MenuEntity>();
         em.update_by_id<SpriteComponent, PositionComponent>(
-                ptr->get_id(),
-                [&](auto &, SpriteComponent &shape, PositionComponent &pos) -> void {
-                    shape.data.texture.loadFromFile(texture_path);
-                    shape.data.sprite.setTexture(shape.data.texture);
-                    shape.data.sprite.setScale((WINDOW_WIDTH - WORLD_WIDTH) / shape.data.sprite.getLocalBounds().width,
-                                               WINDOW_HEIGHT / shape.data.sprite.getLocalBounds().height);
-                    shape.data.sprite.setPosition(position.first, position.second);
-                    shape.data.render_priority = 0;
+            ptr->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos) -> void {
+                shape.data.texture.loadFromFile(texture_path);
+                shape.data.sprite.setTexture(shape.data.texture);
+                shape.data.sprite.setScale((WINDOW_WIDTH - WORLD_WIDTH) / shape.data.sprite.getLocalBounds().width,
+                                           WINDOW_HEIGHT / shape.data.sprite.getLocalBounds().height);
+                shape.data.sprite.setPosition(position.first, position.second);
+                shape.data.render_priority = 0;
 
-                    pos.data.x = position.first;
-                    pos.data.y = position.second;
-                }
-        );
-
-
+                pos.data.x = position.first;
+                pos.data.y = position.second;
+            });
     }
-
 };

@@ -25,14 +25,14 @@ public:
             auto& attack_left = em.template get_component<AttackComponent>(id);
             auto& pos_left = em.template get_component<PositionComponent>(id);
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
-            
+
             em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
                 [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,
                     SpriteComponent& sprite_right, MoveComponent& mv) {
                     if (id != defence_entity.get_id()) {
                         auto fst = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto snd = center_of_mass(sprite_right.data.sprite, pos_right);
-                        
+
                         if (fst.dist(snd) < attack_left.data.attack_radius) {
                             auto vector_between = snd - fst;
                             vector_between.normalize();
@@ -42,22 +42,24 @@ public:
                                 kill(em, defence_entity.get_id());
                                 return;
                             }
-                            sprite_right.data.sprite.setColor(sf::Color((health.data.default_hp - health.data.current_hp) /
-                                                                            static_cast<double>(health.data.default_hp) *
-                                                                            255,
-                                                                        0, 0));
+                            sprite_right.data.sprite.setColor(
+                                sf::Color((health.data.default_hp - health.data.current_hp) /
+                                              static_cast<double>(health.data.default_hp) * 255,
+                                          0, 0));
                             auto tmpx = mv.data.x;
                             auto tmpy = mv.data.y;
                             mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
                                 tm /= 1000;
                                 double alpha = sigmoid(tm, 3, rs);
-                                return OPRTIMIZE_MULT_ZERO((1 - alpha) ,10 * vector_between.x_ * std::exp((rs - tm) / 50.0)) +
+                                return OPRTIMIZE_MULT_ZERO((1 - alpha),
+                                                           10 * vector_between.x_ * std::exp((rs - tm) / 50.0)) +
                                        OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
                             };
                             mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
                                 tm /= 1000;
                                 double alpha = sigmoid(tm, 3, rs);
-                                return OPRTIMIZE_MULT_ZERO((1 - alpha) , 10 * vector_between.y_ * std::exp((rs - tm) / 50.0)) +
+                                return OPRTIMIZE_MULT_ZERO((1 - alpha),
+                                                           10 * vector_between.y_ * std::exp((rs - tm) / 50.0)) +
                                        OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
                             };
                         }
