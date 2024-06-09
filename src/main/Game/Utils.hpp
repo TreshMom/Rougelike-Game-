@@ -2,6 +2,20 @@
 
 #include <cmath>
 
+#define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 0.01 ? 0 : (a) * (fun))
+
+sf::Time operator"" _s(unsigned long long s) {
+    return sf::seconds(s);
+}
+
+sf::Time operator"" _ms(unsigned long long ms) {
+    return sf::milliseconds(ms);
+}
+
+sf::Time operator"" _mcs(unsigned long long mcs) {
+    return sf::microseconds(mcs);
+}
+
 namespace ECS {
 
     template <typename T>
@@ -46,6 +60,13 @@ namespace ECS {
         };
     };
 
+    double sigmoid(double x, double k, double x0) {
+        if (x - x0 > 5) {
+            return 1;
+        }
+        return 2 / (1 + std::exp(-k * (x - x0))) - 1;
+    }
+
     struct Vec2 {
         double x_;
         double y_;
@@ -76,5 +97,4 @@ namespace ECS {
         return Vec2((x_bound_coords.second + x_bound_coords.first) / 2.0,
                     (y_bound_coords.second + y_bound_coords.first) / 2.0);
     }
-
-}; // namespace ECS
+} // namespace ECS

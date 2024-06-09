@@ -3,7 +3,6 @@
 #include "EngineDefs.hpp"
 #include "System.hpp"
 #include "Utils.hpp"
-#include "events/ChangedMoveEvent.hpp"
 #include <cmath>
 #include <limits>
 #include <queue>
@@ -21,9 +20,10 @@ public:
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
-
+        int counter = 0;
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
+            counter++;
             coll_pairs.pop();
             if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
                 continue;
@@ -57,6 +57,7 @@ public:
         if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
             return;
         }
+        // double eps = 24;
         em.update_by_id<PositionComponent, SpriteComponent>(fst, [&](auto& left, PositionComponent const& pos_left,
                                                                      SpriteComponent const& sprite_left) {
             em.update_by_id<PositionComponent, SpriteComponent, MoveComponent>(
@@ -66,19 +67,23 @@ public:
 
                         auto left_ = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto right_ = center_of_mass(sprite_right.data.sprite, pos_right);
+                    
                         auto vector_between = right_ - left_;
                         vector_between.normalize();
-                        mv.data.x = [=, rs = t.asMilliseconds()](double tm) {
-                            return 5 * vector_between.x_ * std::exp((rs - tm) / 40.0);
+                        auto tmp_x = mv.data.x;
+                        auto tmp_y = mv.data.y;
+                        mv.data.x = [=, rs = t.asMilliseconds()/1000](double tm) {
+                            tm /= 1000;
+                            double alpha = sigmoid(tm, 3, rs);
+                            return  OPRTIMIZE_MULT_ZERO((1 - alpha) ,5 * vector_between.x_ * std::exp((rs - tm) / 40.0)) + OPRTIMIZE_MULT_ZERO(alpha , tmp_x(tm * 1000));
                         };
-                        mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
-                            return 5 * vector_between.y_ * std::exp((rs - tm) / 40.0);
+                        mv.data.y = [=, rs = t.asMilliseconds()/1000](double tm) {
+                            tm /= 1000;
+                            double alpha = sigmoid(tm, 3, rs);
+                            return  OPRTIMIZE_MULT_ZERO((1 - alpha) ,5 * vector_between.y_ * std::exp((rs - tm) / 40.0)) + OPRTIMIZE_MULT_ZERO(alpha, tmp_y(tm * 1000));
                         };
-                    }
+                        }
                 });
         });
-        if (!em.has_component<PlayerComponent>(snd)) {
-            evm.notify(ChangedMoveEvent(snd));
-        }
     }
 };

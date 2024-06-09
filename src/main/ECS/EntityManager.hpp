@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Data.hpp"
+#include "EntitiesList.hpp"
 #include "EngineDefs.hpp"
 #include "FpUtility.hpp"
 #include <cstdint>
@@ -20,9 +20,10 @@ namespace ECS {
         using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
                           List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
                           List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
-                                                  AttackComponent, HealthComponent>>,
+                                                  AttackComponent, HealthComponent, InventoryComponent>>,
                           List<MapEntity, List<GridComponent, SpriteComponent>>,
-                          List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>>;
+                          List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
+                          List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>>;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
         using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;

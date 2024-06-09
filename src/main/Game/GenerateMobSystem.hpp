@@ -3,7 +3,6 @@
 #include "Constants.hpp"
 #include "Entity.hpp"
 #include "System.hpp"
-#include "events/ChangedMoveEvent.hpp"
 #include <algorithm>
 #include <cmath>
 #include <queue>
@@ -20,15 +19,9 @@ private:
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
-        evm.subscribe<ChangedMoveEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
-        while (!mobs.empty()) {
-            EntityId id_ = mobs.front();
-            mobs.pop();
-            set_up_speed(em, id_);
-        }
 
         if (counter > 0) {
             auto ptr = em.allocEntity<DogEntity>();
@@ -39,8 +32,8 @@ public:
             em.update_by_id<SpriteComponent, HealthComponent>(
                 ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, HealthComponent& health) {
                     shapeData.data.texture.loadFromFile(BUG + "tile_0096.png");
-                    health.data.hp = 100;
-                    health.data.start_hp = 100;
+                    health.data.current_hp = 100;
+                    health.data.default_hp = 100;
                     shapeData.data.sprite.setTexture(shapeData.data.texture);
                     shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
                                                    SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
@@ -55,10 +48,5 @@ public:
         em.template get_component<MoveComponent>(id).data.y = [](double tm) {
             return (rand() % 1000) / 75.0 - 500 / 75.0;
         };
-    }
-
-    void receive(ChangedMoveEvent const& ev) {
-
-        mobs.push(ev.id_);
     }
 };

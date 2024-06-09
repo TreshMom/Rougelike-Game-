@@ -8,3 +8,5 @@
 #include "MoveData.hpp"
 #include "PlayerData.hpp"
 #include "SpriteData.hpp"
+#include "InventoryData.hpp"
+#include "ItemData.hpp"

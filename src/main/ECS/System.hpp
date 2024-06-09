@@ -4,8 +4,9 @@
 
 // all events
 struct CollisionEvent;
-struct LeftMouseEvent;
+struct AttackEvent;
 struct ChangedMoveEvent;
+struct CollectEvent;
 
 namespace ECS {
 
@@ -18,8 +19,9 @@ namespace ECS {
     class SystemHandle {
     public:
         virtual void receive(CollisionEvent const&) {}
-        virtual void receive(LeftMouseEvent const&) {}
-        virtual void receive(ChangedMoveEvent const&) {}
+        virtual void receive(AttackEvent const&) {}
+        virtual void receive(CollectEvent const&) {}
+
         virtual ~SystemHandle() {}
     };
 

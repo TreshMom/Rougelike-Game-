@@ -3,8 +3,7 @@
 #include "EngineDefs.hpp"
 #include "EntityManager.hpp"
 #include "System.hpp"
-#include "events/ChangedMoveEvent.hpp"
-#include "events/LeftMouseEvent.hpp"
+#include "events/AttackEvent.hpp"
 #include <cmath>
 #include <limits>
 #include <queue>
@@ -18,7 +17,7 @@ private:
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
-        evm.subscribe<LeftMouseEvent>(ptr);
+        evm.subscribe<AttackEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
@@ -27,33 +26,42 @@ public:
             auto& pos_left = em.template get_component<PositionComponent>(id);
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
 
+            
             em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
                 [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,
                     SpriteComponent& sprite_right, MoveComponent& mv) {
                     if (id != defence_entity.get_id()) {
                         auto fst = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto snd = center_of_mass(sprite_right.data.sprite, pos_right);
+                        
                         if (fst.dist(snd) < attack_left.data.attack_radius) {
                             auto vector_between = snd - fst;
                             vector_between.normalize();
 
-                            health.data.hp -= attack_left.data.damage;
-                            if (health.data.hp <= 0) {
+                            health.data.current_hp -= attack_left.data.damage;
+                            if (health.data.current_hp <= 0) {
                                 kill(em, defence_entity.get_id());
                                 return;
                             }
-                            sprite_right.data.sprite.setColor(sf::Color((health.data.start_hp - health.data.hp) /
-                                                                            static_cast<double>(health.data.start_hp) *
+                            sprite_right.data.sprite.setColor(sf::Color((health.data.default_hp - health.data.current_hp) /
+                                                                            static_cast<double>(health.data.default_hp) *
                                                                             255,
                                                                         0, 0));
-                            mv.data.x = [=, rs = t.asMilliseconds()](double tm) {
-                                return 12 * vector_between.x_ * std::exp((rs - tm) / 100.0);
+                            auto tmpx = mv.data.x;
+                            auto tmpy = mv.data.y;
+                            mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+                                tm /= 1000;
+                                double alpha = sigmoid(tm, 3, rs);
+                                return (1 - alpha) * 10 * vector_between.x_ * std::exp((rs - tm) / 50.0) +
+                                       OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
                             };
-                            mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
-                                return 12 * vector_between.y_ * std::exp((rs - tm) / 100.0);
+                            mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+                                tm /= 1000;
+                                double alpha = sigmoid(tm, 3, rs);
+                                return (1 - alpha) * 10 * vector_between.y_ * std::exp((rs - tm) / 50.0) +
+                                       OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
                             };
                         }
-                        evm.notify(ChangedMoveEvent(defence_entity.get_id()));
                     }
                 });
         }
@@ -66,7 +74,7 @@ public:
         em.toDelete(id);
     }
 
-    void receive(LeftMouseEvent const& ev) {
+    void receive(AttackEvent const& ev) {
         attackEnts.push_back(ev.entId_);
     }
 };
