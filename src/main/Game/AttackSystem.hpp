@@ -25,7 +25,7 @@ public:
             auto& attack_left = em.template get_component<AttackComponent>(id);
             auto& pos_left = em.template get_component<PositionComponent>(id);
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
-            auto& inventory_left = em.template get_component<InventoryComponent>(id);
+
             
             em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
                 [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,
@@ -34,17 +34,17 @@ public:
                         auto fst = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto snd = center_of_mass(sprite_right.data.sprite, pos_right);
                         
-                        if (fst.dist(snd) < calc_radius(em, inventory_left, attack_left)) {
+                        if (fst.dist(snd) < attack_left.data.attack_radius) {
                             auto vector_between = snd - fst;
                             vector_between.normalize();
 
-                            health.data.hp -= calc_attack(em, inventory_left, attack_left);
-                            if (health.data.hp <= 0) {
+                            health.data.current_hp -= attack_left.data.damage;
+                            if (health.data.current_hp <= 0) {
                                 kill(em, defence_entity.get_id());
                                 return;
                             }
-                            sprite_right.data.sprite.setColor(sf::Color((health.data.start_hp - health.data.hp) /
-                                                                            static_cast<double>(health.data.start_hp) *
+                            sprite_right.data.sprite.setColor(sf::Color((health.data.default_hp - health.data.current_hp) /
+                                                                            static_cast<double>(health.data.default_hp) *
                                                                             255,
                                                                         0, 0));
                             auto tmpx = mv.data.x;
@@ -72,22 +72,6 @@ public:
     // мб будем каукю-то анимацию потом показывать, как наши мухи взрываются
     void kill(EntityManager& em, EntityId id) {
         em.toDelete(id);
-    }
-
-    double calc_radius(EntityManager& em, InventoryComponent & inv, AttackComponent& attack) {
-        double res = attack.data.attack_radius;
-        // for (auto& item : inv.data.putted_on) {
-            // res += em.template get_component<ItemComponent>(item).data.attack_radius;
-        // }
-        return res; 
-    }
-
-    double calc_attack(EntityManager& em, InventoryComponent & inv, AttackComponent& attack) {
-        double res = attack.data.damage;
-        // for (auto &item : inv.data.putted_on) {
-            // res += em.template get_component<ItemComponent>(item).data.damage;
-        // }
-        return res;
     }
 
     void receive(AttackEvent const& ev) {

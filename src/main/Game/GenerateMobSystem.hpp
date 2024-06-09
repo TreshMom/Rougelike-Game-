@@ -11,7 +11,7 @@ using namespace ECS;
 
 class GenerateMobSystem : public SystemHandle, public SystemInterface {
 private:
-    int counter = 200;
+    int counter = 100;
     int counterPlayer = 0;
     std::queue<EntityId> mobs;
 
@@ -19,7 +19,6 @@ private:
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
-        // evm.subscribe<ChangedMoveEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
@@ -33,8 +32,8 @@ public:
             em.update_by_id<SpriteComponent, HealthComponent>(
                 ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, HealthComponent& health) {
                     shapeData.data.texture.loadFromFile(BUG + "tile_0096.png");
-                    health.data.hp = 100;
-                    health.data.start_hp = 100;
+                    health.data.current_hp = 100;
+                    health.data.default_hp = 100;
                     shapeData.data.sprite.setTexture(shapeData.data.texture);
                     shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
                                                    SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);

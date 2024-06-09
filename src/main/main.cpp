@@ -33,10 +33,11 @@ int main() {
     sm.make_system<GenerateMapSystem>();
     sm.make_system<GeneratePlayerSystem>();
     sm.make_system<GenerateMobSystem>();
+    sm.make_system<DiagnosticSystem>();
     sm.make_system<CollisionSystem>();
     sm.make_system<CollectSystem>();
     sm.make_system<RenderSystem>();
-    // sm.make_system<AttackSystem>();
+    sm.make_system<AttackSystem>();
     sm.make_system<BoundSystem>();
     sm.make_system<MoveSystem>();
     sm.make_system<KeySystem>();
@@ -44,6 +45,6 @@ int main() {
     sf::Clock clock;
     while (true) {
   
-        FPS(sm.update());
+        sm.update();
     }
 }

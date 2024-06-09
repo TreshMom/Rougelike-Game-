@@ -21,16 +21,6 @@ public:
             ptr->get_component<MoveComponent>().data.y = [](double tm) { return 0; };
             ++counterPlayer;
 
-            em.update_by_id<SpriteComponent, AttackComponent>(
-                ptr->get_id(), [&](auto& entity, SpriteComponent& shapeData, AttackComponent& attack) {
-                    shapeData.data.texture.loadFromFile(BUG + "tile_0100.png");
-                    shapeData.data.sprite.setTexture(shapeData.data.texture);
-                    shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
-                                                   SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
-                    attack.data.damage = 50;
-                    attack.data.attack_radius = 50;
-                });
-
             em.update_by_id<SpriteComponent, AttackComponent, PlayerComponent>(
                 ptr->get_id(),
                 [&](auto& entity, SpriteComponent& shapeData, AttackComponent& attack, PlayerComponent& player) {
@@ -38,8 +28,10 @@ public:
                     shapeData.data.sprite.setTexture(shapeData.data.texture);
                     shapeData.data.sprite.setScale(SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().width,
                                                    SPRITE_SIZE / shapeData.data.sprite.getLocalBounds().height);
-                    attack.data.damage = 10;
+                    attack.data.damage = 50;
+                    attack.data.default_damage = 50;
                     attack.data.attack_radius = 50;
+                    attack.data.default_attack_radius = 50;
 
                     player.data.attack_sprite.texture.loadFromFile(BUG + "_Attack.png");
                     player.data.attack_sprite.sprite.setTexture(player.data.attack_sprite.texture);

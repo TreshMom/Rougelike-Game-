@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 1e-9 ? 0 : (a) * (fun))
+#define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 0.01 ? 0 : (a) * (fun))
 
 sf::Time operator"" _s(unsigned long long s) {
     return sf::seconds(s);
@@ -97,4 +97,4 @@ namespace ECS {
         return Vec2((x_bound_coords.second + x_bound_coords.first) / 2.0,
                     (y_bound_coords.second + y_bound_coords.first) / 2.0);
     }
-}; // namespace ECS
+} // namespace ECS
