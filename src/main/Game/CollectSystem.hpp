@@ -82,13 +82,13 @@ public:
                 return;
             }
 
-            if (inv.data.first_free_index_in_backpack != InventoryData::BACKPACK_MAX_SIZE) {
-                inv.data.backpack[inv.data.first_free_index_in_backpack] = item_id;
-                inv.data.backpack[item_id] = inv.data.first_free_index_in_backpack;
-                auto new_pos_item = backpack_grid.get_cell_by_index(inv.data.first_free_index_in_backpack);
+            auto min_ind = inv.data.get_min_free_index();
+            if (min_ind != InventoryData::BACKPACK_MAX_SIZE) {
+                inv.data.backpack[min_ind] = item_id;
+                inv.data.backpack[item_id] = min_ind;
+                auto new_pos_item = backpack_grid.get_cell_by_index(min_ind);
                 position_item.data.x = new_pos_item.x_;
                 position_item.data.y = new_pos_item.y_;
-                ++inv.data.first_free_index_in_backpack;
             }
         });
     }
