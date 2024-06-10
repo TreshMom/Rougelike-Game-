@@ -1,14 +1,14 @@
 #pragma once
 
-#include "EntityManager.hpp"
 #include "Constants.hpp"
+#include "EntityManager.hpp"
 
 class MapBuilder {
 protected:
-    EntityManager &em;
-    
+    EntityManager& em;
+
 public:
-    MapBuilder(EntityManager &ent) : em(ent) {};
+    MapBuilder(EntityManager& ent) : em(ent){};
 
     virtual ~MapBuilder();
 
@@ -17,18 +17,15 @@ public:
     virtual void generateMobs() = 0;
 }
 
-
 class SmallMapBuilder : public MapBuilder {
 private:
-
     const uint32_t MAX_NUMBER_OF_ITEMS = 10;
     const uint32_t MAX_NUMBER_OF_MOBS = 40;
     const uint32_t WORLD_WIDTH = 10;
     const uint32_t WORLD_HEIGHT = 40;
 
-
-    void createWall(auto& map_ptr, const std::pair<double, double>& position,
-                    const sf::IntRect& rect, const std::string& texture_path) {
+    void createWall(auto& map_ptr, const std::pair<double, double>& position, const sf::IntRect& rect,
+                    const std::string& texture_path) {
         auto ptr_wall = em.allocEntity<WallEntity>();
         em.update_by_id<SpriteComponent, PositionComponent>(
             ptr_wall->get_id(), [&](auto& entity, SpriteComponent& shape, PositionComponent& pos) {
@@ -58,24 +55,19 @@ private:
     }
 
 public:
-
     void generateWalls() override {
-            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, this.WORLD_WIDTH, SPRITE_SIZE),
-                       BUG + "tile_0040.png");                       // upper wall
-            createWall(em, ptr_map, {0, WORLD_HEIGHT - SPRITE_SIZE}, // lower wall
-                       sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
-            createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
-                       BUG + "tile_0040.png"); // left wall
-            createWall(em, ptr_map, {WORLD_WIDTH - SPRITE_SIZE, SPRITE_SIZE},
-                       sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
-                       BUG + "tile_0040.png"); // right wall
+        createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, this.WORLD_WIDTH, SPRITE_SIZE),
+                   BUG + "tile_0040.png");                       // upper wall
+        createWall(em, ptr_map, {0, WORLD_HEIGHT - SPRITE_SIZE}, // lower wall
+                   sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
+        createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
+                   BUG + "tile_0040.png"); // left wall
+        createWall(em, ptr_map, {WORLD_WIDTH - SPRITE_SIZE, SPRITE_SIZE},
+                   sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
+                   BUG + "tile_0040.png"); // right wall
     }
 
-    void generateItems() override {
+    void generateItems() override {}
 
-    }
-
-    void generateMobs() override {
-
-    }
+    void generateMobs() override {}
 }

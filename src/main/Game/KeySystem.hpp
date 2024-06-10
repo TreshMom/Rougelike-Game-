@@ -22,12 +22,12 @@
         });                                                                                                            \
     }
 
-#define NUMSAVEINVEVENT(X)                                                                                                    \
-    bool numpad##X = sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad##X);                                                    \
-    if (numpad##X) {                                                                                                      \
+#define NUMSAVEINVEVENT(X)                                                                                             \
+    bool numpad##X = sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad##X);                                              \
+    if (numpad##X) {                                                                                                   \
         em.update<PlayerComponent>([&](auto& ent, PlayerComponent& player) {                                           \
             if (time_to_click[ent.get_id()] < t) {                                                                     \
-                evm.notify(SetValueEventInventoryEvent(ent.get_id(), X + 1));                                                            \
+                evm.notify(SetValueEventInventoryEvent(ent.get_id(), X + 1));                                          \
                 time_to_click[ent.get_id()] = t + 100_ms;                                                              \
             }                                                                                                          \
         });                                                                                                            \
@@ -95,8 +95,7 @@ public:
         NUMEVENT(6)
         NUMEVENT(7)
 
-        if(remove_item)
-        {
+        if (remove_item) {
             em.update<PlayerComponent>([&](auto& ent, PlayerComponent& player) {
                 if (time_to_click[ent.get_id()] < t) {
                     evm.notify(RemoveFromInventoryEvent(ent.get_id()));

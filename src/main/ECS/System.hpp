@@ -3,7 +3,7 @@
 #include <memory>
 #define NUMEVENT(X) struct Num##X##Event;
 #define NUMEVENTRECEIVE(X)                                                                                             \
-    virtual void receive(Num##X##Event const&) {}                                                                      \
+    virtual void receive(Num##X##Event const&) {}
 
 // all events
 struct CollisionEvent;
