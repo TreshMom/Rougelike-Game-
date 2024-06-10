@@ -85,7 +85,6 @@ public:
             auto min_ind = inv.data.get_min_free_index();
             if (min_ind != InventoryData::BACKPACK_MAX_SIZE) {
                 inv.data.backpack[min_ind] = item_id;
-                inv.data.backpack[item_id] = min_ind;
                 auto new_pos_item = backpack_grid.get_cell_by_index(min_ind);
                 position_item.data.x = new_pos_item.x_;
                 position_item.data.y = new_pos_item.y_;
