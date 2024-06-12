@@ -24,8 +24,9 @@ public:
             em.update_by_id<PositionComponent, SpriteComponent, AttackComponent, HealthComponent, PlayerComponent, InventoryComponent, MoveComponent>(
                 ptr->get_id(), [&](auto& entity, PositionComponent& pos, SpriteComponent& shape, AttackComponent& attack,
                                    HealthComponent& health, PlayerComponent& player, InventoryComponent& inventory, MoveComponent& mv) {
-                    shape.data.texture.loadFromFile(BUG + "tile_0100.png");
-                    shape.data.sprite.setTexture(shape.data.texture);
+                    shape.data.texture = std::make_shared<sf::Texture>();
+                    shape.data.texture->loadFromFile(BUG + "tile_0100.png");
+                    shape.data.sprite.setTexture(*shape.data.texture);
                     shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
                                                SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                     shape.data.render_priority = 3;
@@ -38,6 +39,7 @@ public:
                     health.data.current_hp = 200;
                     health.data.default_hp = 200;
 
+                  
                     player.data.attack_sprite.texture.loadFromFile(BUG + "_Attack.png");
                     player.data.attack_sprite.sprite.setTexture(player.data.attack_sprite.texture);
                     player.data.attack_sprite.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
@@ -56,6 +58,7 @@ public:
                     };
                     auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6,25);
                     ptr->get_component<PositionComponent>().data = vec;
+
                 });
         }
     }

@@ -32,7 +32,7 @@ int main() {
     SystemManager sm;
     sm.make_system<GenerateMapSystem>();
     sm.make_system<GeneratePlayerSystem>();
-    sm.make_system<GenerateMobSystem>();
+//    sm.make_system<GenerateMobSystem>();
     sm.make_system<DiagnosticSystem>();
     sm.make_system<CollisionSystem>();
     sm.make_system<CollectSystem>();

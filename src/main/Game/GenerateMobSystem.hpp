@@ -30,10 +30,10 @@ public:
 
             em.update_by_id<SpriteComponent, HealthComponent>(
                 ptr->get_id(), [&](auto& entity, SpriteComponent& shape, HealthComponent& health) {
-                    shape.data.texture.loadFromFile(BUG + "tile_0096.png");
+                    shape.data.texture->loadFromFile(BUG + "tile_0096.png");
                     health.data.current_hp = 100;
                     health.data.default_hp = 100;
-                    shape.data.sprite.setTexture(shape.data.texture);
+                    shape.data.sprite.setTexture(*shape.data.texture);
                     shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
                                                SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                     shape.data.render_priority = 3;

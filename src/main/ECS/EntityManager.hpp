@@ -17,8 +17,7 @@ namespace ECS {
     class EntityManager {
         int idEntityInc{1};
 
-        using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent, isBoundComponent>>,
-                          List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
+        using data = List<List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent, isBoundComponent>>,
                           List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
                                                   AttackComponent, HealthComponent, InventoryComponent, isBoundComponent>>,
                           List<MapEntity, List<GridComponent, SpriteComponent>>,
