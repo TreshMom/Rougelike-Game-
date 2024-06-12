@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../Components/GridData.hpp"
 #include "Component.hpp"
 #include "EngineDefs.hpp"
@@ -83,6 +84,7 @@ public:
         for (auto& left : st) {
             for (auto& right : left.second) {
                 evm.notify(CollisionEvent(left.first, right));
+                evm.notify(CollisionEvent(right, left.first));
                 counter++;
             }
         }

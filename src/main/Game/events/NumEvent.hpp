@@ -4,7 +4,7 @@
 #include "EventManager.hpp"
 
 #define NUMEVENT(X)                                                                                                    \
-    struct Num##X##Event : public ECS::Event<Num##X##Event> {                                                                   \
+    struct Num##X##Event : public ECS::Event<Num##X##Event> {                                                          \
         Num##X##Event(ECS::EntityId id, std::uint32_t index) : id_{id}, index_{index} {}                               \
         ECS::EntityId id_;                                                                                             \
         ;                                                                                                              \

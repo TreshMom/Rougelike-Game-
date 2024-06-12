@@ -2,15 +2,15 @@
 
 #include "EntitiesList.hpp"
 #include "events/NumEvent.hpp"
+#include <iomanip>
 #include <queue>
 #include <sstream>
-#include <iomanip>
 
 #define NUMEVENTRECEIVE(X)                                                                                             \
     void receive(Num##X##Event const& event) {                                                                         \
         swap_key_events.emplace(event.index_, event.id_);                                                              \
     }
-#define SUBSCRIBEEVENT(X)  evm.subscribe<Num##X##Event>(ptr);
+#define SUBSCRIBEEVENT(X) evm.subscribe<Num##X##Event>(ptr);
 
 struct DiagnosticSystem : public SystemHandle, public SystemInterface {
 private:
@@ -33,11 +33,9 @@ public:
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time) override {
 
-        while(!want_to_remove_id_inventory.empty())
-        {
+        while (!want_to_remove_id_inventory.empty()) {
             auto id = want_to_remove_id_inventory.front();
             want_to_remove_id_inventory.pop();
-            
         }
 
         // swap items in backpack and pucked on
@@ -64,9 +62,7 @@ public:
                             auto& tmp_pos = em.template get_component<PositionComponent>(right_id);
                             tmp_pos.data = old_pos_in_backpack;
                             inventory.data.backpack[index_in_backpack] = right_id;
-                        }
-                        else
-                        {
+                        } else {
                             inventory.data.backpack.erase(index_in_backpack);
                         }
                         inventory.data.putted_on[1] = item_backpack_id;
@@ -74,21 +70,17 @@ public:
                 });
         }
 
-
         em.update<InventoryComponent, AttackComponent, HealthComponent>(
             [&](auto&, InventoryComponent& inv, AttackComponent& attack, HealthComponent& health) {
                 attack.data.damage = calc_attack(em, inv, attack);
                 attack.data.attack_radius = calc_radius(em, inv, attack);
                 health.data.current_hp = calc_hp(em, inv, health);
 
-                em.update<SpriteComponent, MenuComponent>(
-                    [&](auto& menu_ent, SpriteComponent& sprite, MenuComponent& menu) {
-                        sprite.data.text.setString(get_pretty_string(
-                                                attack.data.damage, 
-                                                attack.data.attack_radius,
-                                                health.data.current_hp).str()
-                                            );
-                    });
+                em.update<SpriteComponent, MenuComponent>([&](auto& menu_ent, SpriteComponent& sprite,
+                                                              MenuComponent& menu) {
+                    sprite.data.text.setString(
+                        get_pretty_string(attack.data.damage, attack.data.attack_radius, health.data.current_hp).str());
+                });
             });
     }
 
@@ -127,19 +119,17 @@ public:
 
     std::stringstream get_pretty_string(double damage, double attack_radius, double current_hp) {
         std::stringstream ss;
-        ss << std::fixed << std::setprecision(2)
-              << "Damage:" << std::setw(8) << damage << std::setw(25)
-              << "Attack Radius:" << std::setw(8) << attack_radius << "\n\n" 
-              << "Health:" << std::setw(8) << current_hp << std::setw(25)
-              << "Regeneration:" << std::setw(8) << "UNDEFINED";
+        ss << std::fixed << std::setprecision(2) << "Damage:" << std::setw(8) << damage << std::setw(25)
+           << "Attack Radius:" << std::setw(8) << attack_radius << "\n\n"
+           << "Health:" << std::setw(8) << current_hp << std::setw(25) << "Regeneration:" << std::setw(8)
+           << "UNDEFINED";
         return ss;
     }
 
-    void receive(RemoveFromInventoryEvent const& event)
-    {
-        want_to_remove_id_inventory.emplace(event.id_);
-    }
-
+    //    void receive(RemoveFromInventoryEvent const& event)
+    //    {
+    //        want_to_remove_id_inventory.emplace(event.id_);
+    //    }
 };
 #undef NUMEVENTRECEIVE
 #undef SUBSCRIBEEVENT

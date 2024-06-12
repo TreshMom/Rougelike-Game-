@@ -6,8 +6,8 @@
 #include <cmath>
 #include <limits>
 #include <queue>
+#include <unordered_set>
 #include <utility>
-
 using namespace ECS;
 
 class BoundSystem : public SystemHandle, public SystemInterface {
@@ -15,16 +15,22 @@ private:
     std::queue<std::pair<EntityId, EntityId>> coll_pairs;
 
 public:
-    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {
         evm.subscribe<CollisionEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
-        int counter = 0;
+        std::unordered_set<EntityId> test;
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
-            counter++;
             coll_pairs.pop();
+
+            if (test.contains(fst)) {
+                continue;
+            }
+
+            test.insert(fst);
+
             if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
                 continue;
             }
@@ -35,7 +41,8 @@ public:
 
             if (em.template has_component<MoveComponent>(fst) && em.template has_component<MoveComponent>(snd)) {
                 push(fst, snd, evm, em, t);
-                push(snd, fst, evm, em, t);
+                //                push(snd, fst, evm, em, t);
+
                 continue;
             }
 
@@ -53,7 +60,7 @@ public:
         coll_pairs.emplace(col.first_, col.second_);
     }
 
-    void push(EntityId fst, EntityId snd, EventManager& evm, EntityManager& em, sf::Time t) {
+    void push(EntityId fst, EntityId snd, EventManager&, EntityManager& em, sf::Time t) {
         if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
             return;
         }
@@ -72,6 +79,7 @@ public:
                         vector_between.normalize();
                         auto tmp_x = mv.data.x;
                         auto tmp_y = mv.data.y;
+
                         mv.data.x = [=, rs = t.asMilliseconds() / 1000](double tm) {
                             tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);

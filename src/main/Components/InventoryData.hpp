@@ -12,7 +12,6 @@ struct InventoryData {
     std::unordered_map<uint32_t, ECS::EntityId> putted_on;
     std::unordered_map<uint32_t, ECS::EntityId> backpack;
 
-
     InventoryData() = default;
     InventoryData(InventoryData const&) = delete;
     InventoryData& operator=(InventoryData const&) = delete;

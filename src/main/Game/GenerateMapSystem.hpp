@@ -113,7 +113,7 @@ public:
             ptr->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos, MenuComponent& menu) -> void {
                 shape.data.texture.loadFromFile(texture_path);
                 shape.data.sprite.setTexture(shape.data.texture);
-                shape.data.sprite.setScale((WINDOW_WIDTH - WORLD_WIDTH) / shape.data.sprite.getLocalBounds().width,
+                shape.data.sprite.setScale(3 * WINDOW_WIDTH / 9 / shape.data.sprite.getLocalBounds().width,
                                            WINDOW_HEIGHT / shape.data.sprite.getLocalBounds().height);
                 shape.data.sprite.setPosition(position.first, position.second);
                 shape.data.render_priority = 0;

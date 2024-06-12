@@ -84,8 +84,7 @@ public:
         NUMEVENT(6)
         NUMEVENT(7)
 
-        if(remove_item)
-        {
+        if (remove_item) {
             em.update<PlayerComponent>([&](auto& ent, PlayerComponent& player) {
                 if (time_to_click[ent.get_id()] < t) {
                     evm.notify(RemoveFromInventoryEvent(ent.get_id()));

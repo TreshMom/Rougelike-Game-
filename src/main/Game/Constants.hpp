@@ -1,21 +1,27 @@
 #pragma once
 
-constexpr float WINDOW_WIDTH = 1880.0;
-constexpr float WINDOW_HEIGHT = 720.0;
+constexpr double WINDOW_WIDTH = 1880.0;
+constexpr double WINDOW_HEIGHT = 720.0;
 
-constexpr float VIEW_WIDTH = 1280.0;
-constexpr float VIEW_HEIGHT = 720.0;
+constexpr double VIEW_WIDTH = 1280.0;
+constexpr double VIEW_HEIGHT = 720.0;
 
-constexpr float SPRITE_SIZE = 32.0;
+constexpr double MENU_WIDTH = 1280.0;
+constexpr double MENU_HEIGHT = 720.0;
 
-constexpr float WORLD_WIDTH = 1280.0; // this should be bigger then 'VIEW_WIDTH'
-constexpr float WORLD_HEIGHT = 720.0; // this should be bigger then 'VIEW_HEIGHT'
+constexpr double SPRITE_SIZE = 32.0;
 
-constexpr float PLAYER_START_X = WORLD_WIDTH / 2 - SPRITE_SIZE;
-constexpr float PLAYER_START_Y = WORLD_HEIGHT / 2 - SPRITE_SIZE;
+constexpr double WORLD_WIDTH = 3000;  // this should be bigger then 'VIEW_WIDTH'
+constexpr double WORLD_HEIGHT = 3000; // this should be bigger then 'VIEW_HEIGHT'
 
-constexpr float MOB_SPAWN_X = WORLD_WIDTH / 2;
-constexpr float MOB_SPAWN_Y = WORLD_HEIGHT / 2;
+constexpr double MENU_POSITION_X = (2 * WORLD_WIDTH + VIEW_WIDTH) / 2;
+constexpr double MENU_POSITION_Y = VIEW_HEIGHT / 2;
+
+constexpr double PLAYER_START_X = WORLD_WIDTH / 2 - SPRITE_SIZE;
+constexpr double PLAYER_START_Y = WORLD_HEIGHT / 2 - SPRITE_SIZE;
+
+constexpr double MOB_SPAWN_X = WORLD_WIDTH / 2;
+constexpr double MOB_SPAWN_Y = WORLD_HEIGHT / 2;
 
 constexpr sf::Keyboard::Key LEFT = sf::Keyboard::Left;
 constexpr sf::Keyboard::Key RIGHT = sf::Keyboard::Right;
@@ -27,4 +33,4 @@ constexpr sf::Keyboard::Key REMOVEITEM = sf::Keyboard::Q;
 
 constexpr uint32_t GRID_DENSITY = 300;
 
-const std::string BUG = "src/main/Assets/";
+const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
