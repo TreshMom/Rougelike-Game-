@@ -1,23 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
-#define NUMEVENT(X) struct Num##X##Event;
-#define NUMEVENTRECEIVE(X)                                                                                             \
-    virtual void receive(Num##X##Event const&) {}
 
 // all events
 struct CollisionEvent;
 struct AttackEvent;
 struct ChangedMoveEvent;
 struct CollectEvent;
-NUMEVENT(0);
-NUMEVENT(1);
-NUMEVENT(2);
-NUMEVENT(3);
-NUMEVENT(4);
-NUMEVENT(5);
-NUMEVENT(6);
-NUMEVENT(7);
+struct NumXEvent;
 struct RemoveFromInventoryEvent;
 struct SetValueEventInventoryEvent;
 
@@ -34,14 +24,7 @@ namespace ECS {
         virtual void receive(CollisionEvent const&) {}
         virtual void receive(AttackEvent const&) {}
         virtual void receive(CollectEvent const&) {}
-        NUMEVENTRECEIVE(0)
-        NUMEVENTRECEIVE(1)
-        NUMEVENTRECEIVE(2)
-        NUMEVENTRECEIVE(3)
-        NUMEVENTRECEIVE(4)
-        NUMEVENTRECEIVE(5)
-        NUMEVENTRECEIVE(6)
-        NUMEVENTRECEIVE(7)
+        virtual void receive(NumXEvent const&) {}
         virtual void receive(RemoveFromInventoryEvent const&) {}
         virtual void receive(SetValueEventInventoryEvent const&) {}
 

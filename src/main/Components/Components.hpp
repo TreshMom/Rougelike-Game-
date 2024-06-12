@@ -11,3 +11,4 @@
 #include "MoveData.hpp"
 #include "PlayerData.hpp"
 #include "SpriteData.hpp"
+#include "isBound.hpp"

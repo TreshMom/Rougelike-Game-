@@ -11,8 +11,8 @@ constexpr double MENU_HEIGHT = 720.0;
 
 constexpr double SPRITE_SIZE = 32.0;
 
-constexpr double WORLD_WIDTH = 3000;  // this should be bigger then 'VIEW_WIDTH'
-constexpr double WORLD_HEIGHT = 3000; // this should be bigger then 'VIEW_HEIGHT'
+constexpr double WORLD_WIDTH = 1500;  // this should be bigger then 'VIEW_WIDTH'
+constexpr double WORLD_HEIGHT = 1500; // this should be bigger then 'VIEW_HEIGHT'
 
 constexpr double MENU_POSITION_X = (2 * WORLD_WIDTH + VIEW_WIDTH) / 2;
 constexpr double MENU_POSITION_Y = VIEW_HEIGHT / 2;
@@ -31,6 +31,6 @@ constexpr sf::Mouse::Button COLLECT = sf::Mouse::Button::Right;
 constexpr sf::Mouse::Button ATTACK = sf::Mouse::Button::Left;
 constexpr sf::Keyboard::Key REMOVEITEM = sf::Keyboard::Q;
 
-constexpr uint32_t GRID_DENSITY = 300;
+constexpr uint32_t GRID_DENSITY = 500;
 
-const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
+const std::string BUG = "src/main/Assets/";

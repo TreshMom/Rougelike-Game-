@@ -41,8 +41,6 @@ public:
 
             if (em.template has_component<MoveComponent>(fst) && em.template has_component<MoveComponent>(snd)) {
                 push(fst, snd, evm, em, t);
-                //                push(snd, fst, evm, em, t);
-
                 continue;
             }
 
@@ -53,6 +51,17 @@ public:
             auto& pos = em.template get_component<PositionComponent>(fst);
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
+            if(em.template has_component<InventoryComponent>(fst))
+            {   
+                auto const& invent = em.get_component<InventoryComponent>(fst);
+                if(invent.data.weapon_ent_id != ECS::INVALID)
+                {
+                    em.update_by_id<PositionComponent>(invent.data.weapon_ent_id, [&pos](auto& ent, PositionComponent &pos_item){
+                        pos_item.data.x = pos.data.x + 6;
+                        pos_item.data.y = pos.data.y + 25;
+                    });
+                }
+            }
         }
     }
 
@@ -64,7 +73,7 @@ public:
         if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
             return;
         }
-        // double eps = 24;
+
         em.update_by_id<PositionComponent, SpriteComponent>(fst, [&](auto& left, PositionComponent const& pos_left,
                                                                      SpriteComponent const& sprite_left) {
             em.update_by_id<PositionComponent, SpriteComponent, MoveComponent>(

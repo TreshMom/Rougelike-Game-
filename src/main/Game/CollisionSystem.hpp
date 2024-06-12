@@ -27,9 +27,9 @@ public:
         std::unordered_map<std::tuple<int, int, int>, std::vector<EntityId>, tuple_hash> grid_map;
 
         int counter = 0;
-        em.update<PositionComponent, MoveComponent, SpriteComponent>([&](auto& ent, PositionComponent& pos,
+        em.update<PositionComponent, MoveComponent, SpriteComponent, isBoundComponent>([&](auto& ent, PositionComponent& pos,
                                                                          MoveComponent const&,
-                                                                         SpriteComponent& sprite) {
+                                                                         SpriteComponent& sprite, isBoundComponent const&) {
             for (auto& [entId, grid_ptr] : maps) {
                 counter++;
                 auto& grid = *grid_ptr;
