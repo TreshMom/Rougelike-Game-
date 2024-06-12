@@ -25,7 +25,8 @@ public:
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
             float collect_radius = 50;
             em.update<PositionComponent, SpriteComponent, ItemComponent>(
-                [&](auto& item_ent, PositionComponent const& pos_right, SpriteComponent& sprite_right, ItemComponent& item) {
+                [&](auto& item_ent, PositionComponent const& pos_right, SpriteComponent& sprite_right,
+                    ItemComponent& item) {
                     if (id != item_ent.get_id()) {
                         auto fst = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto snd = center_of_mass(sprite_right.data.sprite, pos_right);

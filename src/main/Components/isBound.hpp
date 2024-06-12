@@ -1,5 +1,3 @@
 #pragma once
 
-struct isBound
-{
-};
+struct isBound {};

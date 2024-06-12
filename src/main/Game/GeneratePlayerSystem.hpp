@@ -21,9 +21,11 @@ public:
             ptr->get_component<MoveComponent>().data.y = [](double tm) { return 0; };
             ++counterPlayer;
 
-            em.update_by_id<PositionComponent, SpriteComponent, AttackComponent, HealthComponent, PlayerComponent, InventoryComponent, MoveComponent>(
-                ptr->get_id(), [&](auto& entity, PositionComponent& pos, SpriteComponent& shape, AttackComponent& attack,
-                                   HealthComponent& health, PlayerComponent& player, InventoryComponent& inventory, MoveComponent& mv) {
+            em.update_by_id<PositionComponent, SpriteComponent, AttackComponent, HealthComponent, PlayerComponent,
+                            InventoryComponent, MoveComponent>(
+                ptr->get_id(), [&](auto& entity, PositionComponent& pos, SpriteComponent& shape,
+                                   AttackComponent& attack, HealthComponent& health, PlayerComponent& player,
+                                   InventoryComponent& inventory, MoveComponent& mv) {
                     shape.data.texture = std::make_shared<sf::Texture>();
                     shape.data.texture->loadFromFile(BUG + "tile_0100.png");
                     shape.data.sprite.setTexture(*shape.data.texture);
@@ -39,21 +41,15 @@ public:
                     health.data.current_hp = 200;
                     health.data.default_hp = 200;
 
-                  
                     auto ptr = em.allocEntity<WeaponEntity>();
                     inventory.data.weapon_ent_id = ptr->get_id();
                     ptr->get_component<SpriteComponent>().data.render_priority = 5;
-                    ptr->get_component<SpriteComponent>().data.sprite.setScale(1.4,1.4);
-                    ptr->get_component<SpriteComponent>().data.sprite.setOrigin(10,15);
-                    ptr->get_component<MoveComponent>().data.x = [&pos, &mv](double t){
-                        return mv.data.x(t);
-                    };
-                    ptr->get_component<MoveComponent>().data.y = [&pos, &mv](double t){
-                        return mv.data.y(t);
-                    };
-                    auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6,25);
+                    ptr->get_component<SpriteComponent>().data.sprite.setScale(1.4, 1.4);
+                    ptr->get_component<SpriteComponent>().data.sprite.setOrigin(10, 15);
+                    ptr->get_component<MoveComponent>().data.x = [&pos, &mv](double t) { return mv.data.x(t); };
+                    ptr->get_component<MoveComponent>().data.y = [&pos, &mv](double t) { return mv.data.y(t); };
+                    auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6, 25);
                     ptr->get_component<PositionComponent>().data = vec;
-
                 });
         }
     }

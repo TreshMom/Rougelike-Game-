@@ -10,23 +10,21 @@
 #include <queue>
 #include <sstream>
 
-
 struct DiagnosticSystem : public SystemHandle, public SystemInterface {
 public:
-
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
         em.update<InventoryComponent, AttackComponent, HealthComponent>(
-        [&](auto&, InventoryComponent& inv, AttackComponent& attack, HealthComponent& health) {
-            attack.data.damage = calc_attack(em, inv, attack);
-            attack.data.attack_radius = calc_radius(em, inv, attack);
-            health.data.current_hp = calc_hp(em, inv, health);
-            em.update<SpriteComponent, MenuComponent>([&](auto& menu_ent, SpriteComponent& sprite,
+            [&](auto&, InventoryComponent& inv, AttackComponent& attack, HealthComponent& health) {
+                attack.data.damage = calc_attack(em, inv, attack);
+                attack.data.attack_radius = calc_radius(em, inv, attack);
+                health.data.current_hp = calc_hp(em, inv, health);
+                em.update<SpriteComponent, MenuComponent>([&](auto& menu_ent, SpriteComponent& sprite,
                                                               MenuComponent& menu) {
                     sprite.data.text.setString(
                         get_pretty_string(attack.data.damage, attack.data.attack_radius, health.data.current_hp).str());
+                });
             });
-        });
     }
 
     double calc_radius(EntityManager& em, InventoryComponent& inv, AttackComponent& attack) {
@@ -52,7 +50,6 @@ public:
         }
         return res;
     }
-
 
     std::stringstream get_pretty_string(double damage, double attack_radius, double current_hp) {
         std::stringstream ss;

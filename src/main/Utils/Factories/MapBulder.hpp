@@ -8,7 +8,7 @@ class MapBuilder {
 protected:
     std::shared_ptr<Map> map_;
 
-    void createWall(const std::string &filePath, CoordsInfo pos, const sf::IntRect &rect) {
+    void createWall(const std::string& filePath, CoordsInfo pos, const sf::IntRect& rect) {
         Wall wall;
         wall.renderData_.texture = std::make_shared<sf::Texture>();
         wall.renderData_.texture->loadFromFile(filePath);
@@ -19,7 +19,7 @@ protected:
         map_->walls_.push_back(std::move(wall));
     }
 
-    void createItem(const std::string &filePath, CoordsInfo pos, ItemData data) {
+    void createItem(const std::string& filePath, CoordsInfo pos, ItemData data) {
         Item item;
         item.renderData_.texture = std::make_shared<sf::Texture>();
         item.renderData_.texture->loadFromFile(filePath);
@@ -31,7 +31,7 @@ protected:
         map_->items_.push_back(std::move(item));
     }
 
-    void createMob(const std::string &filePath, CoordsInfo pos, HealthData hp_data) {
+    void createMob(const std::string& filePath, CoordsInfo pos, HealthData hp_data) {
         Mob mob;
         mob.renderData_.texture = std::make_shared<sf::Texture>();
         mob.renderData_.texture->loadFromFile(filePath);
@@ -43,12 +43,12 @@ protected:
         map_->mobs_.push_back(std::move(mob));
     }
 
-    void loadTexture(const std::string &filePath, CoordsInfo pos) {
+    void loadTexture(const std::string& filePath, CoordsInfo pos) {
         map_->renderData_.texture = std::make_shared<sf::Texture>();
         map_->renderData_.texture->loadFromFile(filePath);
         map_->renderData_.sprite.setTexture(*map_->renderData_.texture);
         map_->renderData_.sprite.setScale(map_->worldWidth_ / map_->renderData_.sprite.getLocalBounds().width,
-                           map_->worldHeight_ / map_->renderData_.sprite.getLocalBounds().height);
+                                          map_->worldHeight_ / map_->renderData_.sprite.getLocalBounds().height);
         map_->pos_ = pos;
     }
 
@@ -83,35 +83,33 @@ public:
 
 class SmallMapBuilder : public MapBuilder {
 private:
-
     uint32_t NUMBER_OF_ITEMS = 10;
     uint32_t NUMBER_OF_MOBS = 40;
 
 public:
-
     SmallMapBuilder() {}
 
     void generateWalls() override {
         double ww = map_->worldWidth_;
         double wh = map_->worldHeight_;
         // create outside walls
-        createWall(BUG + "tile_0040.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // upper wall
+        createWall(BUG + "tile_0040.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE));                // upper wall
         createWall(BUG + "tile_0040.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // lower wall
-        createWall(BUG + "tile_0040.png", {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
-        createWall(BUG + "tile_0040.png", {ww - SPRITE_SIZE, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // right wall
+        createWall(BUG + "tile_0040.png", {0, SPRITE_SIZE},
+                   sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
+        createWall(BUG + "tile_0040.png", {ww - SPRITE_SIZE, SPRITE_SIZE},
+                   sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // right wall
 
-        //create inside walls ...
+        // create inside walls ...
     }
 
     void generateItems() override {
         for (uint32_t i = 0; i < 3; ++i) {
-            createItem(BUG + "axe.png",
-                       {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE},
+            createItem(BUG + "axe.png", {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE},
                        {100, 0, 200, ECS::ITEM_ID::WEAPON});
         }
         for (uint32_t i = 0; i < 4; ++i) {
-            createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE},
-                       {0, 1000, 0, ECS::ITEM_ID::ARMOR});
+            createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0, 1000, 0, ECS::ITEM_ID::ARMOR});
         }
     }
 
@@ -132,7 +130,7 @@ class MapCreator {
 public:
     MapCreator() = default;
 
-    void setMapBuilder(MapBuilder *builder) {
+    void setMapBuilder(MapBuilder* builder) {
         builder_ = std::shared_ptr<MapBuilder>(builder);
     }
 
@@ -153,5 +151,3 @@ public:
         };
     }
 };
-
-

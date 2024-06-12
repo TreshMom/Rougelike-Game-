@@ -26,6 +26,7 @@ public:
         evm.subscribe<RemoveFromInventoryEvent>(ptr);
         evm.subscribe<SetValueEventInventoryEvent>(ptr);
     }
+
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
         // save last save index
         while (!saved_index_q.empty()) {
@@ -63,37 +64,55 @@ public:
                     }
 
                     inventory.data.putted_on[get_saved_index_by_player(entId)] = item_backpack_id;
-
                 });
             });
         }
 
-        em.update<PlayerComponent, InventoryComponent, PositionComponent>([&](auto& ent, PlayerComponent& player, InventoryComponent& invent,
-            PositionComponent const& pos){
-            auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
+        while (!want_to_remove_id_inventory.empty()) {
+            auto player_id = want_to_remove_id_inventory.front();
+            want_to_remove_id_inventory.pop();
+            em.update_by_id<PlayerComponent, InventoryComponent, PositionComponent>(
+                player_id,
+                [&](auto&, PlayerComponent&, InventoryComponent& invent, PositionComponent const& player_pos) {
+                    if (!invent.data.putted_on.contains(get_saved_index_by_player(player_id))) {
+                        return;
+                    }
 
-            if(invent.data.putted_on.contains(1))
-            {
-                auto id = invent.data.putted_on[1];
-                auto& sprite = em.get_component<SpriteComponent>(id);
-                sprite_weapon.data.sprite.setTexture(*sprite.data.texture);
-            }
-        });
+                    auto item_id = invent.data.putted_on[get_saved_index_by_player(player_id)];
+                    invent.data.putted_on.erase(get_saved_index_by_player(player_id));
+                    auto& item_pos = em.template get_component<PositionComponent>(item_id);
+                    item_pos.data = player_pos.data;
 
+                    auto id = invent.data.weapon_ent_id;
+                    if (id != ECS::INVALID) {
+                        auto& item_sprite = em.template get_component<SpriteComponent>(id);
+                        item_sprite.data.texture.reset();
+                        item_sprite.data.sprite.setTexture(*item_sprite.data.texture);
+                    }
+                });
+        }
 
+        em.update<PlayerComponent, InventoryComponent, PositionComponent>(
+            [&](auto& ent, PlayerComponent& player, InventoryComponent& invent, PositionComponent const& pos) {
+                auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
+
+                if (invent.data.putted_on.contains(1)) {
+                    auto id = invent.data.putted_on[1];
+                    auto& sprite = em.get_component<SpriteComponent>(id);
+                    sprite_weapon.data.sprite.setTexture(*sprite.data.texture);
+                }
+            });
     }
 
-    void receive(NumXEvent const& event) {                                                                         
-        swap_key_events.emplace(event.index_, event.id_);                                                              
+    void receive(NumXEvent const& event) override {
+        swap_key_events.emplace(event.index_, event.id_);
     }
 
-    void receive(RemoveFromInventoryEvent const& event) {
+    void receive(RemoveFromInventoryEvent const& event) override {
         want_to_remove_id_inventory.emplace(event.id_);
     }
 
-    void receive(SetValueEventInventoryEvent const& event) {
+    void receive(SetValueEventInventoryEvent const& event) override {
         saved_index_q.emplace(event.id_, event.index_);
     }
-
-
 };

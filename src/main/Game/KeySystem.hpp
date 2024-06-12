@@ -16,7 +16,7 @@
     if (num##X) {                                                                                                      \
         em.update<PlayerComponent>([&](auto& ent, PlayerComponent& player) {                                           \
             if (time_to_click[ent.get_id()] < t) {                                                                     \
-                evm.notify(NumXEvent(ent.get_id(), X));                                                            \
+                evm.notify(NumXEvent(ent.get_id(), X));                                                                \
                 time_to_click[ent.get_id()] = t + 100_ms;                                                              \
             }                                                                                                          \
         });                                                                                                            \

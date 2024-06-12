@@ -51,15 +51,14 @@ public:
             auto& pos = em.template get_component<PositionComponent>(fst);
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
-            if(em.template has_component<InventoryComponent>(fst))
-            {   
+            if (em.template has_component<InventoryComponent>(fst)) {
                 auto const& invent = em.get_component<InventoryComponent>(fst);
-                if(invent.data.weapon_ent_id != ECS::INVALID)
-                {
-                    em.update_by_id<PositionComponent>(invent.data.weapon_ent_id, [&pos](auto& ent, PositionComponent &pos_item){
-                        pos_item.data.x = pos.data.x + 6;
-                        pos_item.data.y = pos.data.y + 25;
-                    });
+                if (invent.data.weapon_ent_id != ECS::INVALID) {
+                    em.update_by_id<PositionComponent>(invent.data.weapon_ent_id,
+                                                       [&pos](auto& ent, PositionComponent& pos_item) {
+                                                           pos_item.data.x = pos.data.x + 6;
+                                                           pos_item.data.y = pos.data.y + 25;
+                                                       });
                 }
             }
         }
