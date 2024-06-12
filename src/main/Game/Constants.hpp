@@ -30,20 +30,20 @@ constexpr sf::Keyboard::Key REMOVEITEM = sf::Keyboard::Q;
 
 constexpr uint32_t GRID_DENSITY = 500;
 
-const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
+const std::string BUG = "src/main/Assets/";
 
 // MENU_SETTINGS
-constexpr double MENU_WIDTH = 1280.0;
+constexpr double MENU_WIDTH = 450.0;
 constexpr double MENU_HEIGHT = 720.0;
 
 constexpr uint32_t BACKPACK_N_WIDTH = 4;
-constexpr double BACKPACK_WIDTH = 476;
+constexpr double BACKPACK_WIDTH = 360;
 constexpr double BACKPACK_HEIGHT = 236;
 constexpr uint32_t BACKPACK_N_HEIGHT = 2;
-constexpr Vec2 BACKPACK_LOCAL_COORDS = {1385, 468};
+constexpr Vec2 DIFF_BACKPACK_LOCAL_COORDS = {75, 468};
 
-constexpr double WEAR_WIDTH = 476;
+constexpr double WEAR_WIDTH = 360;
 constexpr double WEAR_HEIGHT = 65;
 constexpr uint32_t WEAR_N_WIDTH = 4;
 constexpr uint32_t WEAR_N_HEIGHT = 1;
-constexpr Vec2 WEAR_LOCAL_COORDS = {1385, 268};
+constexpr Vec2 DIFF_WEAR_LOCAL_COORDS = {75, 268};

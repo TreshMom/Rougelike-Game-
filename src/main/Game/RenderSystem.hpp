@@ -67,7 +67,6 @@ public:
                     auto &right_p = em.template get_component<SpriteComponent>(right);
                     return left_p.data.render_priority < right_p.data.render_priority;
                 });
-
         window.display();
     }
 

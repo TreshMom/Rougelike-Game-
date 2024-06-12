@@ -71,14 +71,14 @@ protected:
                 BACKPACK_HEIGHT,
                 BACKPACK_N_WIDTH,
                 BACKPACK_N_HEIGHT,
-                BACKPACK_LOCAL_COORDS
+                Vec2{pos.x, pos.y} + DIFF_BACKPACK_LOCAL_COORDS
         };
         map_->menu_.data_.wear_grid = {
                 WEAR_WIDTH,
                 WEAR_HEIGHT,
                 WEAR_N_WIDTH,
                 WEAR_N_HEIGHT,
-                WEAR_LOCAL_COORDS
+                Vec2{pos.x, pos.y} + DIFF_WEAR_LOCAL_COORDS
         };
     }
 
@@ -151,12 +151,6 @@ public:
 
     void generateMenu() override {
         createMenu(BUG + "menu.png", {map_->worldWidth_ + MENU_POSITION_X_DIFF, 0});
-
-
-//                   {
-//                (2 * map_->worldWidth_ + VIEW_WIDTH) / 2 + MENU_POSITION_X_DIFF,
-//                VIEW_HEIGHT / 2 + MENU_POSITION_Y_DIFF
-//        });
     }
 };
 
