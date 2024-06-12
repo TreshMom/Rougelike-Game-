@@ -45,8 +45,8 @@ public:
         bool up = sf::Keyboard::isKeyPressed(UP);
         bool down = sf::Keyboard::isKeyPressed(DOWN);
 
+        bool collect = sf::Keyboard::isKeyPressed(COLLECT);
         bool attack = sf::Mouse::isButtonPressed(ATTACK);
-        bool collect = sf::Mouse::isButtonPressed(COLLECT);
 
         bool remove_item = sf::Keyboard::isKeyPressed(REMOVEITEM);
 

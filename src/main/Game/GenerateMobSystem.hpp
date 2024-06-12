@@ -23,7 +23,7 @@ public:
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
         if (counter > 0) {
-            auto ptr = em.allocEntity<DogEntity>();
+            auto ptr = em.allocEntity<NpcEntity>();
             ptr->get_component<PositionComponent>().data = CoordsInfo(MOB_SPAWN_X, MOB_SPAWN_Y);
             set_up_speed(em, ptr->get_id());
             counter--;

@@ -40,11 +40,6 @@ public:
                     health.data.default_hp = 200;
 
                   
-                    player.data.attack_sprite.texture.loadFromFile(BUG + "_Attack.png");
-                    player.data.attack_sprite.sprite.setTexture(player.data.attack_sprite.texture);
-                    player.data.attack_sprite.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                                                              SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
-
                     auto ptr = em.allocEntity<WeaponEntity>();
                     inventory.data.weapon_ent_id = ptr->get_id();
                     ptr->get_component<SpriteComponent>().data.render_priority = 5;

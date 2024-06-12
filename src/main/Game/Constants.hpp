@@ -23,14 +23,14 @@ constexpr double PLAYER_START_Y = WORLD_HEIGHT / 2 - SPRITE_SIZE;
 constexpr double MOB_SPAWN_X = WORLD_WIDTH / 2;
 constexpr double MOB_SPAWN_Y = WORLD_HEIGHT / 2;
 
-constexpr sf::Keyboard::Key LEFT = sf::Keyboard::Left;
-constexpr sf::Keyboard::Key RIGHT = sf::Keyboard::Right;
-constexpr sf::Keyboard::Key UP = sf::Keyboard::Up;
-constexpr sf::Keyboard::Key DOWN = sf::Keyboard::Down;
-constexpr sf::Mouse::Button COLLECT = sf::Mouse::Button::Right;
+constexpr sf::Keyboard::Key LEFT = sf::Keyboard::A;
+constexpr sf::Keyboard::Key RIGHT = sf::Keyboard::D;
+constexpr sf::Keyboard::Key UP = sf::Keyboard::W;
+constexpr sf::Keyboard::Key DOWN = sf::Keyboard::S;
+constexpr sf::Keyboard::Key COLLECT = sf::Keyboard::E;
 constexpr sf::Mouse::Button ATTACK = sf::Mouse::Button::Left;
 constexpr sf::Keyboard::Key REMOVEITEM = sf::Keyboard::Q;
 
 constexpr uint32_t GRID_DENSITY = 500;
 
-const std::string BUG = "src/main/Assets/";
+const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";

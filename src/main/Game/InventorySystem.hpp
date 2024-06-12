@@ -76,7 +76,7 @@ public:
             {
                 auto id = invent.data.putted_on[1];
                 auto& sprite = em.get_component<SpriteComponent>(id);
-                sprite_weapon.data.sprite.setTexture(sprite.data.texture);
+                sprite_weapon.data.sprite.setTexture(*sprite.data.texture);
             }
         });
 
