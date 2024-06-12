@@ -1,7 +1,7 @@
 #pragma once
 
-#include "EntitiesList.hpp"
 #include "EngineDefs.hpp"
+#include "EntitiesList.hpp"
 #include "FpUtility.hpp"
 #include <cstdint>
 #include <functional>
@@ -17,13 +17,15 @@ namespace ECS {
     class EntityManager {
         int idEntityInc{1};
 
-        using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
-                          List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
-                          List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
-                                                  AttackComponent, HealthComponent, InventoryComponent>>,
-                          List<MapEntity, List<GridComponent, SpriteComponent>>,
-                          List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
-                          List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>>;
+        using data = List<
+            List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent, isBoundComponent>>,
+            List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent, AttackComponent,
+                                    HealthComponent, InventoryComponent, isBoundComponent>>,
+            List<MapEntity, List<GridComponent, SpriteComponent>>,
+            List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
+            List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>,
+            List<MenuEntity, List<PositionComponent, SpriteComponent, MenuComponent>>,
+            List<WeaponEntity, List<PositionComponent, SpriteComponent, MoveComponent>>>;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
         using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;
@@ -71,7 +73,8 @@ namespace ECS {
         template <class... ComponentsTypes, class F, class P>
         void update_by_p(F&& f, P&& p) {
 
-            auto tmp = entities | std::views::transform([](auto const& pair) { return pair.first; });
+            auto tmp = entities | std::views::transform([](auto const& pair) { return pair.first; }) |
+                       std::views::filter([this](auto const& id) { return has_components<ComponentsTypes...>(id); });
             std::vector<EntityId> ent_vector(tmp.begin(), tmp.end());
 
             std::sort(ent_vector.begin(), ent_vector.end(), std::forward<P>(p));
@@ -79,9 +82,7 @@ namespace ECS {
             for (auto& entity_id : ent_vector) {
                 std::visit(
                     [f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
-                        if (ent->template has_components<ComponentsTypes...>()) {
-                            f(*ent, ent->template get_component<ComponentsTypes>()...);
-                        }
+                        f(*ent, ent->template get_component<ComponentsTypes>()...);
                     },
                     entities[entity_id]);
             }
@@ -118,9 +119,9 @@ namespace ECS {
         }
 
         template <class ComponentType>
-        bool has_component(EntityId id) {
+        bool has_component(EntityId id) const {
             return std::visit(
-                []<typename Tpl>(Tpl& tpl) -> bool {
+                []<typename Tpl>(Tpl const& tpl) -> bool {
                     if constexpr (MayBeToBool<find_t<Tpl, curry<std::is_same>::template type<typename to_ptr<
                                                               ComponentType>::type>::template type>>::value) {
                         return true;
@@ -128,7 +129,12 @@ namespace ECS {
                         return false;
                     }
                 },
-                mp[id]);
+                mp.at(id));
+        }
+
+        template <class... ComponentType>
+        constexpr bool has_components(EntityId id) const {
+            return (has_component<ComponentType>(id) && ...);
         }
 
         template <class ComponentType>

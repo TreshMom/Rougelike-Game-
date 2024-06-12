@@ -2,6 +2,7 @@
 
 #include "Constants.hpp"
 #include "Entity.hpp"
+#include "Factories/MapBulder.hpp"
 #include "System.hpp"
 #include <algorithm>
 #include <cmath>
@@ -11,89 +12,123 @@ using namespace ECS;
 class GenerateMapSystem : public SystemHandle, public SystemInterface {
 private:
     bool created = false;
+    MapCreator mc_;
 
 public:
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {}
+
+    void update(EventManager&, EntityManager& em, SystemManager&, sf::Time) override {
         if (!created) {
-            auto ptr_map = em.allocEntity<MapEntity>();
-            ptr_map->get_component<GridComponent>().data.left_up = {0, 0};
-            ptr_map->get_component<GridComponent>().data.right_down = {WORLD_WIDTH, WORLD_HEIGHT};
-            ptr_map->get_component<GridComponent>().data.grid_density = GRID_DENSITY;
-            ptr_map->get_component<GridComponent>().data.mesh.resize(GRID_DENSITY + 1,
-                                                                     std::vector<ECS::EntityId>(GRID_DENSITY + 1));
+            SmallMapBuilder smb;
+            mc_.setMapBuilder(&smb);
+            mc_.constructMap(WORLD_WIDTH, WORLD_HEIGHT);
+            auto map = mc_.getMap();
 
-            em.update_by_id<SpriteComponent>(ptr_map->get_id(), [&](auto& entity, SpriteComponent& shapeData) {
-                shapeData.data.texture.loadFromFile(BUG + "tile_0049.png");
-                shapeData.data.sprite.setTexture(shapeData.data.texture);
-                shapeData.data.sprite.setScale(WORLD_WIDTH / shapeData.data.sprite.getLocalBounds().width,
-                                               WORLD_HEIGHT / shapeData.data.sprite.getLocalBounds().height);
-                shapeData.data.sprite.setPosition(0, 0);
-            });
+            // adding map entity
+            auto map_ptr = em.allocEntity<MapEntity>();
+            em.update_by_id<SpriteComponent, GridComponent>(map_ptr->get_id(),
+                                                            [&](auto&, SpriteComponent& sc, GridComponent& gc) {
+                                                                gc.data = std::move(map->gridData_);
+                                                                sc.data = std::move(map->renderData_);
+                                                                sc.data.render_priority = 0;
+                                                            });
+
+            // adding walls entity
+            for (auto& wall : map->walls_) {
+                auto wall_ptr = em.allocEntity<WallEntity>();
+                em.update_by_id<SpriteComponent, PositionComponent>(
+                    wall_ptr->get_id(), [&](auto& ent, SpriteComponent& sc, PositionComponent& pc) {
+                        pc.data = std::move(wall.pos_);
+                        sc.data = std::move(wall.renderData_);
+                        sc.data.render_priority = 1;
+
+                        auto to_x_map = ECS::to_x(map_ptr->template get_component<GridComponent>().data);
+                        auto to_y_map = ECS::to_y(map_ptr->template get_component<GridComponent>().data);
+
+                        std::pair<int, int> x_bound = {to_x_map(pc.data.x),
+                                                       to_x_map(pc.data.x + sc.data.sprite.getGlobalBounds().width)};
+                        std::pair<int, int> y_bound = {to_y_map(pc.data.y),
+                                                       to_y_map(pc.data.y + sc.data.sprite.getGlobalBounds().height)};
+                        for (int x_ind = x_bound.first; x_ind <= x_bound.second; x_ind++) {
+                            for (int y_ind = y_bound.first; y_ind <= y_bound.second; y_ind++) {
+                                map_ptr->template get_component<GridComponent>().data.mesh.at(x_ind).at(y_ind) =
+                                    ent.get_id();
+                            }
+                        }
+                    });
+            }
+
+            // adding items entity
+            for (auto& item : map->items_) {
+                auto item_ptr = em.allocEntity<ItemEntity>();
+                em.update_by_id<SpriteComponent, PositionComponent, ItemComponent>(
+                    item_ptr->get_id(), [&](auto&, SpriteComponent& sc, PositionComponent& pc, ItemComponent& ic) {
+                        pc.data = std::move(item.pos_);
+                        sc.data = std::move(item.renderData_);
+                        ic.data = std::move(item.data_);
+                        sc.data.render_priority = 2;
+                    });
+            }
+
+            // adding mobs entity
+            for (auto& mob : map->mobs_) {
+                auto mob_ptr = em.allocEntity<NpcEntity>();
+                em.update_by_id<SpriteComponent, PositionComponent, MoveComponent, HealthComponent>(
+                    mob_ptr->get_id(),
+                    [&](auto&, SpriteComponent& sc, PositionComponent& pc, MoveComponent& mc, HealthComponent& hc) {
+                        pc.data = std::move(mob.pos_);
+                        sc.data = std::move(mob.renderData_);
+                        mc.data.x = [](double tm) { return (rand() % 1000) / 75.0 - 500 / 75.0; };
+                        mc.data.y = [](double tm) { return (rand() % 1000) / 75.0 - 500 / 75.0; };
+                        hc.data = std::move(mob.hp_data_);
+
+                        sc.data.render_priority = 3;
+                    });
+            }
+
+            // creating menu entity
+            createMenu(em, {WORLD_WIDTH, 0}, BUG + "menu.png");
             created = true;
-
-            createWall(em, ptr_map, {0, 0}, sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE),
-                       BUG + "tile_0040.png");                        // upper wall
-            createWall(em, ptr_map, {0, WORLD_HEIGHT - SPRITE_SIZE}, // lower wall
-                       sf::IntRect(0, 0, WORLD_WIDTH, SPRITE_SIZE), BUG + "tile_0040.png");
-            createWall(em, ptr_map, {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
-                       BUG + "tile_0040.png"); // left wall
-            createWall(em, ptr_map, {WORLD_WIDTH - SPRITE_SIZE, SPRITE_SIZE},
-                       sf::IntRect(0, 0, SPRITE_SIZE, WORLD_HEIGHT - 2 * SPRITE_SIZE),
-                       BUG + "tile_0040.png"); // right wall
-
-            createItem(em, ptr_map, {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, SPRITE_SIZE),
-                       BUG + "tile_0118.png");
         }
     }
 
-    void createWall(EntityManager& em, auto& map_ptr, std::pair<int, int> position, sf::IntRect rect,
-                    const std::string& texture_path) {
-        auto ptr_wall = em.allocEntity<WallEntity>();
-        em.update_by_id<SpriteComponent, PositionComponent>(
-            ptr_wall->get_id(), [&](auto& entity, SpriteComponent& shapeData, PositionComponent& pos) {
-                shapeData.data.texture.loadFromFile(texture_path);
-                shapeData.data.texture.setRepeated(true);
-                shapeData.data.sprite.setTexture(shapeData.data.texture);
-                shapeData.data.sprite.setTextureRect(rect);
-                shapeData.data.sprite.setPosition(position.first, position.second);
+    void createMenu(EntityManager& em, const std::pair<double, double>& position, const std::string& texture_path) {
+        auto ptr = em.allocEntity<MenuEntity>();
+        em.update_by_id<SpriteComponent, PositionComponent, MenuComponent>(
+            ptr->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos, MenuComponent& menu) -> void {
+                shape.data.texture = std::make_shared<sf::Texture>();
+                shape.data.texture->loadFromFile(texture_path);
+                //                    shape.data.texture->loadFromFile(texture_path);
+                shape.data.sprite.setTexture(*shape.data.texture);
+                shape.data.sprite.setScale(3 * WINDOW_WIDTH / 9 / shape.data.sprite.getLocalBounds().width,
+                                           WINDOW_HEIGHT / shape.data.sprite.getLocalBounds().height);
+                //                shape.data.sprite.setPosition(position.first, position.second);
+                shape.data.render_priority = 0;
+
                 pos.data.x = position.first;
                 pos.data.y = position.second;
 
-                auto to_x_map = ECS::to_x(map_ptr->template get_component<GridComponent>().data);
-                auto to_y_map = ECS::to_y(map_ptr->template get_component<GridComponent>().data);
+                menu.data.backpack_grid.N_width = 4;
+                menu.data.backpack_grid.N_height = 2;
+                menu.data.backpack_grid.width = 476;
+                menu.data.backpack_grid.height = 236;
+                menu.data.backpack_grid.local_left_up_coords = {1385, 468};
 
-                std::pair<int, int> x_bound = {to_x_map(pos.data.x),
-                                               to_x_map(pos.data.x + shapeData.data.sprite.getGlobalBounds().width)};
-                std::pair<int, int> y_bound = {to_y_map(pos.data.y),
-                                               to_y_map(pos.data.y + shapeData.data.sprite.getGlobalBounds().height)};
-                for (int x_ind = x_bound.first; x_ind <= x_bound.second; x_ind++) {
-                    for (int y_ind = y_bound.first; y_ind <= y_bound.second; y_ind++) {
-                        map_ptr->template get_component<GridComponent>().data.mesh.at(x_ind).at(y_ind) =
-                            entity.get_id();
-                    }
-                }
+                menu.data.putted_on_grid.N_width = 4;
+                menu.data.putted_on_grid.N_height = 1;
+                menu.data.putted_on_grid.width = 476;
+                menu.data.putted_on_grid.height = 65;
+                menu.data.putted_on_grid.local_left_up_coords = {1385, 268};
+
+                //                    shape.data.font = std::make_shared<sf::Font>();
+                //                    shape.data.font->loadFromFile(BUG + "Sansation-Bold.ttf");
+                //                    shape.data.text.setFont(*shape.data.font);
+                //                    shape.data.text.setCharacterSize(15);
+                //                    shape.data.text.setStyle(sf::Text::Bold);
+                //                    shape.data.text.setFillColor(sf::Color::Black);
+                //
+                //                    shape.data.text.setPosition(1361, 68);
+                //                    shape.data.text.setString("TOLIA > MUHI!");
             });
     }
-
-    void createItem(EntityManager& em, auto& map_ptr, std::pair<int, int> position, sf::IntRect rect,
-                    const std::string& texture_path) {
-        auto ptr_wall = em.allocEntity<ItemEntity>();
-        em.update_by_id<SpriteComponent, PositionComponent, ItemComponent>(
-            ptr_wall->get_id(), [&](auto& entity, SpriteComponent& shapeData, PositionComponent& pos, ItemComponent& ic) {
-                shapeData.data.texture.loadFromFile(texture_path);
-                shapeData.data.texture.setRepeated(false);
-                shapeData.data.sprite.setTexture(shapeData.data.texture);
-                shapeData.data.sprite.setTextureRect(rect);
-                shapeData.data.sprite.setPosition(position.first, position.second);
-                pos.data.x = position.first;
-                pos.data.y = position.second;
-
-                ic.data.damage = 150;
-                ic.data.health = 0;
-                ic.data.attack_radius = 200;
-            });
-    }
-
-
-
 };

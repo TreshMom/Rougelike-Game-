@@ -27,12 +27,9 @@ int f(int x) {
 }
 
 int main() {
-    // int c = OPRTIMIZE_MULT_ZERO(0.1,f(2));
-    // std::cout << c << std::endl;
     SystemManager sm;
     sm.make_system<GenerateMapSystem>();
     sm.make_system<GeneratePlayerSystem>();
-    sm.make_system<GenerateMobSystem>();
     sm.make_system<DiagnosticSystem>();
     sm.make_system<CollisionSystem>();
     sm.make_system<CollectSystem>();
@@ -41,10 +38,10 @@ int main() {
     sm.make_system<BoundSystem>();
     sm.make_system<MoveSystem>();
     sm.make_system<KeySystem>();
+    sm.make_system<InventorySystem>();
 
     sf::Clock clock;
     while (true) {
-  
         sm.update();
     }
 }
