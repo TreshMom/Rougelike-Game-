@@ -55,21 +55,6 @@ public:
                 return left_p.data.render_priority < right_p.data.render_priority;
             });
 
-        //        std::ostringstream ss;
-
-        //        ss << sf::Mouse::getPosition(window).x << "\t" << sf::Mouse::getPosition(window).y << "\n";
-        //        // std::cout << sf::Mouse::getPosition(window).x << "\t" << sf::Mouse::getPosition(window).y << "\n";
-        //        sf::Text atext;
-        //        sf::Font font;
-        //        font.loadFromFile(BUG + "Sansation-Bold.ttf");
-        //        atext.setFont(font);
-        //        atext.setCharacterSize(20);
-        //        atext.setStyle(sf::Text::Bold);
-        //        atext.setFillColor(sf::Color::Black);
-        //        atext.setPosition(0, 0);
-        //        atext.setString(ss.str()); // ss.str() converts the string buffer into a regular string
-        //        // draw the string
-        //        window.draw(atext);
         window.display();
     }
 

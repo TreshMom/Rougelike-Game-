@@ -19,6 +19,7 @@ NUMEVENT(5);
 NUMEVENT(6);
 NUMEVENT(7);
 struct RemoveFromInventoryEvent;
+struct SetValueEventInventoryEvent;
 
 namespace ECS {
 
@@ -42,6 +43,7 @@ namespace ECS {
         NUMEVENTRECEIVE(6)
         NUMEVENTRECEIVE(7)
         virtual void receive(RemoveFromInventoryEvent const&) {}
+        virtual void receive(SetValueEventInventoryEvent const&) {}
 
         virtual ~SystemHandle() {}
     };

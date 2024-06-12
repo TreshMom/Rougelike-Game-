@@ -22,6 +22,17 @@
         });                                                                                                            \
     }
 
+#define NUMSAVEINVEVENT(X)                                                                                             \
+    bool numpad##X = sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad##X);                                              \
+    if (numpad##X) {                                                                                                   \
+        em.update<PlayerComponent>([&](auto& ent, PlayerComponent& player) {                                           \
+            if (time_to_click[ent.get_id()] < t) {                                                                     \
+                evm.notify(SetValueEventInventoryEvent(ent.get_id(), X + 1));                                          \
+                time_to_click[ent.get_id()] = t + 100_ms;                                                              \
+            }                                                                                                          \
+        });                                                                                                            \
+    }
+
 class KeySystem : public SystemHandle, public SystemInterface {
 private:
     std::unordered_map<ECS::EntityId, sf::Time> time_to_click;
@@ -92,6 +103,11 @@ public:
                 }
             });
         }
+
+        NUMSAVEINVEVENT(0)
+        NUMSAVEINVEVENT(1)
+        NUMSAVEINVEVENT(2)
+        NUMSAVEINVEVENT(3)
     }
 };
 
