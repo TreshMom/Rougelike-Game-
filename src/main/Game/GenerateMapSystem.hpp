@@ -5,6 +5,8 @@
 #include "System.hpp"
 #include <algorithm>
 #include <cmath>
+#include "Factories/MapBulder.hpp"
+
 
 using namespace ECS;
 
@@ -65,7 +67,7 @@ public:
                 shape.data.texture.setRepeated(true);
                 shape.data.sprite.setTexture(shape.data.texture);
                 shape.data.sprite.setTextureRect(rect);
-                shape.data.sprite.setPosition(position.first, position.second);
+//                shape.data.sprite.setPosition(position.first, position.second);
                 shape.data.render_priority = 1;
                 pos.data.x = position.first;
                 pos.data.y = position.second;
@@ -93,7 +95,7 @@ public:
             ptr_wall->get_id(), [&](auto&, SpriteComponent& shape, PositionComponent& pos, ItemComponent& ic) {
                 shape.data.texture.loadFromFile(texture_path);
                 shape.data.sprite.setTexture(shape.data.texture);
-                shape.data.sprite.setPosition(position.first, position.second);
+//                shape.data.sprite.setPosition(position.first, position.second);
                 shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
                                            SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                 shape.data.render_priority = 2;
@@ -115,7 +117,7 @@ public:
                 shape.data.sprite.setTexture(shape.data.texture);
                 shape.data.sprite.setScale(3 * WINDOW_WIDTH / 9 / shape.data.sprite.getLocalBounds().width,
                                            WINDOW_HEIGHT / shape.data.sprite.getLocalBounds().height);
-                shape.data.sprite.setPosition(position.first, position.second);
+//                shape.data.sprite.setPosition(position.first, position.second);
                 shape.data.render_priority = 0;
 
                 pos.data.x = position.first;
