@@ -23,6 +23,13 @@ struct Mob {
     HealthData hp_data_ = {0, 0};
 };
 
+struct Menu {
+    SpriteData renderData_;
+    CoordsInfo pos_{0, 0};
+
+    MenuData data_;
+};
+
 struct Map {
     Map(double width, double height) : worldWidth_(width), worldHeight_(height) {}
 
@@ -33,6 +40,7 @@ struct Map {
     SpriteData renderData_;
     CoordsInfo pos_ = {0, 0};
 
+    Menu menu_;
     std::vector<Wall> walls_;
     std::vector<Item> items_;
     std::vector<Mob> mobs_;

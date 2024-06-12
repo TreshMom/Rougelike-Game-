@@ -41,7 +41,7 @@ namespace ECS {
         }
 
         template <class... ComponentTypes, class... Args>
-        std::tuple<ComponentTypes...> init_components_list(List<ComponentTypes...>&& ls, Args&&... args) {
+        std::tuple<ComponentTypes...> init_components_list(List<ComponentTypes...>&&, Args&&... args) {
             return std::make_tuple(init_component<ComponentTypes>(std::forward<Args>(args)...)...);
         }
 
@@ -95,7 +95,7 @@ namespace ECS {
         template <class... ComponentsTypes, class F>
         void update_by_id(EntityId id, F&& f) {
             if (!entities.contains(id)) {
-                throw std::runtime_error("does't exists");
+                throw std::runtime_error("Doesn't exists");
             }
             std::visit(
                 [f = std::forward<F>(f)]<typename EntityType>(EntityType&& ent) -> void {
@@ -121,13 +121,9 @@ namespace ECS {
         template <class ComponentType>
         bool has_component(EntityId id) const {
             return std::visit(
-                []<typename Tpl>(Tpl const& tpl) -> bool {
-                    if constexpr (MayBeToBool<find_t<Tpl, curry<std::is_same>::template type<typename to_ptr<
-                                                              ComponentType>::type>::template type>>::value) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                []<typename Tpl>(Tpl const&) -> bool {
+                    return static_cast<bool>(MayBeToBool<find_t<Tpl, curry<std::is_same>::template type<typename to_ptr<
+                                                              ComponentType>::type>::template type>>::value);
                 },
                 mp.at(id));
         }

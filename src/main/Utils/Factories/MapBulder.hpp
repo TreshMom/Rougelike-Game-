@@ -8,7 +8,7 @@ class MapBuilder {
 protected:
     std::shared_ptr<Map> map_;
 
-    void createWall(const std::string& filePath, CoordsInfo pos, const sf::IntRect& rect) {
+    void createWall(const std::string &filePath, CoordsInfo pos, const sf::IntRect &rect) {
         Wall wall;
         wall.renderData_.texture = std::make_shared<sf::Texture>();
         wall.renderData_.texture->loadFromFile(filePath);
@@ -19,7 +19,7 @@ protected:
         map_->walls_.push_back(std::move(wall));
     }
 
-    void createItem(const std::string& filePath, CoordsInfo pos, ItemData data) {
+    void createItem(const std::string &filePath, CoordsInfo pos, ItemData data) {
         Item item;
         item.renderData_.texture = std::make_shared<sf::Texture>();
         item.renderData_.texture->loadFromFile(filePath);
@@ -31,7 +31,7 @@ protected:
         map_->items_.push_back(std::move(item));
     }
 
-    void createMob(const std::string& filePath, CoordsInfo pos, HealthData hp_data) {
+    void createMob(const std::string &filePath, CoordsInfo pos, HealthData hp_data) {
         Mob mob;
         mob.renderData_.texture = std::make_shared<sf::Texture>();
         mob.renderData_.texture->loadFromFile(filePath);
@@ -43,13 +43,43 @@ protected:
         map_->mobs_.push_back(std::move(mob));
     }
 
-    void loadTexture(const std::string& filePath, CoordsInfo pos) {
+    void loadTexture(const std::string &filePath, CoordsInfo pos) {
         map_->renderData_.texture = std::make_shared<sf::Texture>();
         map_->renderData_.texture->loadFromFile(filePath);
         map_->renderData_.sprite.setTexture(*map_->renderData_.texture);
         map_->renderData_.sprite.setScale(map_->worldWidth_ / map_->renderData_.sprite.getLocalBounds().width,
                                           map_->worldHeight_ / map_->renderData_.sprite.getLocalBounds().height);
         map_->pos_ = pos;
+    }
+
+    void generateGrid() {
+        map_->gridData_.left_up = CoordsInfo(0, 0);
+        map_->gridData_.right_down = CoordsInfo(map_->worldWidth_, map_->worldHeight_);
+        map_->gridData_.grid_density = GRID_DENSITY;
+        map_->gridData_.mesh.resize(GRID_DENSITY + 1, std::vector<ECS::EntityId>(GRID_DENSITY + 1));
+    }
+
+    void createMenu(const std::string &filePath, CoordsInfo pos) {
+        map_->menu_.renderData_.texture = std::make_shared<sf::Texture>();
+        map_->menu_.renderData_.texture->loadFromFile(filePath);
+        map_->menu_.renderData_.sprite.setTexture(*map_->menu_.renderData_.texture);
+        map_->menu_.renderData_.sprite.setScale(MENU_WIDTH / map_->menu_.renderData_.sprite.getLocalBounds().width,
+                                                MENU_HEIGHT / map_->menu_.renderData_.sprite.getLocalBounds().height);
+        map_->menu_.pos_ = pos;
+        map_->menu_.data_.backpack_grid = {
+                BACKPACK_WIDTH,
+                BACKPACK_HEIGHT,
+                BACKPACK_N_WIDTH,
+                BACKPACK_N_HEIGHT,
+                BACKPACK_LOCAL_COORDS
+        };
+        map_->menu_.data_.wear_grid = {
+                WEAR_WIDTH,
+                WEAR_HEIGHT,
+                WEAR_N_WIDTH,
+                WEAR_N_HEIGHT,
+                WEAR_LOCAL_COORDS
+        };
     }
 
 public:
@@ -63,13 +93,7 @@ public:
 
     void createNewMap(double worldWidth = WORLD_WIDTH, double worldHeight = WORLD_HEIGHT) {
         map_ = std::make_shared<Map>(worldWidth, worldHeight);
-    }
-
-    void generateGrid() {
-        map_->gridData_.left_up = CoordsInfo(0, 0);
-        map_->gridData_.right_down = CoordsInfo(map_->worldWidth_, map_->worldHeight_);
-        map_->gridData_.grid_density = GRID_DENSITY;
-        map_->gridData_.mesh.resize(GRID_DENSITY + 1, std::vector<ECS::EntityId>(GRID_DENSITY + 1));
+        generateGrid();
     }
 
     virtual void generateWalls() = 0;
@@ -79,6 +103,8 @@ public:
     virtual void generateMobs() = 0;
 
     virtual void setUpTexture() = 0;
+
+    virtual void generateMenu() = 0;
 };
 
 class SmallMapBuilder : public MapBuilder {
@@ -93,7 +119,7 @@ public:
         double ww = map_->worldWidth_;
         double wh = map_->worldHeight_;
         // create outside walls
-        createWall(BUG + "tile_0040.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE));                // upper wall
+        createWall(BUG + "tile_0040.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // upper wall
         createWall(BUG + "tile_0040.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // lower wall
         createWall(BUG + "tile_0040.png", {0, SPRITE_SIZE},
                    sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
@@ -122,6 +148,16 @@ public:
     void setUpTexture() override {
         loadTexture(BUG + "map.png", {0, 0});
     }
+
+    void generateMenu() override {
+        createMenu(BUG + "menu.png", {map_->worldWidth_ + MENU_POSITION_X_DIFF, 0});
+
+
+//                   {
+//                (2 * map_->worldWidth_ + VIEW_WIDTH) / 2 + MENU_POSITION_X_DIFF,
+//                VIEW_HEIGHT / 2 + MENU_POSITION_Y_DIFF
+//        });
+    }
 };
 
 class MapCreator {
@@ -130,7 +166,7 @@ class MapCreator {
 public:
     MapCreator() = default;
 
-    void setMapBuilder(MapBuilder* builder) {
+    void setMapBuilder(MapBuilder *builder) {
         builder_ = std::shared_ptr<MapBuilder>(builder);
     }
 
@@ -144,10 +180,10 @@ public:
         } else {
             builder_->createNewMap(worldWidth, worldHeight);
             builder_->setUpTexture();
-            builder_->generateGrid();
             builder_->generateWalls();
             builder_->generateItems();
             builder_->generateMobs();
+            builder_->generateMenu();
         };
     }
 };

@@ -45,36 +45,36 @@ public:
 
         em.update<MenuComponent>([&](auto& menu_ent, MenuComponent& menu) {
             Grid& backpack_grid = menu.data.backpack_grid.get_grid();
-            Grid& putted_on_grid = menu.data.putted_on_grid.get_grid();
+            Grid& wear_grid = menu.data.wear_grid.get_grid();
             switch (item.data.id) {
             case ECS::ITEM_ID::WEAPON: {
-                if (!inv.data.putted_on.contains(1)) {
-                    inv.data.putted_on[1] = item_id;
-                    position_item.data = putted_on_grid.get_cell_by_index(0);
+                if (!inv.data.wear.contains(1)) {
+                    inv.data.wear[1] = item_id;
+                    position_item.data = wear_grid.get_cell_by_index(0);
                     return;
                 }
                 break;
             }
             case ECS::ITEM_ID::ARMOR: {
-                if (!inv.data.putted_on.contains(2)) {
-                    inv.data.putted_on[2] = item_id;
-                    position_item.data = putted_on_grid.get_cell_by_index(1);
+                if (!inv.data.wear.contains(2)) {
+                    inv.data.wear[2] = item_id;
+                    position_item.data = wear_grid.get_cell_by_index(1);
                     return;
                 }
                 break;
             }
             case ECS::ITEM_ID::ACCESSORY: {
-                if (!inv.data.putted_on.contains(3)) {
-                    inv.data.putted_on[3] = item_id;
-                    position_item.data = putted_on_grid.get_cell_by_index(2);
+                if (!inv.data.wear.contains(3)) {
+                    inv.data.wear[3] = item_id;
+                    position_item.data = wear_grid.get_cell_by_index(2);
                     return;
                 }
                 break;
             }
             case ECS::ITEM_ID::DILDO: {
-                if (!inv.data.putted_on.contains(4)) {
-                    inv.data.putted_on[4] = item_id;
-                    position_item.data = putted_on_grid.get_cell_by_index(3);
+                if (!inv.data.wear.contains(4)) {
+                    inv.data.wear[4] = item_id;
+                    position_item.data = wear_grid.get_cell_by_index(3);
                     return;
                 }
                 break;
@@ -93,7 +93,7 @@ public:
         });
     }
 
-    void receive(CollectEvent const& event) {
+    void receive(CollectEvent const& event) override {
         players_ids.push(event.entId_);
     }
 };

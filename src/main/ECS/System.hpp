@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
 #include <memory>
 
@@ -10,6 +11,7 @@ struct CollectEvent;
 struct NumXEvent;
 struct RemoveFromInventoryEvent;
 struct SetValueEventInventoryEvent;
+struct MapCreatedEvent;
 
 namespace ECS {
 
@@ -27,6 +29,7 @@ namespace ECS {
         virtual void receive(NumXEvent const&) {}
         virtual void receive(RemoveFromInventoryEvent const&) {}
         virtual void receive(SetValueEventInventoryEvent const&) {}
+        virtual void receive(MapCreatedEvent const&) {}
 
         virtual ~SystemHandle() {}
     };

@@ -29,7 +29,7 @@ public:
 
     double calc_radius(EntityManager& em, InventoryComponent& inv, AttackComponent& attack) {
         double res = attack.data.default_attack_radius;
-        for (auto& [pos, item] : inv.data.putted_on) {
+        for (auto& [pos, item] : inv.data.wear) {
             res += em.template get_component<ItemComponent>(item).data.attack_radius;
         }
         return res;
@@ -37,7 +37,7 @@ public:
 
     double calc_attack(EntityManager& em, InventoryComponent& inv, AttackComponent& attack) {
         double res = attack.data.default_damage;
-        for (auto& [pos, item] : inv.data.putted_on) {
+        for (auto& [pos, item] : inv.data.wear) {
             res += em.template get_component<ItemComponent>(item).data.damage;
         }
         return res;
@@ -45,7 +45,7 @@ public:
 
     double calc_hp(EntityManager& em, InventoryComponent& inv, HealthComponent& health) {
         double res = health.data.default_hp;
-        for (auto& [pos, item] : inv.data.putted_on) {
+        for (auto& [pos, item] : inv.data.wear) {
             res += em.template get_component<ItemComponent>(item).data.health;
         }
         return res;

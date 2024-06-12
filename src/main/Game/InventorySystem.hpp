@@ -47,15 +47,15 @@ public:
                 em.update<MenuComponent>([&](auto&, MenuComponent& menu) {
                     auto item_backpack_id = inventory.data.backpack[index_in_backpack];
                     Grid& backpack_grid = menu.data.backpack_grid.get_grid();
-                    Grid& putted_on_grid = menu.data.putted_on_grid.get_grid();
+                    Grid& wear_grid = menu.data.wear_grid.get_grid();
 
                     auto old_pos_in_backpack = backpack_grid.get_cell_by_index(index_in_backpack);
-                    auto new_pos_in_backpack = putted_on_grid.get_cell_by_index(get_saved_index_by_player(entId) - 1);
+                    auto new_pos_in_backpack = wear_grid.get_cell_by_index(get_saved_index_by_player(entId) - 1);
                     auto& pos = em.template get_component<PositionComponent>(item_backpack_id);
                     pos.data = new_pos_in_backpack;
 
-                    if (inventory.data.putted_on.contains(get_saved_index_by_player(entId))) {
-                        auto right_id = inventory.data.putted_on[get_saved_index_by_player(entId)];
+                    if (inventory.data.wear.contains(get_saved_index_by_player(entId))) {
+                        auto right_id = inventory.data.wear[get_saved_index_by_player(entId)];
                         auto& tmp_pos = em.template get_component<PositionComponent>(right_id);
                         tmp_pos.data = old_pos_in_backpack;
                         inventory.data.backpack[index_in_backpack] = right_id;
@@ -63,7 +63,7 @@ public:
                         inventory.data.backpack.erase(index_in_backpack);
                     }
 
-                    inventory.data.putted_on[get_saved_index_by_player(entId)] = item_backpack_id;
+                    inventory.data.wear[get_saved_index_by_player(entId)] = item_backpack_id;
                 });
             });
         }
@@ -74,12 +74,12 @@ public:
             em.update_by_id<PlayerComponent, InventoryComponent, PositionComponent>(
                 player_id,
                 [&](auto&, PlayerComponent&, InventoryComponent& invent, PositionComponent const& player_pos) {
-                    if (!invent.data.putted_on.contains(get_saved_index_by_player(player_id))) {
+                    if (!invent.data.wear.contains(get_saved_index_by_player(player_id))) {
                         return;
                     }
 
-                    auto item_id = invent.data.putted_on[get_saved_index_by_player(player_id)];
-                    invent.data.putted_on.erase(get_saved_index_by_player(player_id));
+                    auto item_id = invent.data.wear[get_saved_index_by_player(player_id)];
+                    invent.data.wear.erase(get_saved_index_by_player(player_id));
                     auto& item_pos = em.template get_component<PositionComponent>(item_id);
                     item_pos.data = player_pos.data;
 
@@ -96,8 +96,8 @@ public:
             [&](auto& ent, PlayerComponent& player, InventoryComponent& invent, PositionComponent const& pos) {
                 auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
 
-                if (invent.data.putted_on.contains(1)) {
-                    auto id = invent.data.putted_on[1];
+                if (invent.data.wear.contains(1)) {
+                    auto id = invent.data.wear[1];
                     auto& sprite = em.get_component<SpriteComponent>(id);
                     sprite_weapon.data.sprite.setTexture(*sprite.data.texture);
                 }
