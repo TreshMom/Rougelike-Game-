@@ -1,5 +1,8 @@
 #pragma once
 
+#include "EntitiesList.hpp"
+#include "Vec2.hpp"
+#include <SFML/Graphics.hpp>
 #include <cmath>
 
 #define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 0.01 ? 0 : (a) * (fun))
@@ -67,34 +70,11 @@ namespace ECS {
         return 2 / (1 + std::exp(-k * (x - x0))) - 1;
     }
 
-    struct Vec2 {
-        double x_;
-        double y_;
-        Vec2(double x, double y) : x_{x}, y_{y} {}
-
-        void normalize() {
-            double hyp = get_norm();
-            x_ /= hyp;
-            y_ /= hyp;
-        }
-
-        Vec2 operator-(Vec2 const& other) const {
-            return Vec2(x_ - other.x_, y_ - other.y_);
-        }
-
-        double get_norm() const {
-            return sqrt(x_ * x_ + y_ * y_);
-        }
-
-        double dist(Vec2 const& other) const {
-            return (*this - other).get_norm();
-        }
-    };
-
     Vec2 center_of_mass(sf::Sprite const& sprite, PositionComponent const& pos) {
         std::pair<double, double> x_bound_coords = {pos.data.x, pos.data.x + sprite.getGlobalBounds().width};
         std::pair<double, double> y_bound_coords = {pos.data.y, pos.data.y + sprite.getGlobalBounds().height};
         return Vec2((x_bound_coords.second + x_bound_coords.first) / 2.0,
                     (y_bound_coords.second + y_bound_coords.first) / 2.0);
     }
+
 } // namespace ECS

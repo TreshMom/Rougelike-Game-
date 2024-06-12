@@ -6,8 +6,8 @@
 #include <cmath>
 #include <limits>
 #include <queue>
+#include <unordered_set>
 #include <utility>
-
 using namespace ECS;
 
 class BoundSystem : public SystemHandle, public SystemInterface {
@@ -15,16 +15,22 @@ private:
     std::queue<std::pair<EntityId, EntityId>> coll_pairs;
 
 public:
-    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {
         evm.subscribe<CollisionEvent>(ptr);
     }
 
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
-        int counter = 0;
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
+        std::unordered_set<EntityId> test;
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
-            counter++;
             coll_pairs.pop();
+
+            if (test.contains(fst)) {
+                continue;
+            }
+
+            test.insert(fst);
+
             if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
                 continue;
             }
@@ -35,7 +41,6 @@ public:
 
             if (em.template has_component<MoveComponent>(fst) && em.template has_component<MoveComponent>(snd)) {
                 push(fst, snd, evm, em, t);
-                push(snd, fst, evm, em, t);
                 continue;
             }
 
@@ -46,6 +51,17 @@ public:
             auto& pos = em.template get_component<PositionComponent>(fst);
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
+            if(em.template has_component<InventoryComponent>(fst))
+            {   
+                auto const& invent = em.get_component<InventoryComponent>(fst);
+                if(invent.data.weapon_ent_id != ECS::INVALID)
+                {
+                    em.update_by_id<PositionComponent>(invent.data.weapon_ent_id, [&pos](auto& ent, PositionComponent &pos_item){
+                        pos_item.data.x = pos.data.x + 6;
+                        pos_item.data.y = pos.data.y + 25;
+                    });
+                }
+            }
         }
     }
 
@@ -53,11 +69,11 @@ public:
         coll_pairs.emplace(col.first_, col.second_);
     }
 
-    void push(EntityId fst, EntityId snd, EventManager& evm, EntityManager& em, sf::Time t) {
+    void push(EntityId fst, EntityId snd, EventManager&, EntityManager& em, sf::Time t) {
         if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
             return;
         }
-        // double eps = 24;
+
         em.update_by_id<PositionComponent, SpriteComponent>(fst, [&](auto& left, PositionComponent const& pos_left,
                                                                      SpriteComponent const& sprite_left) {
             em.update_by_id<PositionComponent, SpriteComponent, MoveComponent>(
@@ -67,22 +83,27 @@ public:
 
                         auto left_ = center_of_mass(sprite_left.data.sprite, pos_left);
                         auto right_ = center_of_mass(sprite_right.data.sprite, pos_right);
-                    
+
                         auto vector_between = right_ - left_;
                         vector_between.normalize();
                         auto tmp_x = mv.data.x;
                         auto tmp_y = mv.data.y;
-                        mv.data.x = [=, rs = t.asMilliseconds()/1000](double tm) {
+
+                        mv.data.x = [=, rs = t.asMilliseconds() / 1000](double tm) {
                             tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return  OPRTIMIZE_MULT_ZERO((1 - alpha) ,5 * vector_between.x_ * std::exp((rs - tm) / 40.0)) + OPRTIMIZE_MULT_ZERO(alpha , tmp_x(tm * 1000));
+                            return OPRTIMIZE_MULT_ZERO((1 - alpha),
+                                                       5 * vector_between.x_ * std::exp((rs - tm) / 40.0)) +
+                                   OPRTIMIZE_MULT_ZERO(alpha, tmp_x(tm * 1000));
                         };
-                        mv.data.y = [=, rs = t.asMilliseconds()/1000](double tm) {
+                        mv.data.y = [=, rs = t.asMilliseconds() / 1000](double tm) {
                             tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return  OPRTIMIZE_MULT_ZERO((1 - alpha) ,5 * vector_between.y_ * std::exp((rs - tm) / 40.0)) + OPRTIMIZE_MULT_ZERO(alpha, tmp_y(tm * 1000));
+                            return OPRTIMIZE_MULT_ZERO((1 - alpha),
+                                                       5 * vector_between.y_ * std::exp((rs - tm) / 40.0)) +
+                                   OPRTIMIZE_MULT_ZERO(alpha, tmp_y(tm * 1000));
                         };
-                        }
+                    }
                 });
         });
     }
