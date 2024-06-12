@@ -33,10 +33,7 @@ public:
                 auto& move_weapon = em.get_component<MoveComponent>(invent.data.weapon_ent_id);
                 auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
 
-                auto tmp_x = move_weapon.data.x;
-                auto tmp_y = move_weapon.data.y;
-
-                move_weapon.data.x = [t, tmp_x, &mv, &sprite_weapon, &pos, &pos_weapon](double time){
+                move_weapon.data.x = [t, &mv, &sprite_weapon, &pos, &pos_weapon](double time){
                     if(time/1000 < t.asMilliseconds()/1000 + 1)
                     {
                         sprite_weapon.data.sprite.setRotation(-90.0);
@@ -45,12 +42,12 @@ public:
                     {
                         sprite_weapon.data.sprite.setRotation(0.0);
                     }
-                    return tmp_x(time);
+                    return mv.data.x(time);
                     
                 };
 
-                move_weapon.data.y = [tmp_y, t, &mv, &pos, &pos_weapon](double time){
-                    return tmp_y(time);
+                move_weapon.data.y = [t, &mv, &pos, &pos_weapon](double time){
+                    return mv.data.y(time);
                     
                 };
             });

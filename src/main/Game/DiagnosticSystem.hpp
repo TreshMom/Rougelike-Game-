@@ -34,9 +34,6 @@ public:
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
-
-
-
         // save last save index
         while (!saved_index_q.empty()) {
             auto [id, ind] = saved_index_q.front();
@@ -102,26 +99,7 @@ public:
                 attack.data.damage = calc_attack(em, inv, attack);
                 attack.data.attack_radius = calc_radius(em, inv, attack);
                 health.data.current_hp = calc_hp(em, inv, health);
-
-                em.update<SpriteComponent, MenuComponent>([&](auto& menu_ent, SpriteComponent& sprite,
-                                                              MenuComponent& menu) {
-                    // sprite.data.text.setString(
-                    //     get_pretty_string(attack.data.damage, attack.data.attack_radius, health.data.current_hp).str());
-                });
             });
-
-        // em.update<InventoryComponent, PositionComponent>(
-        //     [&](auto&, InventoryComponent& inv, PositionComponent& pos){
-        //         if(!inv.data.putted_on.contains(0))
-        //         {
-        //             continue;
-        //         }
-        //         auto eidId = inv.data.putted_on[0];
-        //         em.update_by_id<SpriteComponent>([](auto& ent, SpriteComponent& sprite){
-        //             auto val = sprite.data.sprite;
-        //         });
-        //     }
-        // );
 
         // update backpack index
 

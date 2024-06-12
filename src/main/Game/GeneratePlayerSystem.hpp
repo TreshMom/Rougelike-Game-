@@ -47,24 +47,15 @@ public:
                     inventory.data.weapon_ent_id = ptr->get_id();
                     ptr->get_component<SpriteComponent>().data.render_priority = 5;
                     ptr->get_component<SpriteComponent>().data.sprite.setScale(1.4,1.4);
-                    // int a = 10;
-                    // int b = 15;
-                    // std::cin >> a >>  b;
                     ptr->get_component<SpriteComponent>().data.sprite.setOrigin(10,15);
-                    // ptr->get_component<SpriteComponent>().data.sprite.setScale(2,2);
-                    auto& weapon_pos = ptr->get_component<PositionComponent>();
-                    weapon_pos.data = Vec2(pos.data.x, pos.data.y) + Vec2(6,25);
-                    ptr->get_component<MoveComponent>().data.x = [&weapon_pos, &pos, &mv](double t){
-                        std::cout << pos.data.x << std::endl;
-                        auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6,25);
-                        weapon_pos.data = vec;
-                        return 0;
+                    ptr->get_component<MoveComponent>().data.x = [&pos, &mv](double t){
+                        return mv.data.x(t);
                     };
                     ptr->get_component<MoveComponent>().data.y = [&pos, &mv](double t){
-                        return 0;
+                        return mv.data.y(t);
                     };
-                    // auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6,25);
-                    // ptr->get_component<PositionComponent>().data = vec;
+                    auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6,25);
+                    ptr->get_component<PositionComponent>().data = vec;
                 });
         }
     }
