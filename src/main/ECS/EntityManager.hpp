@@ -18,7 +18,7 @@ namespace ECS {
         int idEntityInc{1};
 
         using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
-                          List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
+                          List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
                           List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
                                                   AttackComponent, HealthComponent, InventoryComponent>>,
                           List<MapEntity, List<GridComponent, SpriteComponent>>,

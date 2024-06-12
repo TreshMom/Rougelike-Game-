@@ -24,8 +24,10 @@ public:
             em.update_by_id<SpriteComponent, AttackComponent, HealthComponent, PlayerComponent, InventoryComponent>(
                 ptr->get_id(), [&](auto& entity, SpriteComponent& shape, AttackComponent& attack,
                                    HealthComponent& health, PlayerComponent& player, InventoryComponent& inventory) {
-                    shape.data.texture.loadFromFile(BUG + "tile_0100.png");
-                    shape.data.sprite.setTexture(shape.data.texture);
+
+                    shape.data.texture = std::make_shared<sf::Texture>();
+                    shape.data.texture->loadFromFile(BUG + "tile_0100.png");
+                    shape.data.sprite.setTexture(*shape.data.texture);
                     shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
                                                SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                     shape.data.render_priority = 3;
@@ -38,10 +40,10 @@ public:
                     health.data.current_hp = 200;
                     health.data.default_hp = 200;
 
-                    player.data.attack_sprite.texture.loadFromFile(BUG + "_Attack.png");
-                    player.data.attack_sprite.sprite.setTexture(player.data.attack_sprite.texture);
-                    player.data.attack_sprite.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                                                              SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
+//                    player.data.attack_sprite.texture->loadFromFile(BUG + "_Attack.png");
+//                    player.data.attack_sprite.sprite.setTexture(*player.data.attack_sprite.texture);
+//                    player.data.attack_sprite.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
+//                                                              SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                 });
         }
     }

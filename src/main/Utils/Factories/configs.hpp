@@ -1,38 +1,37 @@
 #pragma once
 
 #include "Vec2.hpp"
+#include <Component.hpp>
 #include <SFML/Graphics.hpp>
 
-struct RenderInfo {
-    sf::Text text_;
-    sf::Font font_;
-    sf::Texture texture_;
-    sf::Sprite sprite_;
-};
-
 struct Wall {
-    RenderInfo renderInfo_;
-    Vec2 pos_ = {0, 0};
+    SpriteData renderData_;
+    CoordsInfo pos_ = {0, 0};
 };
 
 struct Item {
-    RenderInfo renderInfo_;
-    Vec2 pos_ = {0, 0};
+    SpriteData renderData_;
+    CoordsInfo pos_ = {0, 0};
+
+    ItemData data_;
 };
 
 struct Mob {
-    RenderInfo renderInfo_;
-    Vec2 pos_ = {0, 0};
+    SpriteData renderData_;
+    CoordsInfo pos_ = {0, 0};
+
+    HealthData hp_data_ = {0, 0};
 };
 
 struct Map {
-    Map(double width, double height) : world_width_(width), world_height_(height) {}
+    Map(double width, double height) : worldWidth_(width), worldHeight_(height) {}
 
-    double world_width_;
-    double world_height_;
+    double worldWidth_;
+    double worldHeight_;
 
-    RenderInfo renderInfo_;
-    Vec2 pos_ = {0, 0};
+    GridData gridData_;
+    SpriteData renderData_;
+    CoordsInfo pos_ = {0, 0};
 
     std::vector<Wall> walls_;
     std::vector<Item> items_;
