@@ -107,8 +107,6 @@ public:
             PositionComponent const& pos){
             auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
 
-            // pos_weapon.data = pos.data;
-            // pos_weapon.data.x -= 20;
             if(invent.data.putted_on.contains(1))
             {
                 auto id = invent.data.putted_on[1];
