@@ -2,11 +2,10 @@
 
 #include "EntitiesList.hpp"
 #include "events/NumEvent.hpp"
-<<<<<<< HEAD
-=======
+
 #include "events/RemoveFromInventoryEvent.hpp"
 #include "events/SetValueEventInventoryEvent.hpp"
->>>>>>> c585128fdedc1e6fe4fb1637caa82c78811f8231
+
 #include <iomanip>
 #include <queue>
 #include <sstream>
