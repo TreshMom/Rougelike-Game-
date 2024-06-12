@@ -41,6 +41,7 @@ int main() {
     sm.make_system<BoundSystem>();
     sm.make_system<MoveSystem>();
     sm.make_system<KeySystem>();
+    sm.make_system<InventorySystem>();
 
     sf::Clock clock;
     while (true) {

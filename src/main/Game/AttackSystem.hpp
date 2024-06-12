@@ -32,9 +32,8 @@ public:
                 auto& pos_weapon = em.get_component<PositionComponent>(invent.data.weapon_ent_id);
                 auto& move_weapon = em.get_component<MoveComponent>(invent.data.weapon_ent_id);
                 auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
-
                 move_weapon.data.x = [t, &mv, &sprite_weapon, &pos, &pos_weapon](double time){
-                    if(time/1000 < t.asMilliseconds()/1000 + 1)
+                    if(time/1000.0 < t.asMilliseconds()/1000.0 + 0.3)
                     {
                         sprite_weapon.data.sprite.setRotation(-90.0);
                     }
