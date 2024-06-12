@@ -9,6 +9,7 @@
 #include <queue>
 #include <utility>
 
+
 using namespace ECS;
 
 class AttackSystem : public SystemHandle, public SystemInterface {
@@ -25,6 +26,34 @@ public:
             auto& attack_left = em.template get_component<AttackComponent>(id);
             auto& pos_left = em.template get_component<PositionComponent>(id);
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
+
+            em.update_by_id<PlayerComponent, InventoryComponent, PositionComponent, MoveComponent>(id, [&](auto& ent, PlayerComponent& player, InventoryComponent& invent,
+                PositionComponent const& pos, MoveComponent& mv){
+                auto& pos_weapon = em.get_component<PositionComponent>(invent.data.weapon_ent_id);
+                auto& move_weapon = em.get_component<MoveComponent>(invent.data.weapon_ent_id);
+                auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
+
+                auto tmp_x = move_weapon.data.x;
+                auto tmp_y = move_weapon.data.y;
+
+                move_weapon.data.x = [t, tmp_x, &mv, &sprite_weapon, &pos, &pos_weapon](double time){
+                    if(time/1000 < t.asMilliseconds()/1000 + 1)
+                    {
+                        sprite_weapon.data.sprite.setRotation(-90.0);
+                    }
+                    else
+                    {
+                        sprite_weapon.data.sprite.setRotation(0.0);
+                    }
+                    return tmp_x(time);
+                    
+                };
+
+                move_weapon.data.y = [tmp_y, t, &mv, &pos, &pos_weapon](double time){
+                    return tmp_y(time);
+                    
+                };
+            });
 
             em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
                 [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,

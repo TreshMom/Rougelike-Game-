@@ -53,6 +53,17 @@ public:
             auto& pos = em.template get_component<PositionComponent>(fst);
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
+            // auto tmp_x = move.data.x;
+            // auto tmp_y = move.data.y;
+
+            // move.data.x = [tmp_x, t, tmp_pos = pos](double time){
+            //     return tmp_x(time);
+            // };
+            // move.data.y = [tmp_y, t,tmp_pos = pos](double time){
+            //     return tmp_y(time);
+            // };
+
+            
         }
     }
 

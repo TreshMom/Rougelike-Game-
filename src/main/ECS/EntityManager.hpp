@@ -17,14 +17,15 @@ namespace ECS {
     class EntityManager {
         int idEntityInc{1};
 
-        using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent>>,
+        using data = List<List<DogEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent, isBoundComponent>>,
                           List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent>>,
                           List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
-                                                  AttackComponent, HealthComponent, InventoryComponent>>,
+                                                  AttackComponent, HealthComponent, InventoryComponent, isBoundComponent>>,
                           List<MapEntity, List<GridComponent, SpriteComponent>>,
                           List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
                           List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>,
-                          List<MenuEntity, List<PositionComponent, SpriteComponent, MenuComponent>>>;
+                          List<MenuEntity, List<PositionComponent, SpriteComponent, MenuComponent>>,
+                          List<WeaponEntity, List<PositionComponent, SpriteComponent, MoveComponent>>>;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
         using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;

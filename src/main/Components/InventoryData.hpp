@@ -7,6 +7,7 @@
 struct InventoryData {
 
     static constexpr uint32_t BACKPACK_MAX_SIZE = 8;
+    ECS::EntityId weapon_ent_id{ECS::INVALID};
 
     std::unordered_map<uint32_t, ECS::EntityId> putted_on;
     std::unordered_map<uint32_t, ECS::EntityId> backpack;

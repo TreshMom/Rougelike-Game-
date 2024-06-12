@@ -10,11 +10,6 @@
 #include <queue>
 #include <sstream>
 
-#define NUMEVENTRECEIVE(X)                                                                                             \
-    void receive(Num##X##Event const& event) {                                                                         \
-        swap_key_events.emplace(event.index_, event.id_);                                                              \
-    }
-#define SUBSCRIBEEVENT(X) evm.subscribe<Num##X##Event>(ptr);
 
 struct DiagnosticSystem : public SystemHandle, public SystemInterface {
 private:
@@ -32,19 +27,14 @@ private:
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {
-        SUBSCRIBEEVENT(0)
-        SUBSCRIBEEVENT(1)
-        SUBSCRIBEEVENT(2)
-        SUBSCRIBEEVENT(3)
-        SUBSCRIBEEVENT(4)
-        SUBSCRIBEEVENT(5)
-        SUBSCRIBEEVENT(6)
-        SUBSCRIBEEVENT(7)
+        evm.subscribe<NumXEvent>(ptr);
         evm.subscribe<RemoveFromInventoryEvent>(ptr);
         evm.subscribe<SetValueEventInventoryEvent>(ptr);
     }
 
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time) override {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
+
+
 
 
         // save last save index
@@ -115,12 +105,39 @@ public:
 
                 em.update<SpriteComponent, MenuComponent>([&](auto& menu_ent, SpriteComponent& sprite,
                                                               MenuComponent& menu) {
-                    sprite.data.text.setString(
-                        get_pretty_string(attack.data.damage, attack.data.attack_radius, health.data.current_hp).str());
+                    // sprite.data.text.setString(
+                    //     get_pretty_string(attack.data.damage, attack.data.attack_radius, health.data.current_hp).str());
                 });
             });
 
+        // em.update<InventoryComponent, PositionComponent>(
+        //     [&](auto&, InventoryComponent& inv, PositionComponent& pos){
+        //         if(!inv.data.putted_on.contains(0))
+        //         {
+        //             continue;
+        //         }
+        //         auto eidId = inv.data.putted_on[0];
+        //         em.update_by_id<SpriteComponent>([](auto& ent, SpriteComponent& sprite){
+        //             auto val = sprite.data.sprite;
+        //         });
+        //     }
+        // );
+
         // update backpack index
+
+        em.update<PlayerComponent, InventoryComponent, PositionComponent>([&](auto& ent, PlayerComponent& player, InventoryComponent& invent,
+            PositionComponent const& pos){
+            auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
+
+            // pos_weapon.data = pos.data;
+            // pos_weapon.data.x -= 20;
+            if(invent.data.putted_on.contains(1))
+            {
+                auto id = invent.data.putted_on[1];
+                auto& sprite = em.get_component<SpriteComponent>(id);
+                sprite_weapon.data.sprite.setTexture(sprite.data.texture);
+            }
+        });
     }
 
     double calc_radius(EntityManager& em, InventoryComponent& inv, AttackComponent& attack) {
@@ -147,14 +164,10 @@ public:
         return res;
     }
 
-    NUMEVENTRECEIVE(0)
-    NUMEVENTRECEIVE(1)
-    NUMEVENTRECEIVE(2)
-    NUMEVENTRECEIVE(3)
-    NUMEVENTRECEIVE(4)
-    NUMEVENTRECEIVE(5)
-    NUMEVENTRECEIVE(6)
-    NUMEVENTRECEIVE(7)
+    void receive(NumXEvent const& event) {                                                                         
+        swap_key_events.emplace(event.index_, event.id_);                                                              
+    }
+
 
     std::stringstream get_pretty_string(double damage, double attack_radius, double current_hp) {
         std::stringstream ss;
