@@ -25,8 +25,8 @@ namespace ECS {
     struct item_tag;
     struct menu_tag;
     struct weapon_tag;
+    struct strategy_tag;
 
-    using DogEntity = Entity<dog_tag>;
     using NpcEntity = Entity<npc_tag>;
     using PlayerEntity = Entity<player_tag>;
     using MapEntity = Entity<map_tag>;
@@ -34,7 +34,6 @@ namespace ECS {
     using ItemEntity = Entity<item_tag>;
     using MenuEntity = Entity<menu_tag>;
     using WeaponEntity = Entity<weapon_tag>;
-    using OldEntity = Entity<weapon_tag>;
 
     using PositionComponent = Component<pos_tag, CoordsInfo>;
     using MoveComponent = Component<move_tag, MoveData>;
@@ -48,5 +47,6 @@ namespace ECS {
     using ItemComponent = Component<item_tag, ItemData>;
     using MenuComponent = Component<menu_tag, MenuData>;
     using isBoundComponent = Component<menu_tag, isBound>;
+    using StrategyComponent = Component<strategy_tag, StrategyData>;
 
 } // namespace ECS

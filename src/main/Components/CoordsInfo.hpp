@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Vec2.hpp"
 #include <initializer_list>
 
@@ -17,12 +18,7 @@ struct CoordsInfo {
         return *this;
     }
 
-    CoordsInfo(double first, double second) {
-        x = first;
-        y = second;
-        x_prev = x;
-        y_prev = y;
-    }
+    constexpr CoordsInfo(double first, double second) : x(first), y(second), x_prev(first), y_prev(second) {}
 
     CoordsInfo() = default;
 };

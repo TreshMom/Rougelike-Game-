@@ -27,6 +27,8 @@ int f(int x) {
 }
 
 int main() {
+    CowardStrategy str;
+
     SystemManager sm;
     sm.make_system<GenerateMapSystem>();
     sm.make_system<GeneratePlayerSystem>();

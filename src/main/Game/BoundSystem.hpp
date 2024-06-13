@@ -80,8 +80,8 @@ public:
                 [&](auto& right, PositionComponent const& pos_right, SpriteComponent& sprite_right, MoveComponent& mv) {
                     if (left.get_id() != right.get_id()) {
 
-                        auto left_ = center_of_mass(sprite_left.data.sprite, pos_left);
-                        auto right_ = center_of_mass(sprite_right.data.sprite, pos_right);
+                        auto left_ = center_of_mass(sprite_left.data.sprite, pos_left.data);
+                        auto right_ = center_of_mass(sprite_right.data.sprite, pos_right.data);
 
                         auto vector_between = right_ - left_;
                         vector_between.normalize();

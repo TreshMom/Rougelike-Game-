@@ -1,4 +1,5 @@
 #pragma once
+
 #include "EventManager.hpp"
 
 struct CollisionEvent : public ECS::Event<CollisionEvent> {
