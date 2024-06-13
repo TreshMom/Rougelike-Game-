@@ -28,8 +28,8 @@ public:
                 [&](auto& item_ent, PositionComponent const& pos_right, SpriteComponent& sprite_right,
                     ItemComponent& item) {
                     if (id != item_ent.get_id()) {
-                        auto fst = center_of_mass(sprite_left.data.sprite, pos_left);
-                        auto snd = center_of_mass(sprite_right.data.sprite, pos_right);
+                        auto fst = center_of_mass(sprite_left.data.sprite, pos_left.data);
+                        auto snd = center_of_mass(sprite_right.data.sprite, pos_right.data);
                         if (fst.dist(snd) < collect_radius) {
                             collect(em, item_ent.get_id(), id);
                         }

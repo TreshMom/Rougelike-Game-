@@ -17,15 +17,16 @@ namespace ECS {
     class EntityManager {
         int idEntityInc{1};
 
-        using data = List<
-            List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent, HealthComponent, isBoundComponent>>,
-            List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent, AttackComponent,
-                                    HealthComponent, InventoryComponent, isBoundComponent>>,
-            List<MapEntity, List<GridComponent, SpriteComponent>>,
-            List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
-            List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>,
-            List<MenuEntity, List<PositionComponent, SpriteComponent, MenuComponent>>,
-            List<WeaponEntity, List<PositionComponent, SpriteComponent, MoveComponent>>>;
+        using data =
+            List<List<NpcEntity, List<MoveComponent, PositionComponent, SpriteComponent, AttackComponent, HealthComponent,
+                                      isBoundComponent, StrategyComponent, InventoryComponent>>,
+                 List<PlayerEntity, List<MoveComponent, PositionComponent, SpriteComponent, PlayerComponent,
+                                         AttackComponent, HealthComponent, InventoryComponent, isBoundComponent>>,
+                 List<MapEntity, List<GridComponent, SpriteComponent>>,
+                 List<WallEntity, List<PositionComponent, SpriteComponent, BorderComponent>>,
+                 List<ItemEntity, List<PositionComponent, ItemComponent, SpriteComponent>>,
+                 List<MenuEntity, List<PositionComponent, SpriteComponent, MenuComponent>>,
+                 List<WeaponEntity, List<PositionComponent, SpriteComponent, MoveComponent>>>;
 
         using component_types_variant = ListToVariant_t<typename for_each_with_concate_tail<data>::type>;
         using entityes_types_variant = ListToVariant_t<typename for_each_with_concate_head<data>::type>;
@@ -122,8 +123,9 @@ namespace ECS {
         bool has_component(EntityId id) const {
             return std::visit(
                 []<typename Tpl>(Tpl const&) -> bool {
-                    return static_cast<bool>(MayBeToBool<find_t<Tpl, curry<std::is_same>::template type<typename to_ptr<
-                                                              ComponentType>::type>::template type>>::value);
+                    return static_cast<bool>(
+                        MayBeToBool<find_t<Tpl, curry<std::is_same>::template type<
+                                                    typename to_ptr<ComponentType>::type>::template type>>::value);
                 },
                 mp.at(id));
         }

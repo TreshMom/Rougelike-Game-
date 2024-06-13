@@ -10,9 +10,10 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra-semi -fsanitize=address -g -ffast-math  -fno-omit-frame-pointer")
 endif()
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB ALL_CPP_SRCS src/*.cpp)
 
 add_executable(${PROJECT_NAME} src/main/main.cpp)
+# add_executable(${PROJECT_NAME} ${ALL_CPP_SRCS})
 
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE src/main/ECS)

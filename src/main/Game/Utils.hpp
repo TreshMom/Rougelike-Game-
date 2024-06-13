@@ -70,9 +70,9 @@ namespace ECS {
         return 2 / (1 + std::exp(-k * (x - x0))) - 1;
     }
 
-    Vec2 center_of_mass(sf::Sprite const& sprite, PositionComponent const& pos) {
-        std::pair<double, double> x_bound_coords = {pos.data.x, pos.data.x + sprite.getGlobalBounds().width};
-        std::pair<double, double> y_bound_coords = {pos.data.y, pos.data.y + sprite.getGlobalBounds().height};
+    Vec2 center_of_mass(sf::Sprite const& sprite, CoordsInfo const& pos) {
+        std::pair<double, double> x_bound_coords = {pos.x, pos.x + sprite.getGlobalBounds().width};
+        std::pair<double, double> y_bound_coords = {pos.y, pos.y + sprite.getGlobalBounds().height};
         return Vec2((x_bound_coords.second + x_bound_coords.first) / 2.0,
                     (y_bound_coords.second + y_bound_coords.first) / 2.0);
     }

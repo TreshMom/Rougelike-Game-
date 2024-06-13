@@ -8,16 +8,19 @@
 #include <limits>
 #include <queue>
 #include <utility>
+#include "MobsUtils/Strategy.hpp"
 
 using namespace ECS;
 
 class AttackSystem : public SystemHandle, public SystemInterface {
 private:
     std::vector<EntityId> attackEnts;
+    std::vector<EntityId> attackMobEnts;
 
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
         evm.subscribe<AttackEvent>(ptr);
+        evm.subscribe<AttackMobEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
@@ -41,17 +44,15 @@ public:
                         return mv.data.x(time);
                     };
 
-                    move_weapon.data.y = [t, &mv, &pos, &pos_weapon](double time) {
-                        return mv.data.y(time);
-                    };
+                    move_weapon.data.y = [t, &mv, &pos, &pos_weapon](double time) { return mv.data.y(time); };
                 });
 
-            em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
-                [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,
+            em.update<PlayerComponent, HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
+                [&](auto& defence_entity, PlayerComponent const&, HealthComponent& health, PositionComponent const& pos_right,
                     SpriteComponent& sprite_right, MoveComponent& mv) {
                     if (id != defence_entity.get_id()) {
-                        auto fst = center_of_mass(sprite_left.data.sprite, pos_left);
-                        auto snd = center_of_mass(sprite_right.data.sprite, pos_right);
+                        auto fst = center_of_mass(sprite_left.data.sprite, pos_left.data);
+                        auto snd = center_of_mass(sprite_right.data.sprite, pos_right.data);
 
                         if (fst.dist(snd) < attack_left.data.attack_radius) {
                             auto vector_between = snd - fst;
@@ -88,6 +89,10 @@ public:
         }
 
         attackEnts.clear();
+
+        em.update<StrategyComponent>([&](auto& ent, StrategyComponent& strc){
+            strc.data.strategy_context->attack(em, evm, ent.get_id(), t);
+        });
     }
 
     // мб будем каукю-то анимацию потом показывать, как наши мухи взрываются

@@ -39,33 +39,33 @@ public:
         while (!swap_key_events.empty()) {
             auto [index_in_backpack, entId] = swap_key_events.front();
             swap_key_events.pop();
-            em.update_by_id<PlayerComponent, InventoryComponent>(entId, [&](auto& ent, PlayerComponent& player,
-                                                                            InventoryComponent& inventory) {
-                if (!inventory.data.backpack.contains(index_in_backpack)) {
-                    return;
-                }
-                em.update<MenuComponent>([&](auto&, MenuComponent& menu) {
-                    auto item_backpack_id = inventory.data.backpack[index_in_backpack];
-                    Grid& backpack_grid = menu.data.backpack_grid.get_grid();
-                    Grid& wear_grid = menu.data.wear_grid.get_grid();
-
-                    auto old_pos_in_backpack = backpack_grid.get_cell_by_index(index_in_backpack);
-                    auto new_pos_in_backpack = wear_grid.get_cell_by_index(get_saved_index_by_player(entId) - 1);
-                    auto& pos = em.template get_component<PositionComponent>(item_backpack_id);
-                    pos.data = new_pos_in_backpack;
-
-                    if (inventory.data.wear.contains(get_saved_index_by_player(entId))) {
-                        auto right_id = inventory.data.wear[get_saved_index_by_player(entId)];
-                        auto& tmp_pos = em.template get_component<PositionComponent>(right_id);
-                        tmp_pos.data = old_pos_in_backpack;
-                        inventory.data.backpack[index_in_backpack] = right_id;
-                    } else {
-                        inventory.data.backpack.erase(index_in_backpack);
+            em.update_by_id<PlayerComponent, InventoryComponent>(
+                entId, [&](auto& ent, PlayerComponent& player, InventoryComponent& inventory) {
+                    if (!inventory.data.backpack.contains(index_in_backpack)) {
+                        return;
                     }
+                    em.update<MenuComponent>([&](auto&, MenuComponent& menu) {
+                        auto item_backpack_id = inventory.data.backpack[index_in_backpack];
+                        Grid& backpack_grid = menu.data.backpack_grid.get_grid();
+                        Grid& wear_grid = menu.data.wear_grid.get_grid();
 
-                    inventory.data.wear[get_saved_index_by_player(entId)] = item_backpack_id;
+                        auto old_pos_in_backpack = backpack_grid.get_cell_by_index(index_in_backpack);
+                        auto new_pos_in_backpack = wear_grid.get_cell_by_index(get_saved_index_by_player(entId) - 1);
+                        auto& pos = em.template get_component<PositionComponent>(item_backpack_id);
+                        pos.data = new_pos_in_backpack;
+
+                        if (inventory.data.wear.contains(get_saved_index_by_player(entId))) {
+                            auto right_id = inventory.data.wear[get_saved_index_by_player(entId)];
+                            auto& tmp_pos = em.template get_component<PositionComponent>(right_id);
+                            tmp_pos.data = old_pos_in_backpack;
+                            inventory.data.backpack[index_in_backpack] = right_id;
+                        } else {
+                            inventory.data.backpack.erase(index_in_backpack);
+                        }
+
+                        inventory.data.wear[get_saved_index_by_player(entId)] = item_backpack_id;
+                    });
                 });
-            });
         }
 
         while (!want_to_remove_id_inventory.empty()) {

@@ -12,6 +12,7 @@ struct NumXEvent;
 struct RemoveFromInventoryEvent;
 struct SetValueEventInventoryEvent;
 struct MapCreatedEvent;
+struct AttackMobEvent;
 
 namespace ECS {
 
@@ -30,6 +31,7 @@ namespace ECS {
         virtual void receive(RemoveFromInventoryEvent const&) {}
         virtual void receive(SetValueEventInventoryEvent const&) {}
         virtual void receive(MapCreatedEvent const&) {}
+        virtual void receive(AttackMobEvent const&) {}
 
         virtual ~SystemHandle() {}
     };

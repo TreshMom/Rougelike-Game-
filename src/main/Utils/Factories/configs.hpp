@@ -21,6 +21,8 @@ struct Mob {
     CoordsInfo pos_ = {0, 0};
 
     HealthData hp_data_ = {0, 0};
+    AttackData attack_data_ = {0, 0, 0, 0};
+    Item weapon_;
 };
 
 struct Menu {

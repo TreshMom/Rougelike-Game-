@@ -5,7 +5,10 @@ using namespace ECS;
 
 class MoveSystem : public SystemHandle, public SystemInterface {
 public:
-    void update(EventManager&, EntityManager& em, SystemManager&, sf::Time t) override {
+    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
+        em.update<StrategyComponent>([&](auto& ent,StrategyComponent& sc){
+            sc.data.strategy_context->update_coord(em, evm, ent.get_id(), t);
+        });
         em.update<PositionComponent, MoveComponent>([&](auto&, PositionComponent& pos, MoveComponent& move) {
             pos.data.x_prev = pos.data.x;
             pos.data.y_prev = pos.data.y;
