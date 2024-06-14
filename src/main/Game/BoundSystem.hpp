@@ -79,15 +79,14 @@ public:
                         auto tmp_x = mv.data.x;
                         auto tmp_y = mv.data.y;
 
-                        mv.data.x = [=, rs = t.asMilliseconds() / 1000](double tm) {
+                        mv.data.x = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
+                            tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return alpha * ([](double tm) -> double { return (rand() % 1000) / 75.0 - 500 / 75.0; })(tm)
-                            + (1 - alpha) * ([](double tm) -> double { return 3; })(tm);
+                            return (1 - alpha) * 5 * vector_between.x_ * std::exp((rs - tm) / 40.0) + alpha* mv.data.x_default(tm * 1000);
                         };
-                        mv.data.y = [=, rs = t.asMilliseconds() / 1000](double tm) {
+                        mv.data.y = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
                             double alpha = sigmoid(tm, 3, rs);
-                            return alpha * ([](double tm) -> double { return (rand() % 1000) / 75.0 - 500 / 75.0; })(tm)
-                                   + (1 - alpha) * ([](double tm) -> double { return 3; })(tm);
+                            return (1 - alpha) * 5 * vector_between.y_ * std::exp((rs - tm) / 40.0) + alpha* mv.data.y_default(tm * 1000);
                         };
                     }
                 });
