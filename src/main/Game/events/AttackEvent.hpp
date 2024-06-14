@@ -9,7 +9,7 @@ struct AttackEvent : public ECS::Event<AttackEvent> {
 };
 
 
-struct AttackMobEvent : public ECS::Event<AttackEvent> {
+struct AttackMobEvent : public ECS::Event<AttackMobEvent> {
     ECS::EntityId firstId_;
     ECS::EntityId secondId_;
 

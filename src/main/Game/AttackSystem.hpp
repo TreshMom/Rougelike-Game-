@@ -20,7 +20,6 @@ private:
 public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager& em, ECS::SystemManager&) {
         evm.subscribe<AttackEvent>(ptr);
-        evm.subscribe<AttackMobEvent>(ptr);
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) {
@@ -47,8 +46,8 @@ public:
                     move_weapon.data.y = [t, &mv, &pos, &pos_weapon](double time) { return mv.data.y(time); };
                 });
 
-            em.update<PlayerComponent, HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
-                [&](auto& defence_entity, PlayerComponent const&, HealthComponent& health, PositionComponent const& pos_right,
+            em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
+                [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,
                     SpriteComponent& sprite_right, MoveComponent& mv) {
                     if (id != defence_entity.get_id()) {
                         auto fst = center_of_mass(sprite_left.data.sprite, pos_left.data);
@@ -101,6 +100,7 @@ public:
     }
 
     void receive(AttackEvent const& ev) {
+        std::cout << ev.entId_ << std::endl;
         attackEnts.push_back(ev.entId_);
     }
 };

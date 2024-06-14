@@ -79,9 +79,9 @@ public:
             // adding mobs entity
             for (auto& mob : map->mobs_) {
                 auto mob_ptr = em.allocEntity<NpcEntity>();
-                em.update_by_id<SpriteComponent, PositionComponent, MoveComponent, HealthComponent, StrategyComponent>(
+                em.update_by_id<SpriteComponent, PositionComponent, MoveComponent, AttackComponent, HealthComponent, StrategyComponent>(
                     mob_ptr->get_id(),
-                    [&](auto&, SpriteComponent& sc, PositionComponent& pc, MoveComponent& mc, HealthComponent& hc,
+                    [&](auto&, SpriteComponent& sc, PositionComponent& pc, MoveComponent& mc, AttackComponent& ac, HealthComponent& hc,
                     StrategyComponent& strc) {
                         pc.data = std::move(mob.pos_);
                         // std::cout << pc.data.x << " " << pc.data.y << std::endl;
@@ -91,7 +91,7 @@ public:
                         hc.data = std::move(mob.hp_data_);
                         pc.data.x = 400 + rand() % 40;
                         pc.data.y = 400 + rand() % 40;
-
+                        ac.data = std::move(mob.attack_data_);
                         sc.data.render_priority = 3;
                         strc.data.strategy_context = std::make_unique<Client>();
                         switch (rand() % 3)

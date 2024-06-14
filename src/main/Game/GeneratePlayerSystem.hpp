@@ -33,10 +33,10 @@ public:
                                                SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
                     shape.data.render_priority = 3;
 
-                    attack.data.damage = 50;
-                    attack.data.default_damage = 50;
-                    attack.data.attack_radius = 50;
-                    attack.data.default_attack_radius = 50;
+                    attack.data.damage = 10;
+                    attack.data.default_damage = 10;
+                    attack.data.attack_radius = 100;
+                    attack.data.default_attack_radius = 100;
 
                     health.data.current_hp = 200;
                     health.data.default_hp = 200;

@@ -39,7 +39,7 @@ protected:
         mob.renderData_.sprite.setScale(SPRITE_SIZE / mob.renderData_.sprite.getLocalBounds().width,
                                         SPRITE_SIZE / mob.renderData_.sprite.getLocalBounds().height);
         mob.pos_ = pos;
-        mob.weapon_ = std::move(createItem(BUG + "axe.png", {MOB_WEAPON_POS_X, MOB_WEAPON_POS_Y}, {2, 0, 2, ECS::ITEM_ID::WEAPON}));
+        mob.weapon_ = std::move(createItem(BUG + "axe.png", {MOB_WEAPON_POS_X, MOB_WEAPON_POS_Y}, {10, 0, 10, ECS::ITEM_ID::WEAPON}));
         mob.hp_data_ = hp_data;
         mob.attack_data_ = AttackData{.damage = mob.weapon_.data_.damage, 
             .attack_radius = mob.weapon_.data_.attack_radius, 
@@ -135,8 +135,8 @@ public:
 
     void generateItems() override {
         for (uint32_t i = 0; i < 3; ++i) {
-            map_->items_.push_back(std::move(createItem(BUG + "axe.png", {PLAYER_START_X - 4 * SPRITE_SIZE, PLAYER_START_Y - 4 * SPRITE_SIZE},
-                       {100, 0, 200, ECS::ITEM_ID::WEAPON})));
+            map_->items_.emplace_back(std::move(createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y},
+                       {10, 0, 10, ECS::ITEM_ID::WEAPON})));
         }
         // for (uint32_t i = 0; i < 4; ++i) {
         //     map_->items_.push_back(std::move(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0, 1000, 0, ECS::ITEM_ID::ARMOR})));

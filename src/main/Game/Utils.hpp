@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
-#define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 0.01 ? 0 : (a) * (fun))
+#define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 0.1 ? 0 : (a) * (fun))
 
 sf::Time operator"" _s(unsigned long long s) {
     return sf::seconds(s);

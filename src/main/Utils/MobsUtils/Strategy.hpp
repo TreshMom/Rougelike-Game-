@@ -5,7 +5,7 @@
 namespace ECS {
     class EventManager;
     class EntityManager;
-}; // namespace ECS
+} // namespace ECS
 
 class StrategyContext;
 
@@ -62,7 +62,7 @@ public:
 
         auto tmpx = mv.data.x;
         auto tmpy = mv.data.y;
-        if(vector_between != Vec2(0,0))
+        if(vector_between != Vec2{0,0})
         {
             mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
                 tm /= 1000;
@@ -134,11 +134,14 @@ public:
         bool is_attck = false;
         em.update<PlayerComponent, SpriteComponent, PositionComponent, HealthComponent, MoveComponent>(
             [&](auto& ent, PlayerComponent&, SpriteComponent& player_sprite, PositionComponent const& player_pos,
-            HealthComponent& player_hc,MoveComponent& player_mc) {
+            HealthComponent& player_hc, MoveComponent& player_mc) {
                 auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
                 if (center_pos.dist(player_center_pos) < 40) {
                     is_attck = true;
+                    std::cout << "-------------" << std::endl;
+                    std::cout << player_hc.data.current_hp << std::endl;
                     player_hc.data.current_hp -= attack_ent.data.damage;
+                    std::cout << player_hc.data.current_hp << std::endl;
                     vector_between = center_pos - player_center_pos;
                     auto tmpx = player_mc.data.x;
                     auto tmpy = player_mc.data.y;

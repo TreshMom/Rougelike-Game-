@@ -14,8 +14,8 @@ struct DiagnosticSystem : public SystemHandle, public SystemInterface {
 public:
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
-        em.update<InventoryComponent, AttackComponent, HealthComponent>(
-            [&](auto&, InventoryComponent& inv, AttackComponent& attack, HealthComponent& health) {
+        em.update<InventoryComponent, AttackComponent, HealthComponent, PlayerComponent>(
+            [&](auto&, InventoryComponent& inv, AttackComponent& attack, HealthComponent& health, PlayerComponent&) {
                 attack.data.damage = calc_attack(em, inv, attack);
                 attack.data.attack_radius = calc_radius(em, inv, attack);
                 health.data.current_hp = calc_hp(em, inv, health);
@@ -44,7 +44,7 @@ public:
     }
 
     double calc_hp(EntityManager& em, InventoryComponent& inv, HealthComponent& health) {
-        double res = health.data.default_hp;
+        double res = health.data.current_hp;
         for (auto& [pos, item] : inv.data.wear) {
             res += em.template get_component<ItemComponent>(item).data.health;
         }

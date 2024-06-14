@@ -30,7 +30,8 @@ constexpr uint32_t GRID_DENSITY = 200;
 constexpr double MOB_WEAPON_POS_X = 0;
 constexpr double MOB_WEAPON_POS_Y = -1000;
 
-const std::string BUG = "src/main/Assets/";
+const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
+//  /home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/_Attack.png
 
 // MENU_SETTINGS
 constexpr double MENU_POSITION_X = -2000;

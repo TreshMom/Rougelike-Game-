@@ -51,20 +51,10 @@ public:
             auto& pos = em.template get_component<PositionComponent>(fst);
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
-            if (em.template has_component<InventoryComponent>(fst)) {
-                auto const& invent = em.get_component<InventoryComponent>(fst);
-                if (invent.data.weapon_ent_id != ECS::INVALID) {
-                    em.update_by_id<PositionComponent>(invent.data.weapon_ent_id,
-                                                       [&pos](auto& ent, PositionComponent& pos_item) {
-                                                           pos_item.data.x = pos.data.x + 6;
-                                                           pos_item.data.y = pos.data.y + 25;
-                                                       });
-                }
-            }
         }
     }
 
-    void receive(CollisionEvent const& col) {
+    void receive(CollisionEvent const& col) override {
         coll_pairs.emplace(col.first_, col.second_);
     }
 
@@ -89,18 +79,14 @@ public:
                         auto tmp_y = mv.data.y;
 
                         mv.data.x = [=, rs = t.asMilliseconds() / 1000](double tm) {
-                            tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return OPRTIMIZE_MULT_ZERO((1 - alpha),
-                                                       5 * vector_between.x_ * std::exp((rs - tm) / 40.0)) +
-                                   OPRTIMIZE_MULT_ZERO(alpha, tmp_x(tm * 1000));
+                            return alpha * ([](double tm) -> double { return (rand() % 1000) / 75.0 - 500 / 75.0; })(tm)
+                            + (1 - alpha) * ([](double tm) -> double { return 3; })(tm);
                         };
                         mv.data.y = [=, rs = t.asMilliseconds() / 1000](double tm) {
-                            tm /= 1000;
                             double alpha = sigmoid(tm, 3, rs);
-                            return OPRTIMIZE_MULT_ZERO((1 - alpha),
-                                                       5 * vector_between.y_ * std::exp((rs - tm) / 40.0)) +
-                                   OPRTIMIZE_MULT_ZERO(alpha, tmp_y(tm * 1000));
+                            return alpha * ([](double tm) -> double { return (rand() % 1000) / 75.0 - 500 / 75.0; })(tm)
+                                   + (1 - alpha) * ([](double tm) -> double { return 3; })(tm);
                         };
                     }
                 });
