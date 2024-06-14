@@ -15,6 +15,7 @@ protected:
         wall.renderData_.texture->setRepeated(true);
         wall.renderData_.sprite.setTexture(*wall.renderData_.texture);
         wall.renderData_.sprite.setTextureRect(rect);
+        wall.renderData_.render_priority = 1;
         wall.pos_ = pos;
         map_->walls_.push_back(std::move(wall));
     }
@@ -26,6 +27,7 @@ protected:
         item.renderData_.sprite.setTexture(*item.renderData_.texture);
         item.renderData_.sprite.setScale(SPRITE_SIZE / item.renderData_.sprite.getLocalBounds().width,
                                          SPRITE_SIZE / item.renderData_.sprite.getLocalBounds().height);
+        item.renderData_.render_priority = 2;
         item.pos_ = pos;
         item.data_ = data;
         return item;
@@ -38,8 +40,9 @@ protected:
         mob.renderData_.sprite.setTexture(*mob.renderData_.texture);
         mob.renderData_.sprite.setScale(SPRITE_SIZE / mob.renderData_.sprite.getLocalBounds().width,
                                         SPRITE_SIZE / mob.renderData_.sprite.getLocalBounds().height);
+        mob.renderData_.render_priority = 3;
         mob.pos_ = pos;
-        mob.weapon_ = std::move(createItem(BUG + "axe.png", {MOB_WEAPON_POS_X, MOB_WEAPON_POS_Y}, {10, 0, 10, ECS::ITEM_ID::WEAPON}));
+        mob.weapon_ = createItem(BUG + "axe.png", {MOB_WEAPON_POS_X, MOB_WEAPON_POS_Y}, {10, 0, 1000, ECS::ITEM_ID::WEAPON});
         mob.hp_data_ = hp_data;
         mob.attack_data_ = AttackData{.damage = mob.weapon_.data_.damage, 
             .attack_radius = mob.weapon_.data_.attack_radius, 
@@ -55,6 +58,7 @@ protected:
         map_->renderData_.sprite.setScale(map_->worldWidth_ / map_->renderData_.sprite.getLocalBounds().width,
                                           map_->worldHeight_ / map_->renderData_.sprite.getLocalBounds().height);
         map_->pos_ = pos;
+        map_->renderData_.render_priority = 0;
     }
 
     void generateGrid() {
@@ -116,27 +120,29 @@ private:
     uint32_t NUMBER_OF_MOBS = 40;
 
 public:
-    SmallMapBuilder() {}
+    SmallMapBuilder() = default;
 
     void generateWalls() override {
         double ww = map_->worldWidth_;
         double wh = map_->worldHeight_;
         
         // create outside walls
-        createWall(BUG + "tile_0040.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // upper wall
-        createWall(BUG + "tile_0040.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // lower wall
-        createWall(BUG + "tile_0040.png", {0, SPRITE_SIZE},
+        createWall(BUG + "wall.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // upper wall
+        createWall(BUG + "wall.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // lower wall
+        createWall(BUG + "wall.png", {0, SPRITE_SIZE},
                    sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
-        createWall(BUG + "tile_0040.png", {ww - SPRITE_SIZE, SPRITE_SIZE},
+        createWall(BUG + "wall.png", {ww - SPRITE_SIZE, SPRITE_SIZE},
                    sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // right wall
 
         // create inside walls ...
+
+
     }
 
     void generateItems() override {
         for (uint32_t i = 0; i < 3; ++i) {
-            map_->items_.emplace_back(std::move(createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y},
-                       {10, 0, 10, ECS::ITEM_ID::WEAPON})));
+            map_->items_.emplace_back(createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y},
+                       {10, 0, 10, ECS::ITEM_ID::WEAPON}));
         }
         // for (uint32_t i = 0; i < 4; ++i) {
         //     map_->items_.push_back(std::move(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0, 1000, 0, ECS::ITEM_ID::ARMOR})));
@@ -145,7 +151,7 @@ public:
 
     void generateMobs() override {
         for (uint32_t i = 0; i < NUMBER_OF_MOBS; ++i) {
-            map_->mobs_.push_back(std::move(createMob(BUG + "tile_0096.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {100, 100})));
+            map_->mobs_.push_back(createMob(BUG + "tile_0096.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {100, 100}));
         }
     }
 
@@ -154,7 +160,7 @@ public:
     }
 
     void generateMenu() override {
-        createMenu(BUG + "menu.png", BUG + "Sansation-Bold.ttf", {MENU_POSITION_X, MENU_POSITION_Y});
+        createMenu(BUG + "menu.png", BUG + "font.ttf", {MENU_POSITION_X, MENU_POSITION_Y});
     }
 };
 

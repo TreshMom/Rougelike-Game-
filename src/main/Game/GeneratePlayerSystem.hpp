@@ -27,7 +27,7 @@ public:
                                    AttackComponent& attack, HealthComponent& health, PlayerComponent& player,
                                    InventoryComponent& inventory, MoveComponent& mv) {
                     shape.data.texture = std::make_shared<sf::Texture>();
-                    shape.data.texture->loadFromFile(BUG + "tile_0100.png");
+                    shape.data.texture->loadFromFile(BUG + "player1.png");
                     shape.data.sprite.setTexture(*shape.data.texture);
                     shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
                                                SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
