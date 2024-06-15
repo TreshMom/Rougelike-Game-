@@ -119,7 +119,7 @@ public:
 class SmallMapBuilder : public MapBuilder {
 private:
     uint32_t NUMBER_OF_ITEMS = 10;
-    uint32_t NUMBER_OF_MOBS = 40;
+    uint32_t NUMBER_OF_MOBS = 1;
 
 public:
     SmallMapBuilder() = default;

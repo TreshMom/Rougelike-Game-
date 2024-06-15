@@ -22,7 +22,7 @@ public:
             if (times[ent.get_id()] < t) {
                 if (hc.data.hp < hc.data.max_hp) {
                     hc.data.hp += std::min(hc.data.max_hp - hc.data.hp, hc.data.reg);
-                    times[ent.get_id()] = t + 1_s;
+                    times[ent.get_id()] = t + 100_ms;
                 }
             }
         });

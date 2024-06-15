@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AttackMobSystem.hpp"
 #include "CollectSystem.hpp"
 #include "DiagnosticSystem.hpp"
 #include "GenerateMapSystem.hpp"

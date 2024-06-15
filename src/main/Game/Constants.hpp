@@ -44,6 +44,8 @@ constexpr int32_t PLAYER_NEXT_LEVEL = 100;
 constexpr double MOB_SPAWN_X = WORLD_WIDTH / 2;
 constexpr double MOB_SPAWN_Y = WORLD_HEIGHT / 2;
 
+constexpr double MOB_MIN_ATTACK_HEALTH_TO_COWARD = 20;
+constexpr double MOB_MAX_ATTACK_HEALTH_TO_AGGRESSIVE = 20;
 constexpr double MOB_WEAPON_POS_X = 0;
 constexpr double MOB_WEAPON_POS_Y = -1000;
 

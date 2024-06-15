@@ -91,22 +91,21 @@ public:
 
                         // mc.data.x = [](double tm) { return 0; };
                         // mc.data.y = [](double tm) { return 0; };
-
-                        strc.data.strategy_context = std::make_unique<Client>();
+                        std::shared_ptr<Strategy> strategy = nullptr;
                         switch (rand() % 3) {
                         case 0:
-                            strc.data.strategy_context->set_strategy(aggressive);
+                            strategy = aggressive;
                             break;
                         case 1:
-                            strc.data.strategy_context->set_strategy(aggressive);
+                            strategy = aggressive;
                             break;
                         case 2:
-                            strc.data.strategy_context->set_strategy(aggressive);
+                            strategy = aggressive;
                             break;
                         default:
                             break;
                         }
-
+                        strc.data.strategy_context = std::make_unique<SavedStateContext>(aggressive);
                         auto weapon_ptr = em.allocEntity<WeaponEntity>();
                         ic.data.weapon_ent_id = weapon_ptr->get_id();
                         em.update_by_id<SpriteComponent, PositionComponent, MoveComponent>(

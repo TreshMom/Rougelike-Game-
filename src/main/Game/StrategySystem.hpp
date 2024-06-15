@@ -10,6 +10,7 @@ public:
         em.update<StrategyComponent>([&](auto& ent, StrategyComponent& sc) {
             sc.data.strategy_context->update_coord(em, evm, ent.get_id(), t);
             sc.data.strategy_context->attack(em, evm, ent.get_id(), t);
+            sc.data.strategy_context->update_and_check_state(em, evm, ent.get_id(), t);
         });
     }
 };
