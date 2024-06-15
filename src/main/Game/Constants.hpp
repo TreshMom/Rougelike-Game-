@@ -49,8 +49,7 @@ constexpr double MOB_SPAWN_Y = WORLD_HEIGHT / 2;
 constexpr double MOB_WEAPON_POS_X = 0;
 constexpr double MOB_WEAPON_POS_Y = -1000;
 
-// BUG
-const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
+const std::string BUG = "src/main/Assets/";
 //  /home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/_Attack.png
 
 // MENU_SETTINGS

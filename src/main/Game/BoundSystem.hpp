@@ -21,16 +21,10 @@ public:
     }
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
-        std::unordered_set<EntityId> test;
+        std::unordered_map<ECS::EntityId, Vec2> result_push;
         while (!coll_pairs.empty()) {
             auto [fst, snd] = coll_pairs.front();
             coll_pairs.pop();
-
-            if (test.contains(fst)) {
-                continue;
-            }
-
-            test.insert(fst);
 
             if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
                 continue;
@@ -41,7 +35,15 @@ public:
             }
 
             if (em.template has_component<MoveComponent>(fst) && em.template has_component<MoveComponent>(snd)) {
-                push(fst, snd, evm, em, t);
+                auto const& sprite_left = em.template get_component<SpriteComponent>(fst).data.sprite;
+                auto const& sprite_right = em.template get_component<SpriteComponent>(snd).data.sprite;
+                auto const& pos_left = em.template get_component<PositionComponent>(fst).data;
+                auto const& pos_right = em.template get_component<PositionComponent>(snd).data;
+                auto left_center = center_of_mass(sprite_left, pos_left);
+                auto right_center = center_of_mass(sprite_right, pos_right);
+                auto vector_between = right_center - left_center;
+                result_push[snd] += vector_between;
+                result_push[fst] += -vector_between;
                 continue;
             }
 
@@ -53,43 +55,27 @@ public:
             pos.data.x = pos.data.x_prev;
             pos.data.y = pos.data.y_prev;
         }
+        for (auto& [id, vector_between] : result_push) {
+            vector_between.normalize();
+            if (em.template has_component<MoveComponent>(id)) {
+                auto& mv = em.template get_component<MoveComponent>(id);
+                mv.data.x = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
+                    tm /= 1000;
+                    double alpha = sigmoid(tm, 3, rs);
+                    return (1 - alpha) * 3 * vector_between.x_ * std::exp((rs - tm) / 40.0) +
+                           alpha * mv.data.x_default(tm * 1000);
+                };
+                mv.data.y = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
+                    tm /= 1000;
+                    double alpha = sigmoid(tm, 3, rs);
+                    return (1 - alpha) * 3 * vector_between.y_ * std::exp((rs - tm) / 40.0) +
+                           alpha * mv.data.y_default(tm * 1000);
+                };
+            }
+        }
     }
 
     void receive(CollisionEvent const& col) override {
         coll_pairs.emplace(col.first_, col.second_);
-    }
-
-    void push(EntityId fst, EntityId snd, EventManager&, EntityManager& em, sf::Time t) {
-        if (!em.hasEntity(fst) || !em.hasEntity(snd)) {
-            return;
-        }
-
-        em.update_by_id<PositionComponent, SpriteComponent>(fst, [&](auto& left, PositionComponent const& pos_left,
-                                                                     SpriteComponent const& sprite_left) {
-            em.update_by_id<PositionComponent, SpriteComponent, MoveComponent>(
-                snd,
-                [&](auto& right, PositionComponent const& pos_right, SpriteComponent& sprite_right, MoveComponent& mv) {
-                    if (left.get_id() != right.get_id()) {
-
-                        auto left_ = center_of_mass(sprite_left.data.sprite, pos_left.data);
-                        auto right_ = center_of_mass(sprite_right.data.sprite, pos_right.data);
-
-                        auto vector_between = right_ - left_;
-                        vector_between.normalize();
-                        auto tmp_x = mv.data.x;
-                        auto tmp_y = mv.data.y;
-
-                        mv.data.x = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
-                            tm /= 1000;
-                            double alpha = sigmoid(tm, 3, rs);
-                            return (1 - alpha) * 5 * vector_between.x_ * std::exp((rs - tm) / 40.0) + alpha* mv.data.x_default(tm * 1000);
-                        };
-                        mv.data.y = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
-                            double alpha = sigmoid(tm, 3, rs);
-                            return (1 - alpha) * 5 * vector_between.y_ * std::exp((rs - tm) / 40.0) + alpha* mv.data.y_default(tm * 1000);
-                        };
-                    }
-                });
-        });
     }
 };

@@ -85,8 +85,9 @@ protected:
         map_->menu_.renderData_.text.setFont(*map_->menu_.renderData_.font);
         map_->menu_.renderData_.text.setCharacterSize(FONT_SIZE);
         map_->menu_.renderData_.text.setStyle(sf::Text::Bold);
-        map_->menu_.renderData_.text.setFillColor(sf::Color::Black);        
-        map_->menu_.renderData_.text.setPosition(MENU_POSITION_X + DIFF_FONT_POS_MENU_X, MENU_POSITION_Y + DIFF_FONT_POS_MENU_Y);
+        map_->menu_.renderData_.text.setFillColor(sf::Color::Black);
+        map_->menu_.renderData_.text.setPosition(MENU_POSITION_X + DIFF_FONT_POS_MENU_X,
+                                                 MENU_POSITION_Y + DIFF_FONT_POS_MENU_Y);
     }
 
 public:
@@ -125,7 +126,7 @@ public:
     void generateWalls() override {
         double ww = map_->worldWidth_;
         double wh = map_->worldHeight_;
-        
+
         // create outside walls
         createWall(BUG + "wall.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // upper wall
         createWall(BUG + "wall.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // lower wall

@@ -20,12 +20,12 @@ public:
                                   sf::Style::Titlebar | sf::Style::Close)},
           playerView(sf::FloatRect(0.f, 0.f, VIEW_WIDTH, VIEW_HEIGHT)),
           menuView(sf::FloatRect(0.f, 0.f, MENU_WIDTH, MENU_HEIGHT)) {
-            menuView.setCenter(MENU_POSITION_X + MENU_WIDTH / 2, MENU_POSITION_Y + MENU_HEIGHT / 2);
-            playerView.setViewport(sf::FloatRect(0.f, 0, 0.75f, 1));
-            menuView.setViewport(sf::FloatRect(0.75, 0, 0.25, 1));
-            window.setFramerateLimit(60);
-            window.setView(playerView);
-          }
+        menuView.setCenter(MENU_POSITION_X + MENU_WIDTH / 2, MENU_POSITION_Y + MENU_HEIGHT / 2);
+        playerView.setViewport(sf::FloatRect(0.f, 0, 0.75f, 1));
+        menuView.setViewport(sf::FloatRect(0.75, 0, 0.25, 1));
+        window.setFramerateLimit(60);
+        window.setView(playerView);
+    }
 
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {}
 

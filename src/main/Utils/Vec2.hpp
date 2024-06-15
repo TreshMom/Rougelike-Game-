@@ -30,9 +30,14 @@ struct Vec2 {
         return *this;
     }
 
-    bool operator==(Vec2 const& other) const noexcept
-    {
+    bool operator==(Vec2 const& other) const noexcept {
         return x_ == other.x_ && y_ == other.y_;
+    }
+
+    Vec2& operator-() {
+        x_ = -x_;
+        y_ = -y_;
+        return *this;
     }
 
     void normalize() {
@@ -67,7 +72,7 @@ struct Vec2 {
         return (*this - other).get_norm();
     }
 
-    void swap(Vec2& other)  noexcept {
+    void swap(Vec2& other) noexcept {
         std::swap(x_, other.x_);
         std::swap(y_, other.y_);
     }
