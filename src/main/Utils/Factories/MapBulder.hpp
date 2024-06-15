@@ -100,20 +100,21 @@ public:
         return map_;
     }
 
-    void createNewMap(double worldWidth = WORLD_WIDTH, double worldHeight = WORLD_HEIGHT) {
+    MapBuilder& createNewMap(double worldWidth = WORLD_WIDTH, double worldHeight = WORLD_HEIGHT) {
         map_ = std::make_shared<Map>(worldWidth, worldHeight);
         generateGrid();
+        return *this;
     }
 
-    virtual void generateWalls() = 0;
+    virtual MapBuilder& generateWalls() = 0;
 
-    virtual void generateItems() = 0;
+    virtual MapBuilder& generateItems() = 0;
 
-    virtual void generateMobs() = 0;
+    virtual MapBuilder& generateMobs() = 0;
 
-    virtual void setUpTexture() = 0;
+    virtual MapBuilder& setUpTexture() = 0;
 
-    virtual void generateMenu() = 0;
+    virtual MapBuilder& generateMenu() = 0;
 };
 
 class SmallMapBuilder : public MapBuilder {
@@ -124,7 +125,7 @@ private:
 public:
     SmallMapBuilder() = default;
 
-    void generateWalls() override {
+    MapBuilder& generateWalls() override {
         double ww = map_->worldWidth_;
         double wh = map_->worldHeight_;
 
@@ -137,9 +138,10 @@ public:
                    sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // right wall
 
         // create inside walls ...
+        return *this;
     }
 
-    void generateItems() override {
+    MapBuilder& generateItems() override {
         for (uint32_t i = 0; i < 3; ++i) {
             map_->items_.emplace_back(
                 createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {50, 0, 50, 0, ECS::ITEM_ID::WEAPON}));
@@ -148,21 +150,25 @@ public:
             map_->items_.push_back(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE},
                                               {0, 1000, 0, 100, ECS::ITEM_ID::ARMOR}));
         }
+        return *this;
     }
 
-    void generateMobs() override {
+    MapBuilder& generateMobs() override {
         for (uint32_t i = 0; i < NUMBER_OF_MOBS; ++i) {
             map_->mobs_.push_back(
                 createMob(BUG + "tile_0096.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {100, 100, 200, 0.1, 0.1}));
         }
+        return *this;
     }
 
-    void setUpTexture() override {
+    MapBuilder& setUpTexture() override {
         loadTexture(BUG + "map.png", {0, 0});
+        return *this;
     }
 
-    void generateMenu() override {
+    MapBuilder& generateMenu() override {
         createMenu(BUG + "menu.png", BUG + "font.ttf", {MENU_POSITION_X, MENU_POSITION_Y});
+        return *this;
     }
 };
 
@@ -184,12 +190,8 @@ public:
         if (fromFile) {
             std::cout << "from file" << std::endl;
         } else {
-            builder_->createNewMap(worldWidth, worldHeight);
-            builder_->setUpTexture();
-            builder_->generateWalls();
-            builder_->generateItems();
-            builder_->generateMobs();
-            builder_->generateMenu();
+            builder_->createNewMap(worldWidth, worldHeight).setUpTexture().generateWalls()
+            .generateItems().generateMobs().generateMenu();
         };
     }
 };
