@@ -30,6 +30,18 @@ struct Vec2 {
         return *this;
     }
 
+    Vec2 operator*(double val) const
+    {
+        return Vec2(x_ * val, y_ * val);
+    }
+
+    Vec2& operator*=(double val)
+    {
+        x_ *= val;
+        y_ *= val;
+        return *this;
+    }
+
     bool operator==(Vec2 const& other) const noexcept {
         return x_ == other.x_ && y_ == other.y_;
     }

@@ -84,6 +84,40 @@ public:
                         HealthComponent& hc, StrategyComponent& strc, InventoryComponent& ic) {
                         pc.data = std::move(mob.pos_);
                         sc.data = std::move(mob.renderData_);
+
+                        auto target_pos1 = Vec2(400,400);
+                        auto target_pos2 = Vec2(700,400);
+
+                        mc.data.default_direction = [target_pos1, target_pos2, &sc, &pc, &em] (double) mutable {
+                            auto center_pos = ECS::center_of_mass(sc.data.sprite, pc.data);
+                            auto target_pos1 = Vec2(400,400);
+                            // auto target_pos2 = Vec2(700,400);
+                            
+                            Vec2 diff = target_pos1 - center_pos;
+                            // Vec2 diff2 = target_pos2 - center_pos;
+                            // Vec2 diff{0.0, 0.0};
+                            if(diff.get_norm() > 4)
+                            {
+                                diff.normalize();
+                                diff *= 1.5;
+                            }
+                            bool closer_player = false;
+                            em.update<PlayerComponent, SpriteComponent,PositionComponent>([&](auto& ent, 
+                            PlayerComponent const&, 
+                            SpriteComponent const& player_sprite, PositionComponent& player_pos){
+                                auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
+                                if (center_pos.dist(player_center_pos) < 300) {
+                                    closer_player = true;
+                                }
+                            });
+                            if(closer_player)
+                            {
+                                std::cout << "i see you" << std::endl;
+                                return Vec2{0.0, 0.0};
+                            }
+                            return diff;
+                        };
+
                         hc.data = std::move(mob.hp_data_);
                         ac.data = std::move(mob.attack_data_);
                         pc.data.x += rand() % 10;
