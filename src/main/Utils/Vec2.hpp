@@ -42,8 +42,11 @@ struct Vec2 {
 
     void normalize() {
         double hyp = get_norm();
-        x_ /= hyp;
-        y_ /= hyp;
+        if(hyp != 0)
+        {
+            x_ /= hyp;
+            y_ /= hyp;
+        }
     }
 
     Vec2 operator-(Vec2 const& other) const {

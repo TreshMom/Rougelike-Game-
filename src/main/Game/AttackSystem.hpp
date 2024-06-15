@@ -34,19 +34,17 @@ public:
                             MoveComponent& mv) {
                         auto& move_weapon = em.get_component<MoveComponent>(invent.data.weapon_ent_id);
                         auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
-                        move_weapon.data.x = [t, &mv, &sprite_weapon](double time) {
+                        move_weapon.data.directions_t_not_clean.push_back([t, &mv, &sprite_weapon](double time) {
                             if (time / 1000.0 < t.asMilliseconds() / 1000.0 + 0.3) {
                                 sprite_weapon.data.sprite.setRotation(-90.0);
                             } else {
                                 sprite_weapon.data.sprite.setRotation(0.0);
                             }
-                            return mv.data.x(time);
-                        };
-
-                        move_weapon.data.y = [&mv](double time) { return mv.data.y(time); };
+                            return Vec2{0,0};
+                        });
                     });
 
-            em.update<HealthComponent, PositionComponent, SpriteComponent, MoveComponent>(
+            em.update<PlayerComponent, PositionComponent, SpriteComponent, MoveComponent>(
                     [&](auto& defence_entity, HealthComponent& health, PositionComponent const& pos_right,
                         SpriteComponent& sprite_right, MoveComponent& mv) {
                         if (!em.has_component<PlayerComponent>(id) &&
@@ -66,25 +64,18 @@ public:
                                     kill(evm, em, defence_entity.get_id());
                                     return;
                                 }
-                                sprite_right.data.sprite.setColor(
-                                        sf::Color((health.data.default_hp - health.data.hp) /
-                                                  static_cast<double>(health.data.default_hp) * 255,
-                                                  0, 0));
-                                auto tmpx = mv.data.x;
-                                auto tmpy = mv.data.y;
-                                mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+                                if(!em.template has_component<PlayerComponent>(defence_entity.get_id()))
+                                {
+                                    sprite_right.data.sprite.setColor(
+                                            sf::Color((health.data.default_hp - health.data.hp) /
+                                                    static_cast<double>(health.data.default_hp) * 255,
+                                                    0, 0));
+                                }
+                                mv.data.directions_t_clean[5] = [vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
                                     tm /= 1000;
                                     double alpha = sigmoid(tm, 3, rs);
-                                    return OPRTIMIZE_MULT_ZERO((1 - alpha),
-                                                               10 * vector_between.x_ * std::exp((rs - tm) / 50.0)) +
-                                           OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
-                                };
-                                mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
-                                    tm /= 1000;
-                                    double alpha = sigmoid(tm, 3, rs);
-                                    return OPRTIMIZE_MULT_ZERO((1 - alpha),
-                                                               10 * vector_between.y_ * std::exp((rs - tm) / 50.0)) +
-                                           OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
+                                    return Vec2{(1 - alpha) * 10 * vector_between.x_ * std::exp((rs - tm) / 50.0),
+                                    (1 - alpha) * 10 * vector_between.y_ * std::exp((rs - tm) / 50.0)};
                                 };
                             }
                         }

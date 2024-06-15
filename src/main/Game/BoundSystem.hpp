@@ -59,17 +59,12 @@ public:
             vector_between.normalize();
             if (em.template has_component<MoveComponent>(id)) {
                 auto& mv = em.template get_component<MoveComponent>(id);
-                mv.data.x = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
+                mv.data.directions_t_clean[1] = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
                     tm /= 1000;
                     double alpha = sigmoid(tm, 3, rs);
-                    return (1 - alpha) * 3 * vector_between.x_ * std::exp((rs - tm) / 40.0) +
-                           alpha * mv.data.x_default(tm * 1000);
-                };
-                mv.data.y = [&mv, vector_between, rs = t.asMilliseconds() / 1000](double tm) {
-                    tm /= 1000;
-                    double alpha = sigmoid(tm, 3, rs);
-                    return (1 - alpha) * 3 * vector_between.y_ * std::exp((rs - tm) / 40.0) +
-                           alpha * mv.data.y_default(tm * 1000);
+                    double attenuation = std::exp((rs - tm) / 40.0);
+                    return Vec2{(1 - alpha) * 3 * vector_between.x_ * attenuation,
+                    (1 - alpha) * 3 * vector_between.y_ * attenuation};
                 };
             }
         }

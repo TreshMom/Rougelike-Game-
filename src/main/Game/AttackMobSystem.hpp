@@ -28,29 +28,30 @@ public:
                         PositionComponent const& player_pos, HealthComponent& player_hc, MoveComponent& player_mc) {
                         auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
 
-                        player_hc.data.current_hp -= ac.data.damage;
+                        player_hc.data.hp -= ac.data.damage;
                         Vec2 vector_between = center_pos - player_center_pos;
-                        auto tmpx = player_mc.data.x;
-                        auto tmpy = player_mc.data.y;
+                        // auto tmpx = player_mc.data.x;
+                        // auto tmpy = player_mc.data.y;
                         vector_between.normalize();
-                        player_mc.data.x = [&player_mc, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
-                            tm /= 1000;
-                            double alpha = sigmoid(tm, 3, rs);
-                            return (1 - alpha) * 6 * -vector_between.x_ * std::exp((rs - tm) / 50.0) +
-                                   alpha * player_mc.data.x_default(tm * 1000);
-                        };
-                        player_mc.data.y = [&player_mc, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
-                            tm /= 1000;
-                            double alpha = sigmoid(tm, 3, rs);
-                            return (1 - alpha) * 6 * -vector_between.y_ * std::exp((rs - tm) / 50.0) +
-                                   alpha * player_mc.data.y_default(tm * 1000);
-                        };
+                        // player_mc.data.x = [&player_mc, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+                        //     tm /= 1000;
+                        //     double alpha = sigmoid(tm, 3, rs);
+                        //     return (1 - alpha) * 6 * -vector_between.x_ * std::exp((rs - tm) / 50.0) +
+                        //            alpha * player_mc.data.x_default(tm * 1000);
+                        // };
+                        // player_mc.data.y = [&player_mc, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+                        //     tm /= 1000;
+                        //     double alpha = sigmoid(tm, 3, rs);
+                        //     return (1 - alpha) * 6 * -vector_between.y_ * std::exp((rs - tm) / 50.0) +
+                        //            alpha * player_mc.data.y_default(tm * 1000);
+                        // };
                     });
             });
         }
     }
 
     void receive(AttackMobEvent const& event) {
+        std::cout << "receive" << std::endl;
         q.emplace(event.attacking_, event.defending_);
     }
 };

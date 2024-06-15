@@ -64,21 +64,24 @@ public:
         vector_between.normalize();
         [[maybe_unused]] auto& mv = em.template get_component<MoveComponent>(eid);
 
-        auto tmpx = mv.data.x;
-        auto tmpy = mv.data.y;
+        // auto tmpx = mv.data.x;
+        // auto tmpy = mv.data.y;
         if (vector_between != Vec2{0, 0}) {
-            mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
-                tm /= 1000;
-                double alpha = sigmoid(tm, 3, rs);
-                return OPRTIMIZE_MULT_ZERO((1 - alpha), 10 * vector_between.x_ * std::exp((rs - tm) / 50.0)) +
-                       OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
+            mv.data.directions_t_clean[0] = [](double t){
+                return Vec2{0,0};
             };
-            mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
-                tm /= 1000;
-                double alpha = sigmoid(tm, 3, rs);
-                return OPRTIMIZE_MULT_ZERO((1 - alpha), 10 * vector_between.y_ * std::exp((rs - tm) / 50.0)) +
-                       OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
-            };
+            // mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+            //     tm /= 1000;
+            //     double alpha = sigmoid(tm, 3, rs);
+            //     return OPRTIMIZE_MULT_ZERO((1 - alpha), 10 * vector_between.x_ * std::exp((rs - tm) / 50.0)) +
+            //            OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
+            // };
+            // mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+            //     tm /= 1000;
+            //     double alpha = sigmoid(tm, 3, rs);
+            //     return OPRTIMIZE_MULT_ZERO((1 - alpha), 10 * vector_between.y_ * std::exp((rs - tm) / 50.0)) +
+            //            OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
+            // };
         }
     }
 
@@ -105,21 +108,27 @@ public:
         vector_between.normalize();
         [[maybe_unused]] auto& mv = em.template get_component<MoveComponent>(eid);
 
-        auto tmpx = mv.data.x;
-        auto tmpy = mv.data.y;
+        // auto tmpx = mv.data.x;
+        // auto tmpy = mv.data.y;
         if (vector_between != Vec2(0, 0)) {
-            mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+            mv.data.directions_t_clean[0] = [ vector_between, rs = t.asMilliseconds() / 1000.0](double tm) -> Vec2 {
                 tm /= 1000;
                 double alpha = sigmoid(tm, 3, rs);
-                return OPRTIMIZE_MULT_ZERO((1 - alpha), 3 * -vector_between.x_ * std::exp((rs - tm) / 50.0)) +
-                       OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
+                return Vec2{(1 - alpha)* 3 * -vector_between.x_ * std::exp((rs - tm) / 50.0),
+                (1 - alpha)* 3 * -vector_between.y_ * std::exp((rs - tm) / 50.0)};
             };
-            mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
-                tm /= 1000;
-                double alpha = sigmoid(tm, 3, rs);
-                return OPRTIMIZE_MULT_ZERO((1 - alpha), 3 * -vector_between.y_ * std::exp((rs - tm) / 50.0)) +
-                       OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
-            };
+            // mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+            //     tm /= 1000;
+            //     double alpha = sigmoid(tm, 3, rs);
+            //     return OPRTIMIZE_MULT_ZERO((1 - alpha), 3 * -vector_between.x_ * std::exp((rs - tm) / 50.0)) +
+            //            OPRTIMIZE_MULT_ZERO(alpha, tmpx(tm * 1000));
+            // };
+            // mv.data.y = [tmpy, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
+            //     tm /= 1000;
+            //     double alpha = sigmoid(tm, 3, rs);
+            //     return OPRTIMIZE_MULT_ZERO((1 - alpha), 3 * -vector_between.y_ * std::exp((rs - tm) / 50.0)) +
+            //            OPRTIMIZE_MULT_ZERO(alpha, tmpy(tm * 1000));
+            // };
         }
     }
 
@@ -139,7 +148,8 @@ public:
                 }
             });
         if (is_attck) {
-            context->set_strategy(std::make_shared<CowardStrategy>());
+            evm.notify(AttackEvent(eid));
+            // context->set_strategy(std::make_shared<CowardStrategy>());
         }
     }
 

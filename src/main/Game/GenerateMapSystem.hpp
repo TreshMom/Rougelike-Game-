@@ -87,9 +87,11 @@ public:
                             sc.data = std::move(mob.renderData_);
                             hc.data = std::move(mob.hp_data_);
                             ac.data = std::move(mob.attack_data_);
+                            pc.data.x = 400 + rand()%100;
+                            pc.data.y = 400 + rand()%100;
 
-                            mc.data.x = [](double tm) { return 0; };
-                            mc.data.y = [](double tm) { return 0; };
+                            // mc.data.x = [](double tm) { return 0; };
+                            // mc.data.y = [](double tm) { return 0; };
 
                             strc.data.strategy_context = std::make_unique<Client>();
                             switch (rand() % 3) {
@@ -100,7 +102,7 @@ public:
                                     strc.data.strategy_context->set_strategy(aggressive);
                                     break;
                                 case 2:
-                                    strc.data.strategy_context->set_strategy(calm);
+                                    strc.data.strategy_context->set_strategy(aggressive);
                                     break;
                                 default:
                                     break;
@@ -115,8 +117,6 @@ public:
                                         w_sc.data.render_priority = 5;
                                         w_sc.data.sprite.setScale(1.4, 1.4);
                                         w_sc.data.sprite.setOrigin(10, 15);
-                                        w_mc.data.x = [&mc](double t) { return mc.data.x(t); };
-                                        w_mc.data.y = [&mc](double t) { return mc.data.y(t); };
                                         w_pc.data = Vec2(pc.data.x, pc.data.y) + Vec2(6, 25);
                                     });
                         }

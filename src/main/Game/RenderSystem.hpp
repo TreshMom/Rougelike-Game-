@@ -30,7 +30,7 @@ public:
     void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {}
 
     void update(ECS::EventManager&, ECS::EntityManager& em, ECS::SystemManager&, sf::Time) override {
-        window.clear(sf::Color::White);
+        window.clear(sf::Color::Black);
 
         em.update<PositionComponent, PlayerComponent>([&](auto&, PositionComponent& player_pos, PlayerComponent&) {
             playerView.setCenter(player_pos.data.x, player_pos.data.y);

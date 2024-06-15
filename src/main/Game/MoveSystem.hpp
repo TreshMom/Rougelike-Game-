@@ -10,11 +10,12 @@ public:
         em.update<StrategyComponent>([&](auto& ent, StrategyComponent& sc) {
             sc.data.strategy_context->update_coord(em, evm, ent.get_id(), t);
         });
-        em.update<PositionComponent, MoveComponent>([&](auto&, PositionComponent& pos, MoveComponent& move) {
+        em.update<PositionComponent, MoveComponent>([&](auto&,PositionComponent& pos, MoveComponent& move) {
             pos.data.x_prev = pos.data.x;
             pos.data.y_prev = pos.data.y;
-            pos.data.x += move.data.x(t.asMilliseconds());
-            pos.data.y += move.data.y(t.asMilliseconds());
+            Vec2 sum_direction = move.data.clear_and_return(t.asMilliseconds());
+            pos.data.x += sum_direction.x_;
+            pos.data.y += sum_direction.y_;
         });
         em.update<InventoryComponent, PositionComponent>([&](auto&, InventoryComponent& ic, PositionComponent& pc) {
             auto id = ic.data.weapon_ent_id;

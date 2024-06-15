@@ -53,17 +53,10 @@ public:
         if (left || right || up || down) {
             em.update<PlayerComponent, MoveComponent, SpriteComponent>(
                 [&](auto& entity, PlayerComponent& pl, MoveComponent& mv, SpriteComponent& sprite) {
-                    auto tmpx = mv.data.x;
-                    auto tmpy = mv.data.y;
-                    mv.data.x = [=, rs = t.asMilliseconds()](double tm) {
+                    mv.data.directions_t_clean[2] = [=, rs = t.asMilliseconds()](double tm) {
                         double alpha = sigmoid(tm, 0.1, rs);
-                        return OPRTIMIZE_MULT_ZERO(alpha, 6 * (right - left) * std::exp((rs - tm) / 50.0)) +
-                               OPRTIMIZE_MULT_ZERO((1 - alpha), tmpx(tm));
-                    };
-                    mv.data.y = [=, rs = t.asMilliseconds()](double tm) {
-                        double alpha = sigmoid(tm, 0.1, rs);
-                        return OPRTIMIZE_MULT_ZERO(alpha, 6 * (down - up) * std::exp((rs - tm) / 50.0)) +
-                               OPRTIMIZE_MULT_ZERO((1 - alpha), tmpy(tm));
+                        return Vec2{alpha * 6 * (right - left) * std::exp((rs - tm) / 50.0),
+                        alpha* 6 * (down - up) * std::exp((rs - tm) / 50.0)};
                     };
                 });
         }
