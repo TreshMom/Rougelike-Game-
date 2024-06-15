@@ -10,13 +10,7 @@ struct ExperienceData {
 
     ExperienceData() = default;
 
-    ExperienceData(uint32_t l, uint32_t e)
-            : level_(l),
-              current_exp_(e) {}
+    ExperienceData(uint32_t l, uint32_t e) : level_(l), current_exp_(e) {}
 
-    ExperienceData(uint32_t l, uint32_t e, uint32_t g)
-            : level_(l),
-              current_exp_(e),
-              exp_gain_(g) {}
-
+    ExperienceData(uint32_t l, uint32_t e, uint32_t g) : level_(l), current_exp_(e), exp_gain_(g) {}
 };

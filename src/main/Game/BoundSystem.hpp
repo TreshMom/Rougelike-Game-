@@ -64,7 +64,7 @@ public:
                     double alpha = sigmoid(tm, 3, rs);
                     double attenuation = std::exp((rs - tm) / 40.0);
                     return Vec2{(1 - alpha) * 3 * vector_between.x_ * attenuation,
-                    (1 - alpha) * 3 * vector_between.y_ * attenuation};
+                                (1 - alpha) * 3 * vector_between.y_ * attenuation};
                 };
             }
         }

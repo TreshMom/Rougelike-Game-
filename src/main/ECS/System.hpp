@@ -40,7 +40,7 @@ namespace ECS {
 
     class SystemInterface {
     public:
-        virtual void init(const std::shared_ptr<SystemInterface> &, EventManager&, EntityManager&, SystemManager&) {}
+        virtual void init(const std::shared_ptr<SystemInterface>&, EventManager&, EntityManager&, SystemManager&) {}
         virtual void update(EventManager&, EntityManager&, SystemManager&, sf::Time) = 0;
         virtual ~SystemInterface() {}
     };

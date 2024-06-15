@@ -42,8 +42,7 @@ struct Vec2 {
 
     void normalize() {
         double hyp = get_norm();
-        if(hyp != 0)
-        {
+        if (hyp != 0) {
             x_ /= hyp;
             y_ /= hyp;
         }

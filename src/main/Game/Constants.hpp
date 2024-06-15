@@ -9,7 +9,6 @@ constexpr sf::Keyboard::Key COLLECT = sf::Keyboard::E;
 constexpr sf::Mouse::Button ATTACK = sf::Mouse::Button::Left;
 constexpr sf::Keyboard::Key REMOVE_ITEM = sf::Keyboard::Q;
 
-
 // DEFAULT SETTINGS
 constexpr double WINDOW_WIDTH = 1880.0;
 constexpr double WINDOW_HEIGHT = 720.0;
@@ -23,7 +22,6 @@ constexpr double WORLD_WIDTH = 1500;  // this should be bigger then 'VIEW_WIDTH'
 constexpr double WORLD_HEIGHT = 1500; // this should be bigger then 'VIEW_HEIGHT'
 
 constexpr uint32_t GRID_DENSITY = 200;
-
 
 // PLAYER SETTINGS
 constexpr double PLAYER_START_X = 2 * SPRITE_SIZE;

@@ -42,7 +42,7 @@ int main() {
     sm.make_system<BoundSystem>();
     sm.make_system<MoveSystem>();
     sm.make_system<KeySystem>();
-    // sm.make_system<AttackMobSystem>();
+    sm.make_system<StrategySystem>();
     sm.make_system<InventorySystem>();
     sm.make_system<ExperienceSystem>();
     sm.make_system<RegenerationSystem>();

@@ -15,18 +15,16 @@ private:
     std::unordered_map<ECS::EntityId, sf::Time> times;
 
 public:
-    void init(auto &, ECS::EventManager &, ECS::EntityManager &, ECS::SystemManager &) {}
+    void init(auto&, ECS::EventManager&, ECS::EntityManager&, ECS::SystemManager&) {}
 
-    void update(EventManager &, EntityManager &em, SystemManager &, sf::Time t) override {
-        em.update<HealthComponent>(
-                [&](auto &ent, HealthComponent &hc) {
-                    if (times[ent.get_id()] < t) {
-                        if (hc.data.hp < hc.data.max_hp) {
-                            hc.data.hp += std::min(hc.data.max_hp - hc.data.hp, hc.data.reg);
-                            times[ent.get_id()] = t + 1_s;
-                        }
-                    }
-                });
+    void update(EventManager&, EntityManager& em, SystemManager&, sf::Time t) override {
+        em.update<HealthComponent>([&](auto& ent, HealthComponent& hc) {
+            if (times[ent.get_id()] < t) {
+                if (hc.data.hp < hc.data.max_hp) {
+                    hc.data.hp += std::min(hc.data.max_hp - hc.data.hp, hc.data.reg);
+                    times[ent.get_id()] = t + 1_s;
+                }
+            }
+        });
     }
-
 };

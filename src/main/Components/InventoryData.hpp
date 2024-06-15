@@ -23,16 +23,15 @@ struct InventoryData {
 
     InventoryData() = default;
 
-    InventoryData(InventoryData const &) = delete;
+    InventoryData(InventoryData const&) = delete;
 
-    InventoryData &operator=(InventoryData const &) = delete;
+    InventoryData& operator=(InventoryData const&) = delete;
 
-    InventoryData(InventoryData &&other) noexcept
-            : weapon_ent_id(std::move(other.weapon_ent_id)),
-              wear(std::move(other.wear)),
-              backpack(std::move(other.backpack)) {}
+    InventoryData(InventoryData&& other) noexcept
+        : weapon_ent_id(std::move(other.weapon_ent_id)), wear(std::move(other.wear)),
+          backpack(std::move(other.backpack)) {}
 
-    InventoryData &operator=(InventoryData &&other) noexcept {
+    InventoryData& operator=(InventoryData&& other) noexcept {
         if (this != &other) {
             InventoryData tmp(std::move(other));
             swap(tmp);
@@ -40,7 +39,7 @@ struct InventoryData {
         return *this;
     }
 
-    void swap(InventoryData &other) noexcept {
+    void swap(InventoryData& other) noexcept {
         std::swap(weapon_ent_id, other.weapon_ent_id);
         std::swap(wear, other.wear);
         std::swap(backpack, other.backpack);

@@ -56,7 +56,7 @@ public:
                     mv.data.directions_t_clean[2] = [=, rs = t.asMilliseconds()](double tm) {
                         double alpha = sigmoid(tm, 0.1, rs);
                         return Vec2{alpha * 6 * (right - left) * std::exp((rs - tm) / 50.0),
-                        alpha* 6 * (down - up) * std::exp((rs - tm) / 50.0)};
+                                    alpha * 6 * (down - up) * std::exp((rs - tm) / 50.0)};
                     };
                 });
         }

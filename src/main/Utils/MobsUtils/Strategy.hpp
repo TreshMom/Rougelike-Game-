@@ -67,9 +67,7 @@ public:
         // auto tmpx = mv.data.x;
         // auto tmpy = mv.data.y;
         if (vector_between != Vec2{0, 0}) {
-            mv.data.directions_t_clean[0] = [](double t){
-                return Vec2{0,0};
-            };
+            mv.data.directions_t_clean[0] = [](double t) { return Vec2{0, 0}; };
             // mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
             //     tm /= 1000;
             //     double alpha = sigmoid(tm, 3, rs);
@@ -111,11 +109,11 @@ public:
         // auto tmpx = mv.data.x;
         // auto tmpy = mv.data.y;
         if (vector_between != Vec2(0, 0)) {
-            mv.data.directions_t_clean[0] = [ vector_between, rs = t.asMilliseconds() / 1000.0](double tm) -> Vec2 {
+            mv.data.directions_t_clean[0] = [vector_between, rs = t.asMilliseconds() / 1000.0](double tm) -> Vec2 {
                 tm /= 1000;
                 double alpha = sigmoid(tm, 3, rs);
-                return Vec2{(1 - alpha)* 3 * -vector_between.x_ * std::exp((rs - tm) / 50.0),
-                (1 - alpha)* 3 * -vector_between.y_ * std::exp((rs - tm) / 50.0)};
+                return Vec2{(1 - alpha) * 3 * -vector_between.x_ * std::exp((rs - tm) / 50.0),
+                            (1 - alpha) * 3 * -vector_between.y_ * std::exp((rs - tm) / 50.0)};
             };
             // mv.data.x = [tmpx, vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {
             //     tm /= 1000;
