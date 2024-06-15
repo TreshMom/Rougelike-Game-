@@ -142,12 +142,12 @@ public:
     void generateItems() override {
         for (uint32_t i = 0; i < 3; ++i) {
             map_->items_.emplace_back(
-                createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {10, 0, 10, 0, ECS::ITEM_ID::WEAPON}));
+                createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {50, 0, 50, 0, ECS::ITEM_ID::WEAPON}));
         }
-        //         for (uint32_t i = 0; i < 4; ++i) {
-        //             map_->items_.push_back(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0,
-        //             1000, 0, 0.1, ECS::ITEM_ID::ARMOR}));
-        //         }
+        for (uint32_t i = 0; i < 4; ++i) {
+            map_->items_.push_back(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE},
+                                              {0, 1000, 0, 100, ECS::ITEM_ID::ARMOR}));
+        }
     }
 
     void generateMobs() override {

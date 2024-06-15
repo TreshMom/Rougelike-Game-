@@ -65,7 +65,7 @@ public:
             em.update<PlayerComponent>([&](auto& ent, PlayerComponent& player) {
                 if (time_to_click[ent.get_id()] < t) {
                     evm.notify(AttackEvent(ent.get_id()));
-                    time_to_click[ent.get_id()] = t + 100_ms;
+                    time_to_click[ent.get_id()] = t + 1_s;
                 }
             });
         }

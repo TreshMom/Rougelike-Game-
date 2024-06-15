@@ -27,7 +27,9 @@ public:
 
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
         for (auto const& id : attack_events_) {
-
+            if (!em.hasEntity(id)) {
+                continue;
+            }
             em.update_by_id<InventoryComponent, PositionComponent, MoveComponent>(
                 id, [&](auto& ent, InventoryComponent& invent, PositionComponent const& pos, MoveComponent& mv) {
                     auto& move_weapon = em.get_component<MoveComponent>(invent.data.weapon_ent_id);
@@ -41,8 +43,6 @@ public:
                         return Vec2{0, 0};
                     });
                 });
-            // if(em.template has_component<PlayerComponent>(id))
-            // {
             auto& attack_left = em.template get_component<AttackComponent>(id);
             auto& pos_left = em.template get_component<PositionComponent>(id);
             auto& sprite_left = em.template get_component<SpriteComponent>(id);
@@ -78,13 +78,12 @@ public:
                                                              rs = t.asMilliseconds() / 1000.0](double tm) {
                                 tm /= 1000;
                                 double alpha = sigmoid(tm, 3, rs);
-                                return Vec2{(1 - alpha) * 10 * vector_between.x_ * std::exp((rs - tm) / 50.0),
-                                            (1 - alpha) * 10 * vector_between.y_ * std::exp((rs - tm) / 50.0)};
+                                return Vec2{(1 - alpha) * 5 * vector_between.x_ * std::exp((rs - tm) / 50.0),
+                                            (1 - alpha) * 5 * vector_between.y_ * std::exp((rs - tm) / 50.0)};
                             };
                         }
                     }
                 });
-            // }
         }
         attack_events_.clear();
     }

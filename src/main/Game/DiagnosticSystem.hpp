@@ -46,16 +46,14 @@ public:
     }
 
     HealthData calc_hp(EntityManager& em, InventoryComponent& inv, HealthComponent& health) {
-        double cur_hp = health.data.hp;
         double max_hp = health.data.default_hp;
-        double reg_hp = health.data.reg;
+        double reg_hp = health.data.default_reg;
         for (auto& [pos, item] : inv.data.wear) {
             auto item_data = em.template get_component<ItemComponent>(item).data;
-            cur_hp += item_data.health;
             max_hp += item_data.health;
             reg_hp += item_data.regen;
         }
-        return {cur_hp, health.data.default_hp, max_hp, reg_hp, health.data.default_reg};
+        return {health.data.hp, health.data.default_hp, max_hp, reg_hp, health.data.default_reg};
     }
 
     std::stringstream get_pretty_string(const AttackData& attack, const HealthData& hp, const ExperienceData& exp) {
