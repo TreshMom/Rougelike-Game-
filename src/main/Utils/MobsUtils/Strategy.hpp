@@ -124,7 +124,7 @@ public:
                 HealthComponent& player_hc, MoveComponent& player_mc) {
                 auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
                 if (center_pos.dist(player_center_pos) < 40) {
-                    evm.notify(AttackMobEvent(eid, ent.get_id()));
+                    // evm.notify(AttackMobEvent(eid, ent.get_id()));
                     is_attck = true;
                 }
             });
@@ -151,7 +151,7 @@ public:
                 }
             });
         vector_between.normalize();
-        [[maybe_unused]] auto& mv = em.template get_component<MoveComponent>(eid);
+        auto& mv = em.template get_component<MoveComponent>(eid);
 
         if (vector_between != Vec2{0, 0}) {
             mv.data.directions_t_clean[0] = [vector_between, rs = t.asMilliseconds() / 1000.0](double tm) {

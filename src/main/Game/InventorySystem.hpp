@@ -77,7 +77,6 @@ public:
                     if (!invent.data.wear.contains(get_saved_index_by_player(player_id))) {
                         return;
                     }
-
                     auto item_id = invent.data.wear[get_saved_index_by_player(player_id)];
                     invent.data.wear.erase(get_saved_index_by_player(player_id));
                     auto& item_pos = em.template get_component<PositionComponent>(item_id);
@@ -86,7 +85,6 @@ public:
                     auto id = invent.data.weapon_ent_id;
                     if (id != ECS::INVALID) {
                         auto& item_sprite = em.template get_component<SpriteComponent>(id);
-                        item_sprite.data.texture.reset();
                         item_sprite.data.sprite.setTexture(*item_sprite.data.texture);
                     }
                 });
@@ -95,11 +93,10 @@ public:
         em.update<PlayerComponent, InventoryComponent, PositionComponent>(
             [&](auto& ent, PlayerComponent& player, InventoryComponent& invent, PositionComponent const& pos) {
                 auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
-
                 if (invent.data.wear.contains(1)) {
                     auto id = invent.data.wear[1];
                     auto& sprite = em.get_component<SpriteComponent>(id);
-                    sprite_weapon.data.sprite.setTexture(*sprite.data.texture);
+                    sprite_weapon.data.sprite.setTexture(*sprite.data.texture,true);
                 }
             });
     }

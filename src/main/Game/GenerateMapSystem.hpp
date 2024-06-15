@@ -89,8 +89,6 @@ public:
                         pc.data.x += rand() % 10;
                         pc.data.y += rand() % 10;
 
-                        // mc.data.x = [](double tm) { return 0; };
-                        // mc.data.y = [](double tm) { return 0; };
                         std::shared_ptr<Strategy> strategy = nullptr;
                         switch (rand() % 3) {
                         case 0:

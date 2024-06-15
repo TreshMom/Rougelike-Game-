@@ -43,8 +43,8 @@ public:
                             sc.data.render_priority = 5;
                             sc.data.sprite.setScale(1.4, 1.4);
                             sc.data.sprite.setOrigin(10, 15);
-                            // mc.data.x = [&mv](double t) { return mv.data.x(t); };
-                            // mc.data.y = [&mv](double t) { return mv.data.y(t); };
+                            sc.data.texture = std::make_shared<sf::Texture>();
+                            sc.data.texture->loadFromFile(BUG + "empty.png");
                             pc.data = Vec2(pc.data.x, pc.data.y) + Vec2(6, 25);
                         });
                 });

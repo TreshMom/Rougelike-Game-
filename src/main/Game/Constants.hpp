@@ -27,7 +27,7 @@ constexpr uint32_t GRID_DENSITY = 200;
 constexpr double PLAYER_START_X = 2 * SPRITE_SIZE;
 constexpr double PLAYER_START_Y = 2 * SPRITE_SIZE;
 
-constexpr int32_t PLAYER_START_DAMAGE = 50;
+constexpr int32_t PLAYER_START_DAMAGE = 10;
 constexpr int32_t PLAYER_GAIN_PER_LEVEL_DAMAGE = 2;
 constexpr int32_t PLAYER_START_ATTACK_RADIUS = 100;
 constexpr int32_t PLAYER_GAIN_PER_LEVEL_RADIUS = 2;
