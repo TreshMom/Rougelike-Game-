@@ -42,12 +42,12 @@ protected:
                                         SPRITE_SIZE / mob.renderData_.sprite.getLocalBounds().height);
         mob.renderData_.render_priority = 3;
         mob.pos_ = pos;
-        mob.weapon_ = createItem(BUG + "axe.png", {MOB_WEAPON_POS_X, MOB_WEAPON_POS_Y}, {10, 0, 1000, ECS::ITEM_ID::WEAPON});
+        mob.weapon_ = createItem(BUG + "axe.png", {MOB_WEAPON_POS_X, MOB_WEAPON_POS_Y}, {10, 0, 100, 0, ECS::ITEM_ID::WEAPON});
         mob.hp_data_ = hp_data;
-        mob.attack_data_ = AttackData{.damage = mob.weapon_.data_.damage, 
-            .attack_radius = mob.weapon_.data_.attack_radius, 
-            .default_damage = mob.weapon_.data_.damage, 
-            .default_attack_radius = mob.weapon_.data_.attack_radius};
+        mob.attack_data_ = AttackData{.damage = mob.weapon_.data_.damage,
+                .default_damage = mob.weapon_.data_.damage,
+                .attack_radius = mob.weapon_.data_.attack_radius,
+                .default_attack_radius = mob.weapon_.data_.attack_radius};
         return mob;
     }
 
@@ -142,16 +142,16 @@ public:
     void generateItems() override {
         for (uint32_t i = 0; i < 3; ++i) {
             map_->items_.emplace_back(createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y},
-                       {10, 0, 10, ECS::ITEM_ID::WEAPON}));
+                       {10, 0, 10, 0, ECS::ITEM_ID::WEAPON}));
         }
-        // for (uint32_t i = 0; i < 4; ++i) {
-        //     map_->items_.push_back(std::move(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0, 1000, 0, ECS::ITEM_ID::ARMOR})));
-        // }
+//         for (uint32_t i = 0; i < 4; ++i) {
+//             map_->items_.push_back(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0, 1000, 0, 0.1, ECS::ITEM_ID::ARMOR}));
+//         }
     }
 
     void generateMobs() override {
         for (uint32_t i = 0; i < NUMBER_OF_MOBS; ++i) {
-            map_->mobs_.push_back(createMob(BUG + "tile_0096.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {100, 100}));
+            map_->mobs_.push_back(createMob(BUG + "tile_0096.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {100, 100, 200, 0.1, 0.1}));
         }
     }
 

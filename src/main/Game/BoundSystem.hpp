@@ -8,6 +8,7 @@
 #include <queue>
 #include <unordered_set>
 #include <utility>
+
 using namespace ECS;
 
 class BoundSystem : public SystemHandle, public SystemInterface {

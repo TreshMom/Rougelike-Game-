@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../Components/Components.hpp"
 
 namespace ECS {
@@ -9,7 +10,6 @@ namespace ECS {
     class Component;
 
     // тэги, чтобы отличать типы между собой на этапе компиляции
-    struct dog_tag;
     struct npc_tag;
     struct pos_tag;
     struct move_tag;
@@ -26,6 +26,7 @@ namespace ECS {
     struct menu_tag;
     struct weapon_tag;
     struct strategy_tag;
+    struct exp_tag;
 
     using NpcEntity = Entity<npc_tag>;
     using PlayerEntity = Entity<player_tag>;
@@ -48,5 +49,6 @@ namespace ECS {
     using MenuComponent = Component<menu_tag, MenuData>;
     using isBoundComponent = Component<menu_tag, isBound>;
     using StrategyComponent = Component<strategy_tag, StrategyData>;
+    using ExperienceComponent = Component<exp_tag, ExperienceData>;
 
 } // namespace ECS

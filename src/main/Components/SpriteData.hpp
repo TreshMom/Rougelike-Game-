@@ -20,7 +20,7 @@ struct SpriteData {
 
     SpriteData(SpriteData&& other) noexcept
         : texture(std::move(other.texture)), sprite(std::move(other.sprite)), font(std::move(other.font)),
-          text(std::move(other.text)) {}
+          text(std::move(other.text)), render_priority(other.render_priority) {}
 
     SpriteData& operator=(SpriteData&& other) noexcept {
         if (this != &other) {
@@ -35,5 +35,6 @@ struct SpriteData {
         std::swap(sprite, other.sprite);
         std::swap(font, other.font);
         std::swap(text, other.text);
+        std::swap(render_priority, other.render_priority);
     }
 };

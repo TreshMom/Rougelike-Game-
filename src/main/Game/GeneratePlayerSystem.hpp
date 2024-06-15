@@ -12,45 +12,52 @@ private:
     int counterPlayer = 0;
 
 public:
-    void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time t) override {
 
+    void update(EventManager &evm, EntityManager &em, SystemManager &, sf::Time t) override {
         if (counterPlayer < 1) {
             auto ptr = em.allocEntity<PlayerEntity>();
-            ptr->get_component<PositionComponent>().data = CoordsInfo(PLAYER_START_X, PLAYER_START_Y);
-            ptr->get_component<MoveComponent>().data.x = [](double tm) { return 0; };
-            ptr->get_component<MoveComponent>().data.y = [](double tm) { return 0; };
-            ++counterPlayer;
-
             em.update_by_id<PositionComponent, SpriteComponent, AttackComponent, HealthComponent, PlayerComponent,
-                            InventoryComponent, MoveComponent>(
-                ptr->get_id(), [&](auto& entity, PositionComponent& pos, SpriteComponent& shape,
-                                   AttackComponent& attack, HealthComponent& health, PlayerComponent& player,
-                                   InventoryComponent& inventory, MoveComponent& mv) {
-                    shape.data.texture = std::make_shared<sf::Texture>();
-                    shape.data.texture->loadFromFile(BUG + "player1.png");
-                    shape.data.sprite.setTexture(*shape.data.texture);
-                    shape.data.sprite.setScale(SPRITE_SIZE / shape.data.sprite.getLocalBounds().width,
-                                               SPRITE_SIZE / shape.data.sprite.getLocalBounds().height);
-                    shape.data.render_priority = 3;
+                    InventoryComponent, MoveComponent, ExperienceComponent>(
+                    ptr->get_id(),
+                    [&](auto &, PositionComponent &pc, SpriteComponent &sc,
+                        AttackComponent &attack, HealthComponent &health, PlayerComponent &,
+                        InventoryComponent &inventory, MoveComponent &mv, ExperienceComponent &exp) {
+                        sc.data.texture = std::make_shared<sf::Texture>();
+                        sc.data.texture->loadFromFile(BUG + "player1.png");
+                        sc.data.sprite.setTexture(*sc.data.texture);
+                        sc.data.sprite.setScale(SPRITE_SIZE / sc.data.sprite.getLocalBounds().width,
+                                                SPRITE_SIZE / sc.data.sprite.getLocalBounds().height);
+                        sc.data.render_priority = 3;
+                        pc.data = CoordsInfo{PLAYER_START_X, PLAYER_START_Y};
 
-                    attack.data.damage = 10;
-                    attack.data.default_damage = 10;
-                    attack.data.attack_radius = 100;
-                    attack.data.default_attack_radius = 100;
+                        attack.data = {PLAYER_START_DAMAGE,
+                                       PLAYER_START_DAMAGE,
+                                       PLAYER_START_ATTACK_RADIUS,
+                                       PLAYER_START_ATTACK_RADIUS};
 
-                    health.data.current_hp = 200;
-                    health.data.default_hp = 200;
+                        health.data = {PLAYER_START_HEALTH,
+                                       PLAYER_START_HEALTH,
+                                       PLAYER_START_HEALTH,
+                                       PLAYER_START_REGENERATION,
+                                       PLAYER_START_REGENERATION};
 
-                    auto ptr = em.allocEntity<WeaponEntity>();
-                    inventory.data.weapon_ent_id = ptr->get_id();
-                    ptr->get_component<SpriteComponent>().data.render_priority = 5;
-                    ptr->get_component<SpriteComponent>().data.sprite.setScale(1.4, 1.4);
-                    ptr->get_component<SpriteComponent>().data.sprite.setOrigin(10, 15);
-                    ptr->get_component<MoveComponent>().data.x = [&pos, &mv](double t) { return mv.data.x(t); };
-                    ptr->get_component<MoveComponent>().data.y = [&pos, &mv](double t) { return mv.data.y(t); };
-                    auto vec = Vec2(pos.data.x, pos.data.y) + Vec2(6, 25);
-                    ptr->get_component<PositionComponent>().data = vec;
-                });
+                        exp.data = {PLAYER_START_LEVEL, PLAYER_START_EXP};
+
+                        auto ptr = em.allocEntity<WeaponEntity>();
+                        inventory.data.weapon_ent_id = ptr->get_id();
+                        em.update_by_id<SpriteComponent, MoveComponent, PositionComponent>(
+                                ptr->get_id(),
+                                [&](auto &, SpriteComponent &sc, MoveComponent &mc, PositionComponent &pc) {
+                                    sc.data.render_priority = 5;
+                                    sc.data.sprite.setScale(1.4, 1.4);
+                                    sc.data.sprite.setOrigin(10, 15);
+                                    mc.data.x = [&mv](double t) { return mv.data.x(t); };
+                                    mc.data.y = [&mv](double t) { return mv.data.y(t); };
+                                    pc.data = Vec2(pc.data.x, pc.data.y) + Vec2(6, 25);
+                                });
+                    });
+            ++counterPlayer;
         }
     }
+
 };

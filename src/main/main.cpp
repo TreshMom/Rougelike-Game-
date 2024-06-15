@@ -6,7 +6,9 @@
 #include "AttackSystem.hpp"
 #include "BoundSystem.hpp"
 #include "ECS/SystemManager.hpp"
+#include "ExperienceSystem.hpp"
 #include "Game.hpp"
+#include "RegenerationSystem.hpp"
 #include <SFML/Graphics.hpp>
 #include <chrono>
 #include <iostream>
@@ -41,6 +43,8 @@ int main() {
     sm.make_system<MoveSystem>();
     sm.make_system<KeySystem>();
     sm.make_system<InventorySystem>();
+    sm.make_system<ExperienceSystem>();
+    sm.make_system<RegenerationSystem>();
 
     sf::Clock clock;
     while (true) {

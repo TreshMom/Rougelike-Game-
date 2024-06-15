@@ -129,6 +129,7 @@ public:
     void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) {
         auto& pos_ent = em.template get_component<PositionComponent>(eid);
         auto& sprite_ent = em.template get_component<SpriteComponent>(eid);
+        auto& attack_ent = em.template get_component<AttackComponent>(eid);
         auto center_pos = ECS::center_of_mass(sprite_ent.data.sprite, pos_ent.data);
 
         bool is_attack = false;
@@ -136,7 +137,7 @@ public:
             [&](auto& ent, PlayerComponent&, SpriteComponent& player_sprite, PositionComponent const& player_pos,
             HealthComponent& player_hc, MoveComponent& player_mc) {
                 auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
-                if (center_pos.dist(player_center_pos) < 40) {
+                if (center_pos.dist(player_center_pos) < attack_ent.data.attack_radius) {
                     is_attack = true;
                 }
             });

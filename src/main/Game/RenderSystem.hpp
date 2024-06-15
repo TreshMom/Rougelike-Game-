@@ -27,12 +27,10 @@ public:
             window.setView(playerView);
           }
 
-    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {
-        evm.subscribe<AttackEvent>(ptr);
-    }
+    void init(auto ptr, ECS::EventManager& evm, ECS::EntityManager&, ECS::SystemManager&) {}
 
     void update(ECS::EventManager&, ECS::EntityManager& em, ECS::SystemManager&, sf::Time) override {
-        window.clear();
+        window.clear(sf::Color::White);
 
         em.update<PositionComponent, PlayerComponent>([&](auto&, PositionComponent& player_pos, PlayerComponent&) {
             playerView.setCenter(player_pos.data.x, player_pos.data.y);
@@ -43,7 +41,7 @@ public:
         });
 
         em.update_by_p<SpriteComponent>(
-            [&](auto&, SpriteComponent& comp) {
+            [&](auto& ent, SpriteComponent& comp) {
                 window.setView(playerView);
                 window.draw(comp.data.sprite);
                 window.draw(comp.data.text);
@@ -59,11 +57,4 @@ public:
         window.display();
     }
 
-    void receive(AttackEvent const& col) override {
-        animation.push(col.entId_);
-    }
-
-    // void receive(MapCreatedEvent const& ev) override {
-    //     mapCreation.push(ev.entId_);
-    // }
 };

@@ -48,7 +48,7 @@ public:
         bool collect = sf::Keyboard::isKeyPressed(COLLECT);
         bool attack = sf::Mouse::isButtonPressed(ATTACK);
 
-        bool remove_item = sf::Keyboard::isKeyPressed(REMOVEITEM);
+        bool remove_item = sf::Keyboard::isKeyPressed(REMOVE_ITEM);
 
         if (left || right || up || down) {
             em.update<PlayerComponent, MoveComponent, SpriteComponent>(

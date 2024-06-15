@@ -13,6 +13,7 @@ struct RemoveFromInventoryEvent;
 struct SetValueEventInventoryEvent;
 struct MapCreatedEvent;
 struct AttackMobEvent;
+struct MobKilledEvent;
 
 namespace ECS {
 
@@ -32,13 +33,14 @@ namespace ECS {
         virtual void receive(SetValueEventInventoryEvent const&) {}
         virtual void receive(MapCreatedEvent const&) {}
         virtual void receive(AttackMobEvent const&) {}
+        virtual void receive(MobKilledEvent const&) {}
 
         virtual ~SystemHandle() {}
     };
 
     class SystemInterface {
     public:
-        virtual void init(std::shared_ptr<SystemInterface>, EventManager&, EntityManager&, SystemManager&) {}
+        virtual void init(const std::shared_ptr<SystemInterface> &, EventManager&, EntityManager&, SystemManager&) {}
         virtual void update(EventManager&, EntityManager&, SystemManager&, sf::Time) = 0;
         virtual ~SystemInterface() {}
     };

@@ -3,6 +3,7 @@
 #include "AttackData.hpp"
 #include "BorderData.hpp"
 #include "CoordsInfo.hpp"
+#include "ExperienceData.hpp"
 #include "GridData.hpp"
 #include "HealthData.hpp"
 #include "InventoryData.hpp"

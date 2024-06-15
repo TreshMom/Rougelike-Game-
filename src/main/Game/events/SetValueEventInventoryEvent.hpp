@@ -1,4 +1,5 @@
 #pragma once
+
 #include "EventManager.hpp"
 
 struct SetValueEventInventoryEvent : public ECS::Event<SetValueEventInventoryEvent> {

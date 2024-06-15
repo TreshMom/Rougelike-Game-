@@ -132,7 +132,7 @@ public:
                         mc.data = std::move(map->menu_.data_);
                     });
 
-            evm.notify(MapCreatedEvent(menu_ptr->get_id()));
+//            evm.notify(MapCreatedEvent(menu_ptr->get_id()));
             created = true;
         }
     }

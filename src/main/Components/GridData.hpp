@@ -11,7 +11,7 @@ struct GridData {
     std::vector<std::vector<ECS::EntityId>> mesh;
 
     // don't copy
-    GridData() {}
+    GridData() = default;
 
     GridData(GridData const&) = delete;
 
