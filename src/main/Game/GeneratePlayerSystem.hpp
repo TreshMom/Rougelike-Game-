@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Entity.hpp"
 #include "System.hpp"
 #include <algorithm>
 #include <cmath>

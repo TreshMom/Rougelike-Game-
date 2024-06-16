@@ -35,14 +35,14 @@ public:
                 id, [&](auto& ent, InventoryComponent& invent, PositionComponent const& pos, MoveComponent& mv) {
                     auto& move_weapon = em.get_component<MoveComponent>(invent.data.weapon_ent_id);
                     auto& sprite_weapon = em.get_component<SpriteComponent>(invent.data.weapon_ent_id);
-                    move_weapon.data.directions_t_not_clean.push_back([t, &mv, &sprite_weapon](double time) {
+                    move_weapon.data.directions_t_clean[3] = [t, &mv, &sprite_weapon](double time) {
                         if (time / 1000.0 < t.asMilliseconds() / 1000.0 + 0.3) {
                             sprite_weapon.data.sprite.setRotation(-90.0);
                         } else {
                             sprite_weapon.data.sprite.setRotation(0.0);
                         }
                         return Vec2{0, 0};
-                    });
+                    };
                 });
             auto& attack_left = em.template get_component<AttackComponent>(id);
             auto& pos_left = em.template get_component<PositionComponent>(id);

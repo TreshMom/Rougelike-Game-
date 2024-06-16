@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Constants.hpp"
-#include "Entity.hpp"
 #include <Component.hpp>
 #include <Factories/configs.hpp>
 

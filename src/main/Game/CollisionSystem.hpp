@@ -3,7 +3,6 @@
 #include "../Components/GridData.hpp"
 #include "Component.hpp"
 #include "EngineDefs.hpp"
-#include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "Utils.hpp"
 #include "events/CollisionEvent.hpp"

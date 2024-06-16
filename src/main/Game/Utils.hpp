@@ -7,15 +7,15 @@
 
 #define OPRTIMIZE_MULT_ZERO(a, fun) ((a) < 0.1 ? 0 : (a) * (fun))
 
-sf::Time operator"" _s(unsigned long long s) {
+inline sf::Time operator"" _s(unsigned long long s) {
     return sf::seconds(s);
 }
 
-sf::Time operator"" _ms(unsigned long long ms) {
+inline  sf::Time operator"" _ms(unsigned long long ms) {
     return sf::milliseconds(ms);
 }
 
-sf::Time operator"" _mcs(unsigned long long mcs) {
+inline sf::Time operator"" _mcs(unsigned long long mcs) {
     return sf::microseconds(mcs);
 }
 
@@ -35,7 +35,7 @@ namespace ECS {
         }
     };
 
-    auto to_x = [](GridData const& gr) {
+    inline auto to_x = [](GridData const& gr) {
         return [&](int32_t posx) -> int {
             if (posx < gr.left_up.x) {
                 posx = gr.left_up.x;
@@ -50,7 +50,7 @@ namespace ECS {
         };
     };
 
-    auto to_y = [](GridData const& gr) {
+    inline auto to_y = [](GridData const& gr) {
         return [&](int32_t posy) -> int {
             if (posy < gr.left_up.y) {
                 posy = gr.left_up.y;
@@ -63,14 +63,14 @@ namespace ECS {
         };
     };
 
-    double sigmoid(double x, double k, double x0) {
+    inline double sigmoid(double x, double k, double x0) {
         if (x - x0 > 5) {
             return 1;
         }
         return 2 / (1 + std::exp(-k * (x - x0))) - 1;
     }
 
-    Vec2 center_of_mass(sf::Sprite const& sprite, CoordsInfo const& pos) {
+    inline Vec2 center_of_mass(sf::Sprite const& sprite, CoordsInfo const& pos) {
         std::pair<double, double> x_bound_coords = {pos.x, pos.x + sprite.getGlobalBounds().width};
         std::pair<double, double> y_bound_coords = {pos.y, pos.y + sprite.getGlobalBounds().height};
         return Vec2((x_bound_coords.second + x_bound_coords.first) / 2.0,

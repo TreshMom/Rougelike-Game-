@@ -47,4 +47,9 @@ struct CoordsInfo {
         std::swap(y_prev, other.y_prev);
     }
 
+    Vec2 to_vec() const
+    {
+        return Vec2(x, y);
+    }
+
 };

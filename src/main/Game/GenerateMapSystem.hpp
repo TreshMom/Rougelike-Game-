@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Constants.hpp"
-#include "Entity.hpp"
 #include "Factories/MapBulder.hpp"
 #include "MobsUtils/Strategy.hpp"
 #include "System.hpp"
@@ -22,7 +21,7 @@ public:
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time) override {
         if (!created) {
             SmallMapBuilder smb;
-            HardMobGenerator emg;
+            EasyMobGenerator emg;
             mc_.setMapBuilder(&smb);
             mc_.constructMap(WORLD_WIDTH, WORLD_HEIGHT, &emg);
             auto map = mc_.getMap();
@@ -74,6 +73,7 @@ public:
             auto coward = std::make_shared<CowardStrategy>();
             auto calm = std::make_shared<CalmStrategy>();
             auto aggressive = std::make_shared<AggressiveStrategy>();
+            std::shared_ptr<PatrolStrategy> patrol = std::make_shared<PatrolStrategy>();
 
             // adding mobs entity
             for (auto& mob : map->mobs_) {
@@ -81,63 +81,30 @@ public:
                 em.update_by_id<SpriteComponent, PositionComponent, MoveComponent, AttackComponent, HealthComponent,
                                 StrategyComponent, InventoryComponent>(
                     mob_ptr->get_id(),
-                    [&](auto&, SpriteComponent& sc, PositionComponent& pc, MoveComponent& mc, AttackComponent& ac,
+                    [&](auto& ent, SpriteComponent& sc, PositionComponent& pc, MoveComponent& mc, AttackComponent& ac,
                         HealthComponent& hc, StrategyComponent& strc, InventoryComponent& ic) {
                         pc.data = std::move(mob.pos_);
                         sc.data = std::move(mob.renderData_);
-                        auto target_pos1 = Vec2(400,400);
-                        auto target_pos2 = Vec2(700,400);
-
-                        mc.data.default_direction = [target_pos1, target_pos2, &sc, &pc, &em] (double) mutable {
-                            auto center_pos = ECS::center_of_mass(sc.data.sprite, pc.data);
-                            auto target_pos1 = Vec2(400,400);
-                            // auto target_pos2 = Vec2(700,400);
-                            
-                            Vec2 diff = target_pos1 - center_pos;
-                            // Vec2 diff2 = target_pos2 - center_pos;
-                            // Vec2 diff{0.0, 0.0};
-                            if(diff.get_norm() > 4)
-                            {
-                                diff.normalize();
-                                diff *= 1.5;
-                            }
-                            bool closer_player = false;
-                            em.update<PlayerComponent, SpriteComponent,PositionComponent>([&](auto& ent, 
-                            PlayerComponent const&, 
-                            SpriteComponent const& player_sprite, PositionComponent& player_pos){
-                                auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
-                                if (center_pos.dist(player_center_pos) < 300) {
-                                    closer_player = true;
-                                }
-                            });
-                            if(closer_player)
-                            {
-                                std::cout << "i see you" << std::endl;
-                                return Vec2{0.0, 0.0};
-                            }
-                            return diff;
-                        };
-
                         hc.data = std::move(mob.hp_data_);
                         ac.data = std::move(mob.attack_data_);
-                        pc.data.x += rand() % 10;
-                        pc.data.y += rand() % 10;
-
                         std::shared_ptr<Strategy> strategy = nullptr;
                         switch (rand() % 3) {
                         case 0:
-                            strategy = aggressive;
+                            strategy = patrol;
                             break;
                         case 1:
-                            strategy = aggressive;
+                            strategy = patrol;
                             break;
                         case 2:
-                            strategy = aggressive;
+                            strategy = patrol;
                             break;
                         default:
                             break;
                         }
-                        strc.data.strategy_context = std::make_unique<SavedStateContext>(aggressive);
+                        patrol->set_points(ent.get_id(), pc.data.to_vec(),  std::vector<Vec2>{Vec2{100.0 + rand() % 50,100.0 + + rand() % 50}, 
+                        Vec2{800.0 + rand() % 50,100.0 + rand() % 50}, Vec2{450.0 + rand() % 50,700.0 + rand() % 50}});
+                        strc.data.strategy_context = std::make_unique<SavedStateContext>(strategy);
+
                         auto weapon_ptr = em.allocEntity<WeaponEntity>();
                         ic.data.weapon_ent_id = weapon_ptr->get_id();
                         em.update_by_id<SpriteComponent, PositionComponent, MoveComponent>(
@@ -161,7 +128,6 @@ public:
                     mc.data = std::move(map->menu_.data_);
                 });
 
-            //            evm.notify(MapCreatedEvent(menu_ptr->get_id()));
             created = true;
         }
     }

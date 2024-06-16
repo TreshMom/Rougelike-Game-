@@ -7,7 +7,7 @@
 
 namespace ECS {
 
-    Family eventfamilyCounter = 0;
+    inline Family eventfamilyCounter = 0;
 
     template <class Type>
     class Event {
