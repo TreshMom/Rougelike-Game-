@@ -2,6 +2,7 @@
 
 #include "EngineDefs.hpp"
 
+// Событие, вызывающее создание мира
 struct GenerateWorldEvent : public ECS::Event<GenerateWorldEvent> {
     bool player_death_;
 

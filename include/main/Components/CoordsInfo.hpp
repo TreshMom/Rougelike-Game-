@@ -3,6 +3,7 @@
 #include "Vec2.hpp"
 #include <initializer_list>
 
+// Данные о координатах сущности
 struct CoordsInfo {
     double x;
     double y;

@@ -2,4 +2,5 @@
 
 #include "SpriteData.hpp"
 
+// Данные игрока
 struct PlayerData {};

@@ -2,6 +2,7 @@
 
 #include "EngineDefs.hpp"
 
+// Событие поднятия предмета
 struct CollectEvent : public ECS::Event<CollectEvent> {
     ECS::EntityId entId_;
 

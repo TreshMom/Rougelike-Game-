@@ -89,10 +89,14 @@ MapBuilder& SmallMapBuilder::generateWalls() {
     createWall(BUG + "wall.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE));              // lower wall
     createWall(BUG + "wall.png", {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
     createWall(BUG + "wall.png", {ww - SPRITE_SIZE, SPRITE_SIZE},
-               sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // right wall
+               sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE));                                     // right wall
 
     // create inside walls ...
-
+    createWall(BUG + "wall.png", {ww / 2, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, wh / 2 - 6 * SPRITE_SIZE));  // upper wall
+    createWall(BUG + "wall.png", {ww / 2, wh / 2 + 5 * SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, wh / 2 - 6 * SPRITE_SIZE));              // lower wall
+    createWall(BUG + "wall.png", {SPRITE_SIZE, wh / 2}, sf::IntRect(0, 0, ww / 2 - 5 * SPRITE_SIZE, SPRITE_SIZE)); // left wall
+    createWall(BUG + "wall.png", {ww / 2 + 5 * SPRITE_SIZE, wh / 2},
+               sf::IntRect(0, 0, ww / 2 - 5 * SPRITE_SIZE, SPRITE_SIZE));                                     // right wall
     return *this;
 }
 

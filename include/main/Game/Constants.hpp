@@ -22,8 +22,8 @@ constexpr double VIEW_HEIGHT = 720.0;
 
 constexpr double SPRITE_SIZE = 32.0;
 
-constexpr double WORLD_WIDTH = 4000;  // this should be bigger then 'VIEW_WIDTH'
-constexpr double WORLD_HEIGHT = 4000; // this should be bigger then 'VIEW_HEIGHT'
+constexpr double WORLD_WIDTH = 2000;  // this should be bigger then 'VIEW_WIDTH'
+constexpr double WORLD_HEIGHT = 2000; // this should be bigger then 'VIEW_HEIGHT'
 
 constexpr uint32_t GRID_DENSITY = 100;
 

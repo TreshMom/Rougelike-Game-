@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+// Это структура Vec2, которая представляет двумерный вектор с различными арифметическими и служебными операциями.
 struct Vec2 {
     double x_;
     double y_;
@@ -75,6 +76,7 @@ struct Vec2 {
         *this = *this - other;
         return *this;
     }
+
 
     double get_norm() const {
         return sqrt(x_ * x_ + y_ * y_);

@@ -4,6 +4,7 @@
 
 namespace ECS {
 
+    // Использующиеся синонимы
     using EntityId = uint64_t;
     using ComponentId = uint64_t;
     using Family = uint64_t;

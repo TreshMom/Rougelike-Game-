@@ -3,6 +3,7 @@
 #include <functional>
 #include <iostream>
 
+// Данные о функции передвижения сущности
 struct MoveData {
     std::function<Vec2(double)> default_direction = [](double) -> Vec2 { return Vec2{0, 0}; };
     std::unordered_map<uint32_t, std::function<Vec2(double)>> directions_t_clean;

@@ -3,13 +3,16 @@
 #include "../Components/Components.hpp"
 
 namespace ECS {
+
+    // Шаблон класса сущности, параметризованный тегом npc_tag
     template <class T>
     class Entity;
 
+    // Шаблон класса компонента, параметризованный тегом и типом данных
     template <class TypeHook, class DataType>
     class Component;
 
-    // тэги, чтобы отличать типы между собой на этапе компиляции
+    // Теги для различения типов сущностей и компонентов на этапе компиляции
     struct npc_tag;
     struct pos_tag;
     struct move_tag;
@@ -28,6 +31,7 @@ namespace ECS {
     struct strategy_tag;
     struct exp_tag;
 
+    // Определения типов сущностей с указанием соответствующих тегов
     using NpcEntity = Entity<npc_tag>;
     using PlayerEntity = Entity<player_tag>;
     using MapEntity = Entity<map_tag>;
@@ -36,6 +40,7 @@ namespace ECS {
     using MenuEntity = Entity<menu_tag>;
     using WeaponEntity = Entity<weapon_tag>;
 
+    // Определения компонентов с указанием соответствующих тегов и типов данных
     using PositionComponent = Component<pos_tag, CoordsInfo>;
     using MoveComponent = Component<move_tag, MoveData>;
     using PlayerComponent = Component<player_tag, PlayerData>;
@@ -47,7 +52,7 @@ namespace ECS {
     using InventoryComponent = Component<inventory_tag, InventoryData>;
     using ItemComponent = Component<item_tag, ItemData>;
     using MenuComponent = Component<menu_tag, MenuData>;
-    using isBoundComponent = Component<menu_tag, isBound>;
+    using isBoundComponent = Component<menu_tag, isBound>; // Примечание: тег menu_tag использован дважды
     using StrategyComponent = Component<strategy_tag, StrategyData>;
     using ExperienceComponent = Component<exp_tag, ExperienceData>;
 

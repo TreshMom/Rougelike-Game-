@@ -1,9 +1,10 @@
 #pragma once
+
 #include <memory>
 #include <type_traits>
 #include <variant>
 
-namespace utils {}
+// Вспомогательные структуры и метафункции
 
 template <class... Types>
 struct List {};

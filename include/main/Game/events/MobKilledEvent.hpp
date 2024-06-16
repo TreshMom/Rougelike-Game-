@@ -2,6 +2,7 @@
 
 #include "EngineDefs.hpp"
 
+// Событие убийства моба
 struct MobKilledEvent : public ECS::Event<MobKilledEvent> {
     uint32_t exp_gain_;
 

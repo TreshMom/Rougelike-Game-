@@ -7,6 +7,7 @@
 #include "cstdint"
 #include "unordered_map"
 
+// Данные меню
 struct GridInventoryData {
     Grid& get_grid() {
         if (!is_exists) {
