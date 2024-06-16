@@ -22,7 +22,7 @@ public:
           menuView(sf::FloatRect(0.f, 0.f, MENU_WIDTH, MENU_HEIGHT)) {
         menuView.setCenter(MENU_POSITION_X + MENU_WIDTH / 2, MENU_POSITION_Y + MENU_HEIGHT / 2);
         playerView.setViewport(sf::FloatRect(0.f, 0, 0.75f, 1));
-//        playerView.zoom(1.5);
+        //        playerView.zoom(1.5);
         menuView.setViewport(sf::FloatRect(0.75, 0, 0.25, 1));
         window.setFramerateLimit(60);
         window.setView(playerView);

@@ -69,5 +69,6 @@ public:
 
     std::shared_ptr<Map> getMap();
 
-    void constructMap(double worldWidth, double worldHeight, std::shared_ptr<AbstractMobGenerator> const& mobGenerator, bool fromFile = false);
+    void constructMap(double worldWidth, double worldHeight, std::shared_ptr<AbstractMobGenerator> const& mobGenerator,
+                      bool fromFile = false);
 };

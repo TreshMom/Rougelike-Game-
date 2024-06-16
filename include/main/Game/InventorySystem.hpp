@@ -96,7 +96,7 @@ public:
                 if (invent.data.wear.contains(1)) {
                     auto id = invent.data.wear[1];
                     auto& sprite = em.get_component<SpriteComponent>(id);
-                    sprite_weapon.data.sprite.setTexture(*sprite.data.texture,true);
+                    sprite_weapon.data.sprite.setTexture(*sprite.data.texture, true);
                 }
             });
     }

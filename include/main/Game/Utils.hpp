@@ -11,7 +11,7 @@ inline sf::Time operator"" _s(unsigned long long s) {
     return sf::seconds(s);
 }
 
-inline  sf::Time operator"" _ms(unsigned long long ms) {
+inline sf::Time operator"" _ms(unsigned long long ms) {
     return sf::milliseconds(ms);
 }
 

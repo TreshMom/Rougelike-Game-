@@ -10,7 +10,7 @@ struct CoordsInfo {
     double x_prev;
     double y_prev;
 
-    CoordsInfo &operator=(Vec2 const &vec) {
+    CoordsInfo& operator=(Vec2 const& vec) {
         x = vec.x_;
         y = vec.y_;
         x_prev = x;
@@ -22,17 +22,14 @@ struct CoordsInfo {
 
     CoordsInfo() = default;
 
-    CoordsInfo(CoordsInfo const &) = default;
+    CoordsInfo(CoordsInfo const&) = default;
 
-    CoordsInfo &operator=(CoordsInfo const &) = default;
+    CoordsInfo& operator=(CoordsInfo const&) = default;
 
-    CoordsInfo(CoordsInfo &&other) noexcept
-            : x(std::move(other.x)),
-              y(std::move(other.y)),
-              x_prev(std::move(other.x_prev)),
-              y_prev(std::move(other.y)) {}
+    CoordsInfo(CoordsInfo&& other) noexcept
+        : x(std::move(other.x)), y(std::move(other.y)), x_prev(std::move(other.x_prev)), y_prev(std::move(other.y)) {}
 
-    CoordsInfo &operator=(CoordsInfo &&other) noexcept {
+    CoordsInfo& operator=(CoordsInfo&& other) noexcept {
         if (this != &other) {
             CoordsInfo tmp(std::move(other));
             swap(tmp);
@@ -40,16 +37,14 @@ struct CoordsInfo {
         return *this;
     }
 
-    void swap(CoordsInfo &other) noexcept {
+    void swap(CoordsInfo& other) noexcept {
         std::swap(x, other.x);
         std::swap(x_prev, other.x_prev);
         std::swap(y, other.y);
         std::swap(y_prev, other.y_prev);
     }
 
-    Vec2 to_vec() const
-    {
+    Vec2 to_vec() const {
         return Vec2(x, y);
     }
-
 };

@@ -1,19 +1,17 @@
-#include "Vec2.hpp"
 #include "MobsUtils/Strategy.hpp"
+#include "Component.hpp"
 #include "EntitiesList.hpp"
 #include "EntityManager.hpp"
-#include "Component.hpp"
+#include "Vec2.hpp"
 
 using namespace ECS;
-
 
 /////////////////////////
 // Aggressive Strategy //
 /////////////////////////
 
-
 void AggressiveStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                    StrategyContext* context) {
+                                      StrategyContext* context) {
     Vec2 vector_between = {0, 0};
     auto& pos_ent = em.template get_component<PositionComponent>(eid);
     auto& sprite_ent = em.template get_component<SpriteComponent>(eid);
@@ -35,16 +33,13 @@ void AggressiveStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager&
             return Vec2{(1 - alpha) * 3 * -vector_between.x_ * std::exp((rs - tm) / 50.0),
                         (1 - alpha) * 3 * -vector_between.y_ * std::exp((rs - tm) / 50.0)};
         };
-    }
-    else if(typeid(*(context->get_default_strategy())) == typeid(PatrolStrategy))
-    {
+    } else if (typeid(*(context->get_default_strategy())) == typeid(PatrolStrategy)) {
         context->set_strategy(context->get_default_strategy());
     }
 }
 
-
-void AggressiveStrategy::update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                            StrategyContext* sc) {
+void AggressiveStrategy::update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid,
+                                                sf::Time t, StrategyContext* sc) {
     em.update_by_id<HealthComponent>(eid, [&](auto& eid, HealthComponent& hc) {
         if (hc.data.hp <= MOB_MIN_ATTACK_HEALTH_TO_COWARD) {
             std::shared_ptr<Strategy> ptr = std::make_shared<CowardStrategy>();
@@ -54,7 +49,7 @@ void AggressiveStrategy::update_and_check_state(ECS::EntityManager& em, ECS::Eve
 }
 
 void AggressiveStrategy::attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-            StrategyContext* context) {
+                                StrategyContext* context) {
     auto& pos_ent = em.template get_component<PositionComponent>(eid);
     auto& sprite_ent = em.template get_component<SpriteComponent>(eid);
     auto center_pos = ECS::center_of_mass(sprite_ent.data.sprite, pos_ent.data);
@@ -72,13 +67,12 @@ void AggressiveStrategy::attack(ECS::EntityManager& em, ECS::EventManager& evm, 
     }
 }
 
-
 /////////////////////
 // Coward Strategy //
 /////////////////////
 
 void CowardStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                      StrategyContext* context) {
+                                  StrategyContext* context) {
     Vec2 vector_between = {0, 0};
     auto& pos_ent = em.template get_component<PositionComponent>(eid);
     auto& sprite_ent = em.template get_component<SpriteComponent>(eid);
@@ -101,14 +95,13 @@ void CowardStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager& evm
                 (1 - alpha) * (rand() % 10 - 5) + (1 - alpha) * 5 * vector_between.x_ * std::exp((rs - tm) / 50.0),
                 (1 - alpha) * (rand() % 10 - 5) + (1 - alpha) * 5 * vector_between.y_ * std::exp((rs - tm) / 50.0)};
         };
-    } else if(typeid(*(context->get_default_strategy())) == typeid(PatrolStrategy))
-    {
+    } else if (typeid(*(context->get_default_strategy())) == typeid(PatrolStrategy)) {
         context->set_strategy(context->get_default_strategy());
     }
 }
 
-void CowardStrategy::update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                                StrategyContext* sc) {
+void CowardStrategy::update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid,
+                                            sf::Time t, StrategyContext* sc) {
     if (sc->get_default_strategy() == nullptr) {
         return;
     }
@@ -122,38 +115,34 @@ void CowardStrategy::update_and_check_state(ECS::EntityManager& em, ECS::EventMa
 }
 
 void PatrolStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager&, ECS::EntityId eid, sf::Time,
-                              StrategyContext* context) {
-        Vec2 target_pos = get_point(eid);
-        bool closer_player = false;
-        em.update_by_id<SpriteComponent, PositionComponent, MoveComponent>(eid, [this, &em, &target_pos,&closer_player]
-        (auto& ent, SpriteComponent& sc, PositionComponent &pc, MoveComponent& mc){
+                                  StrategyContext* context) {
+    Vec2 target_pos = get_point(eid);
+    bool closer_player = false;
+    em.update_by_id<SpriteComponent, PositionComponent, MoveComponent>(
+        eid, [this, &em, &target_pos, &closer_player](auto& ent, SpriteComponent& sc, PositionComponent& pc,
+                                                      MoveComponent& mc) {
             auto center_pos = ECS::center_of_mass(sc.data.sprite, pc.data);
             Vec2 diff = target_pos - center_pos;
-            if(diff.get_norm() < 10)
-            {
+            if (diff.get_norm() < 10) {
                 get_next_id(ent.get_id());
             }
-            if(diff.get_norm() > 4)
-            {
+            if (diff.get_norm() > 4) {
                 diff.normalize();
                 diff *= 1.5;
             }
-            em.update<PlayerComponent, SpriteComponent,PositionComponent>([&](auto& ent, 
-            PlayerComponent const&, 
-            SpriteComponent const& player_sprite, PositionComponent& player_pos){
+            em.update<PlayerComponent, SpriteComponent, PositionComponent>([&](auto& ent, PlayerComponent const&,
+                                                                               SpriteComponent const& player_sprite,
+                                                                               PositionComponent& player_pos) {
                 auto player_center_pos = center_of_mass(player_sprite.data.sprite, player_pos.data);
                 if (center_pos.dist(player_center_pos) < 200) {
                     closer_player = true;
                 }
             });
 
-            mc.data.directions_t_clean[0] = [diff](double t){
-                return diff;
-            };
+            mc.data.directions_t_clean[0] = [diff](double t) { return diff; };
         });
 
-        if(closer_player)
-        {
-            context->set_strategy(std::make_shared<AggressiveStrategy>());
-        }
+    if (closer_player) {
+        context->set_strategy(std::make_shared<AggressiveStrategy>());
     }
+}

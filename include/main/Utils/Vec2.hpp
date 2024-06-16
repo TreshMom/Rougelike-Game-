@@ -30,13 +30,11 @@ struct Vec2 {
         return *this;
     }
 
-    Vec2 operator*(double val) const
-    {
+    Vec2 operator*(double val) const {
         return Vec2(x_ * val, y_ * val);
     }
 
-    Vec2& operator*=(double val)
-    {
+    Vec2& operator*=(double val) {
         x_ *= val;
         y_ *= val;
         return *this;

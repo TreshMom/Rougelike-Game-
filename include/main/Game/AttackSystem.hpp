@@ -7,8 +7,8 @@
 #include "System.hpp"
 #include "events/AttackEvent.hpp"
 #include "events/AttackMobEvent.hpp"
-#include "events/MobKilledEvent.hpp"
 #include "events/GenerateWorldEvent.hpp"
+#include "events/MobKilledEvent.hpp"
 #include <cmath>
 #include <limits>
 #include <queue>

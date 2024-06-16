@@ -58,7 +58,7 @@ public:
                 }
             }
         });
-//        std::cout << counter << std::endl;
+        //        std::cout << counter << std::endl;
         std::unordered_map<int, std::unordered_set<int>> st;
         for (auto& [cell, vector_entities] : grid_map) {
             auto left = std::get<0>(cell);

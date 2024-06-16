@@ -3,6 +3,7 @@
 #include "EngineDefs.hpp"
 #include "EntitiesList.hpp"
 #include "FpUtility.hpp"
+#include <cassert>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -11,7 +12,6 @@
 #include <unordered_map>
 #include <variant>
 #include <vector>
-#include <cassert>
 
 namespace ECS {
 
@@ -263,6 +263,5 @@ namespace ECS {
         EntityManager& manager_;
         EntityId id_;
     };
-
 
 } // namespace ECS

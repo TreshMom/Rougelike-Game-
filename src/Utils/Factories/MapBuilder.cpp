@@ -2,7 +2,7 @@
 
 #include "Factories/MapBulder.hpp"
 
-void MapBuilder::createWall(const std::string &filePath, CoordsInfo pos, const sf::IntRect &rect) {
+void MapBuilder::createWall(const std::string& filePath, CoordsInfo pos, const sf::IntRect& rect) {
     Wall wall;
     wall.renderData_.texture = std::make_shared<sf::Texture>();
     wall.renderData_.texture->loadFromFile(filePath);
@@ -14,7 +14,7 @@ void MapBuilder::createWall(const std::string &filePath, CoordsInfo pos, const s
     map_->walls_.push_back(std::move(wall));
 }
 
-void MapBuilder::loadTexture(const std::string &filePath, CoordsInfo pos) {
+void MapBuilder::loadTexture(const std::string& filePath, CoordsInfo pos) {
     map_->renderData_.texture = std::make_shared<sf::Texture>();
     map_->renderData_.texture->loadFromFile(filePath);
     map_->renderData_.sprite.setTexture(*map_->renderData_.texture);
@@ -31,7 +31,7 @@ void MapBuilder::generateGrid() {
     map_->gridData_.mesh.resize(GRID_DENSITY + 1, std::vector<ECS::EntityId>(GRID_DENSITY + 1));
 }
 
-void MapBuilder::createMenu(const std::string &filePathMap, const std::string &filePathFont, CoordsInfo pos) {
+void MapBuilder::createMenu(const std::string& filePathMap, const std::string& filePathFont, CoordsInfo pos) {
     map_->menu_.renderData_.texture = std::make_shared<sf::Texture>();
     map_->menu_.renderData_.texture->loadFromFile(filePathMap);
     map_->menu_.renderData_.sprite.setTexture(*map_->menu_.renderData_.texture);
@@ -53,18 +53,17 @@ void MapBuilder::createMenu(const std::string &filePathMap, const std::string &f
                                              MENU_POSITION_Y + DIFF_FONT_POS_MENU_Y);
 }
 
-
 std::shared_ptr<Map> MapBuilder::getMap() {
     return map_;
 }
 
-MapBuilder &MapBuilder::createNewMap(double worldWidth, double worldHeight) {
+MapBuilder& MapBuilder::createNewMap(double worldWidth, double worldHeight) {
     map_ = std::make_shared<Map>(worldWidth, worldHeight);
     generateGrid();
     return *this;
 }
 
-Item MapBuilder::createItem(const std::string &filePath, CoordsInfo pos, ItemData data) {
+Item MapBuilder::createItem(const std::string& filePath, CoordsInfo pos, ItemData data) {
     Item item;
     item.renderData_.texture = std::make_shared<sf::Texture>();
     item.renderData_.texture->loadFromFile(filePath);
@@ -81,15 +80,14 @@ Item MapBuilder::createItem(const std::string &filePath, CoordsInfo pos, ItemDat
 // SMALL MAP BUILDER //
 ///////////////////////
 
-MapBuilder &SmallMapBuilder::generateWalls() {
+MapBuilder& SmallMapBuilder::generateWalls() {
     double ww = map_->worldWidth_;
     double wh = map_->worldHeight_;
 
     // create outside walls
-    createWall(BUG + "wall.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE));                // upper wall
-    createWall(BUG + "wall.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE)); // lower wall
-    createWall(BUG + "wall.png", {0, SPRITE_SIZE},
-               sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
+    createWall(BUG + "wall.png", {0, 0}, sf::IntRect(0, 0, ww, SPRITE_SIZE));                             // upper wall
+    createWall(BUG + "wall.png", {0, wh - SPRITE_SIZE}, sf::IntRect(0, 0, ww, SPRITE_SIZE));              // lower wall
+    createWall(BUG + "wall.png", {0, SPRITE_SIZE}, sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // left wall
     createWall(BUG + "wall.png", {ww - SPRITE_SIZE, SPRITE_SIZE},
                sf::IntRect(0, 0, SPRITE_SIZE, wh - 2 * SPRITE_SIZE)); // right wall
 
@@ -98,19 +96,19 @@ MapBuilder &SmallMapBuilder::generateWalls() {
     return *this;
 }
 
-MapBuilder &SmallMapBuilder::generateItems() {
+MapBuilder& SmallMapBuilder::generateItems() {
     for (uint32_t i = 0; i < 3; ++i) {
         map_->items_.emplace_back(
-                createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {50, 0, 50, 0, ECS::ITEM_ID::WEAPON}));
+            createItem(BUG + "axe.png", {MOB_SPAWN_X, MOB_SPAWN_Y}, {50, 0, 50, 0, ECS::ITEM_ID::WEAPON}));
     }
     for (uint32_t i = 0; i < 4; ++i) {
-        map_->items_.push_back(createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE},
-                                          {0, 1000, 0, 100, ECS::ITEM_ID::ARMOR}));
+        map_->items_.push_back(
+            createItem(BUG + "helmet.png", {2 * SPRITE_SIZE, 2 * SPRITE_SIZE}, {0, 1000, 0, 100, ECS::ITEM_ID::ARMOR}));
     }
     return *this;
 }
 
-MapBuilder &SmallMapBuilder::generateMobs(std::shared_ptr<AbstractMobGenerator> const& mobGenerator) {
+MapBuilder& SmallMapBuilder::generateMobs(std::shared_ptr<AbstractMobGenerator> const& mobGenerator) {
     for (uint32_t i = 0; i < NUMBER_OF_MOBS; ++i) {
         Mob mob;
         if (rand() % 2 == 0) {
@@ -118,18 +116,19 @@ MapBuilder &SmallMapBuilder::generateMobs(std::shared_ptr<AbstractMobGenerator> 
         } else {
             mob = std::move(*mobGenerator->createKnight());
         }
-        mob.pos_ = CoordsInfo{static_cast<double>((rand() % (int)map_->worldWidth_)), static_cast<double>((rand() % (int)map_->worldHeight_))};
+        mob.pos_ = CoordsInfo{static_cast<double>((rand() % (int)map_->worldWidth_)),
+                              static_cast<double>((rand() % (int)map_->worldHeight_))};
         map_->mobs_.push_back(std::move(mob));
     }
     return *this;
 }
 
-MapBuilder &SmallMapBuilder::setUpTexture() {
+MapBuilder& SmallMapBuilder::setUpTexture() {
     loadTexture(BUG + "map.png", {0, 0});
     return *this;
 }
 
-MapBuilder &SmallMapBuilder::generateMenu() {
+MapBuilder& SmallMapBuilder::generateMenu() {
     createMenu(BUG + "menu.png", BUG + "font.ttf", {MENU_POSITION_X, MENU_POSITION_Y});
     return *this;
 }
@@ -146,12 +145,16 @@ std::shared_ptr<Map> MapCreator::getMap() {
     return builder_->getMap();
 }
 
-void MapCreator::constructMap(double worldWidth, double worldHeight, std::shared_ptr<AbstractMobGenerator> const &mobGenerator,
-                              bool fromFile) {
+void MapCreator::constructMap(double worldWidth, double worldHeight,
+                              std::shared_ptr<AbstractMobGenerator> const& mobGenerator, bool fromFile) {
     if (fromFile) {
         std::cout << "from file" << std::endl;
     } else {
-        builder_->createNewMap(worldWidth, worldHeight).setUpTexture().generateWalls()
-                .generateItems().generateMobs(mobGenerator).generateMenu();
+        builder_->createNewMap(worldWidth, worldHeight)
+            .setUpTexture()
+            .generateWalls()
+            .generateItems()
+            .generateMobs(mobGenerator)
+            .generateMenu();
     };
 }
