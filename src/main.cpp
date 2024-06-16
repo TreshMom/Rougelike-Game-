@@ -44,8 +44,9 @@ int main() {
     sm.make_system<ExperienceSystem>();
     sm.make_system<RegenerationSystem>();
 
+    std::srand(std::time(nullptr));
     sf::Clock clock;
     while (true) {
-        FPS(sm.update())
+        sm.update();
     }
 }

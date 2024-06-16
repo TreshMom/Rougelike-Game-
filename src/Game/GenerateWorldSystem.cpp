@@ -17,7 +17,7 @@ void GenerateWorldSystem::update(EventManager &, EntityManager &em, SystemManage
         addItemsEntities(em, map);
 
         // adding mob entities
-//        addMobsEntities(em, map);
+        addMobsEntities(em, map);
 
         // adding menu entity
         addMenuEntity(em, map);
