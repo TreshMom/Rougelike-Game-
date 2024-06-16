@@ -6,7 +6,6 @@
 // all events
 struct CollisionEvent;
 struct AttackEvent;
-struct ChangedMoveEvent;
 struct CollectEvent;
 struct NumXEvent;
 struct RemoveFromInventoryEvent;
@@ -14,6 +13,7 @@ struct SetValueEventInventoryEvent;
 struct MapCreatedEvent;
 struct AttackMobEvent;
 struct MobKilledEvent;
+struct GenerateWorldEvent;
 
 namespace ECS {
 
@@ -34,6 +34,7 @@ namespace ECS {
         virtual void receive(MapCreatedEvent const&) {}
         virtual void receive(AttackMobEvent const&) {}
         virtual void receive(MobKilledEvent const&) {}
+        virtual void receive(GenerateWorldEvent const&) {}
 
         virtual ~SystemHandle() {}
     };

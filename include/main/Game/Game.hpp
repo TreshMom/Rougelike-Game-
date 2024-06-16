@@ -2,8 +2,7 @@
 
 #include "CollectSystem.hpp"
 #include "DiagnosticSystem.hpp"
-#include "GenerateMapSystem.hpp"
-#include "GeneratePlayerSystem.hpp"
+#include "GenerateWorldSystem.hpp"
 #include "InventorySystem.hpp"
 #include "KeySystem.hpp"
 #include "MoveSystem.hpp"

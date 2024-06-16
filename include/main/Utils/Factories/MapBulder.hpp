@@ -31,7 +31,7 @@ public:
 
     virtual MapBuilder& generateItems() = 0;
 
-    virtual MapBuilder& generateMobs(AbstractMobGenerator *mobGenerator) = 0;
+    virtual MapBuilder& generateMobs(std::shared_ptr<AbstractMobGenerator> const& mobGenerator) = 0;
 
     virtual MapBuilder& setUpTexture() = 0;
 
@@ -43,7 +43,7 @@ public:
 class SmallMapBuilder : public MapBuilder {
 private:
     uint32_t NUMBER_OF_ITEMS = 10;
-    uint32_t NUMBER_OF_MOBS = 10;
+    uint32_t NUMBER_OF_MOBS = 200;
 
 public:
     SmallMapBuilder() = default;
@@ -52,7 +52,7 @@ public:
 
     MapBuilder& generateItems() override;
 
-    MapBuilder& generateMobs(AbstractMobGenerator *mobGenerator) override;
+    MapBuilder& generateMobs(std::shared_ptr<AbstractMobGenerator> const& mobGenerator) override;
 
     MapBuilder& setUpTexture() override;
 
@@ -65,9 +65,9 @@ class MapCreator {
 public:
     MapCreator() = default;
 
-    void setMapBuilder(MapBuilder* builder);
+    void setMapBuilder(std::shared_ptr<MapBuilder> builder);
 
     std::shared_ptr<Map> getMap();
 
-    void constructMap(double worldWidth, double worldHeight, AbstractMobGenerator *mobGenerator, bool fromFile = false);
+    void constructMap(double worldWidth, double worldHeight, std::shared_ptr<AbstractMobGenerator> const& mobGenerator, bool fromFile = false);
 };

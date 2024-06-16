@@ -22,10 +22,10 @@ constexpr double VIEW_HEIGHT = 720.0;
 
 constexpr double SPRITE_SIZE = 32.0;
 
-constexpr double WORLD_WIDTH = 1500;  // this should be bigger then 'VIEW_WIDTH'
-constexpr double WORLD_HEIGHT = 1500; // this should be bigger then 'VIEW_HEIGHT'
+constexpr double WORLD_WIDTH = 4000;  // this should be bigger then 'VIEW_WIDTH'
+constexpr double WORLD_HEIGHT = 4000; // this should be bigger then 'VIEW_HEIGHT'
 
-constexpr uint32_t GRID_DENSITY = 200;
+constexpr uint32_t GRID_DENSITY = 100;
 
 // PLAYER SETTINGS
 constexpr double PLAYER_START_X = 2 * SPRITE_SIZE;
@@ -53,8 +53,8 @@ constexpr double MOB_MAX_ATTACK_HEALTH_TO_AGGRESSIVE = 80;
 constexpr double MOB_WEAPON_POS_X = 0;
 constexpr double MOB_WEAPON_POS_Y = -1000;
 
-const std::string BUG = "src/main/Assets/";
-//  /home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/_Attack.png
+const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/include/main/Assets/";
+//  /home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/include/main/Assets/_Attack.png
 
 // MENU_SETTINGS
 constexpr double MENU_POSITION_X = -2000;

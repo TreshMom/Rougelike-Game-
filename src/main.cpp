@@ -1,14 +1,14 @@
 #include "CollisionSystem.hpp"
-#include "ECS/Component.hpp"
-#include "ECS/EventManager.hpp"
-#include "ECS/System.hpp"
+#include "Component.hpp"
+#include "EventManager.hpp"
+#include "System.hpp"
 
 #include "AttackSystem.hpp"
 #include "BoundSystem.hpp"
-#include "ECS/SystemManager.hpp"
 #include "ExperienceSystem.hpp"
 #include "Game.hpp"
 #include "RegenerationSystem.hpp"
+#include "SystemManager.hpp"
 #include <SFML/Graphics.hpp>
 #include <chrono>
 #include <iostream>
@@ -29,11 +29,8 @@ int f(int x) {
 }
 
 int main() {
-    CowardStrategy str;
-
     SystemManager sm;
-    sm.make_system<GenerateMapSystem>();
-    sm.make_system<GeneratePlayerSystem>();
+    sm.make_system<GenerateWorldSystem>();
     sm.make_system<DiagnosticSystem>();
     sm.make_system<CollisionSystem>();
     sm.make_system<CollectSystem>();
@@ -49,6 +46,6 @@ int main() {
 
     sf::Clock clock;
     while (true) {
-        sm.update();
+        FPS(sm.update())
     }
 }

@@ -110,7 +110,7 @@ MapBuilder &SmallMapBuilder::generateItems() {
     return *this;
 }
 
-MapBuilder &SmallMapBuilder::generateMobs(AbstractMobGenerator *mobGenerator) {
+MapBuilder &SmallMapBuilder::generateMobs(std::shared_ptr<AbstractMobGenerator> const& mobGenerator) {
     for (uint32_t i = 0; i < NUMBER_OF_MOBS; ++i) {
         Mob mob;
         if (rand() % 2 == 0) {
@@ -118,7 +118,7 @@ MapBuilder &SmallMapBuilder::generateMobs(AbstractMobGenerator *mobGenerator) {
         } else {
             mob = std::move(*mobGenerator->createKnight());
         }
-        mob.pos_ = CoordsInfo{MOB_SPAWN_X, MOB_SPAWN_Y};
+        mob.pos_ = CoordsInfo{static_cast<double>((rand() % (int)map_->worldWidth_)), static_cast<double>((rand() % (int)map_->worldHeight_))};
         map_->mobs_.push_back(std::move(mob));
     }
     return *this;
@@ -138,15 +138,15 @@ MapBuilder &SmallMapBuilder::generateMenu() {
 //    MAP CREATOR    //
 ///////////////////////
 
-void MapCreator::setMapBuilder(MapBuilder *builder) {
-    builder_ = std::shared_ptr<MapBuilder>(builder);
+void MapCreator::setMapBuilder(std::shared_ptr<MapBuilder> builder) {
+    builder_ = builder;
 }
 
 std::shared_ptr<Map> MapCreator::getMap() {
     return builder_->getMap();
 }
 
-void MapCreator::constructMap(double worldWidth, double worldHeight, AbstractMobGenerator *mobGenerator,
+void MapCreator::constructMap(double worldWidth, double worldHeight, std::shared_ptr<AbstractMobGenerator> const &mobGenerator,
                               bool fromFile) {
     if (fromFile) {
         std::cout << "from file" << std::endl;

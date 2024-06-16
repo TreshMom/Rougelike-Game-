@@ -32,7 +32,6 @@ public:
                                                                                            SpriteComponent& sprite,
                                                                                            isBoundComponent const&) {
             for (auto& [entId, grid_ptr] : maps) {
-                counter++;
                 auto& grid = *grid_ptr;
                 std::pair<int, int> x_bound_coords = {pos.data.x,
                                                       pos.data.x + sprite.data.sprite.getGlobalBounds().width};
@@ -54,11 +53,12 @@ public:
                 for (int x_ind = x_bound.first; x_ind <= x_bound.second; x_ind++) {
                     for (int y_ind = y_bound.first; y_ind <= y_bound.second; y_ind++) {
                         grid_map[{x_ind, y_ind, entId}].push_back(ent.get_id());
+                        counter++;
                     }
                 }
             }
         });
-
+//        std::cout << counter << std::endl;
         std::unordered_map<int, std::unordered_set<int>> st;
         for (auto& [cell, vector_entities] : grid_map) {
             auto left = std::get<0>(cell);
