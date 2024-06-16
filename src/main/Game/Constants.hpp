@@ -1,5 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+#include <Vec2.hpp>
+#include <cstdint>
+
 // KEYBOARD AND MOUSE
 constexpr sf::Keyboard::Key LEFT = sf::Keyboard::A;
 constexpr sf::Keyboard::Key RIGHT = sf::Keyboard::D;
@@ -49,7 +53,7 @@ constexpr double MOB_MAX_ATTACK_HEALTH_TO_AGGRESSIVE = 20;
 constexpr double MOB_WEAPON_POS_X = 0;
 constexpr double MOB_WEAPON_POS_Y = -1000;
 
-const std::string BUG = "src/main/Assets/";
+const std::string BUG = "/home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/";
 //  /home/mnzconst/Desktop/mse/sem_2/sd/Rougelike-Game-/src/main/Assets/_Attack.png
 
 // MENU_SETTINGS

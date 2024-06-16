@@ -22,8 +22,9 @@ public:
     void update(EventManager& evm, EntityManager& em, SystemManager&, sf::Time) override {
         if (!created) {
             SmallMapBuilder smb;
+            HardMobGenerator emg;
             mc_.setMapBuilder(&smb);
-            mc_.constructMap(WORLD_WIDTH, WORLD_HEIGHT);
+            mc_.constructMap(WORLD_WIDTH, WORLD_HEIGHT, &emg);
             auto map = mc_.getMap();
 
             // adding map entity
@@ -84,7 +85,6 @@ public:
                         HealthComponent& hc, StrategyComponent& strc, InventoryComponent& ic) {
                         pc.data = std::move(mob.pos_);
                         sc.data = std::move(mob.renderData_);
-
                         auto target_pos1 = Vec2(400,400);
                         auto target_pos2 = Vec2(700,400);
 
@@ -143,7 +143,7 @@ public:
                         em.update_by_id<SpriteComponent, PositionComponent, MoveComponent>(
                             weapon_ptr->get_id(),
                             [&](auto&, SpriteComponent& w_sc, PositionComponent& w_pc, MoveComponent& w_mc) {
-                                w_sc.data = std::move(mob.weapon_.renderData_);
+                                w_sc.data = std::move(mob.item_.renderData_);
                                 w_sc.data.render_priority = 5;
                                 w_sc.data.sprite.setScale(1.4, 1.4);
                                 w_sc.data.sprite.setOrigin(10, 15);

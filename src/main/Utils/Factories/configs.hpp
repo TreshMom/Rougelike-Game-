@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Vec2.hpp"
 #include <Component.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -16,20 +15,19 @@ struct Item {
     ItemData data_;
 };
 
-struct Mob {
-    SpriteData renderData_;
-    CoordsInfo pos_ = {0, 0};
-
-    HealthData hp_data_ = {0, 0};
-    AttackData attack_data_ = {0, 0, 0, 0};
-    Item weapon_;
-};
-
 struct Menu {
     SpriteData renderData_;
     CoordsInfo pos_{0, 0};
 
     MenuData data_;
+};
+
+struct Mob {
+    SpriteData renderData_;
+    HealthData hp_data_;
+    AttackData attack_data_;
+    CoordsInfo pos_;
+    Item item_;
 };
 
 struct Map {

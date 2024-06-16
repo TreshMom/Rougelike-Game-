@@ -67,12 +67,12 @@ public:
                                 kill(evm, em, defence_entity.get_id());
                                 return;
                             }
-                            if (!em.template has_component<PlayerComponent>(defence_entity.get_id())) {
-                                sprite_right.data.sprite.setColor(
-                                    sf::Color((health.data.default_hp - health.data.hp) /
-                                                  static_cast<double>(health.data.default_hp) * 255,
-                                              0, 0));
-                            }
+//                            if (!em.template has_component<PlayerComponent>(defence_entity.get_id())) {
+//                                sprite_right.data.sprite.setColor(
+//                                    sf::Color((health.data.default_hp - health.data.hp) /
+//                                                  static_cast<double>(health.data.default_hp) * 255,
+//                                              0, 0));
+//                            }
 
                             mv.data.directions_t_clean[5] = [vector_between,
                                                              rs = t.asMilliseconds() / 1000.0](double tm) {
