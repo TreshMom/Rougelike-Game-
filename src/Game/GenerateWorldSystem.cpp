@@ -1,6 +1,14 @@
 #include "GenerateWorldSystem.hpp"
 
 void GenerateWorldSystem::update(EventManager &, EntityManager &em, SystemManager &, sf::Time) {
+    while (!events.empty()) {
+        auto ev = events.front();
+        events.pop();
+        em.clear();
+        create_player_ = ev.player_death_;
+        created_ = false;
+    }
+
     if (!created_) {
         setUp();
         mc_.constructMap(WORLD_WIDTH, WORLD_HEIGHT, mg_);
@@ -189,6 +197,5 @@ void GenerateWorldSystem::addPlayerEntity(EntityManager &em) {
 }
 
 void GenerateWorldSystem::receive(GenerateWorldEvent const &ev) {
-    create_player_ = ev.player_death_;
-    created_ = false;
+    events.push(ev);
 }

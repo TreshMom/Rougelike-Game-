@@ -7,6 +7,7 @@
 #include "events/GenerateWorldEvent.hpp"
 #include <algorithm>
 #include <cmath>
+#include <queue>
 
 using namespace ECS;
 
@@ -14,6 +15,7 @@ class GenerateWorldSystem : public SystemHandle, public SystemInterface {
 private:
     bool created_ = false;
     bool create_player_ = true;
+    std::queue<GenerateWorldEvent> events;
     MapCreator mc_;
     std::shared_ptr<MapBuilder> mb_;
     std::shared_ptr<AbstractMobGenerator> mg_;

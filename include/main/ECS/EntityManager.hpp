@@ -195,6 +195,11 @@ namespace ECS {
             entities.erase(eid);
             mp.erase(eid);
         }
+
+        void clear() {
+            entities.clear();
+            mp.clear();
+        }
     };
 
     template <class Hook>

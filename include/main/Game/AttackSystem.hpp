@@ -8,6 +8,7 @@
 #include "events/AttackEvent.hpp"
 #include "events/AttackMobEvent.hpp"
 #include "events/MobKilledEvent.hpp"
+#include "events/GenerateWorldEvent.hpp"
 #include <cmath>
 #include <limits>
 #include <queue>
@@ -92,8 +93,9 @@ public:
         if (!em.has_component<PlayerComponent>(id)) {
             auto exp = em.template get_component<ExperienceComponent>(id);
             evm.notify(MobKilledEvent(exp.data.exp_gain_));
+        } else {
+            evm.notify(GenerateWorldEvent(true));
         }
-
     }
 
     void receive(AttackEvent const& ev) override {
