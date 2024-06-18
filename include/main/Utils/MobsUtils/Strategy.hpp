@@ -18,149 +18,306 @@ concept is_subscript = requires(Type&& value) {
 
 class StrategyContext;
 
+/**
+ * @brief Абстрактный класс Strategy определяет интерфейс стратегий, используемых в системе.
+ */
 class Strategy {
 public:
     virtual ~Strategy() {}
-    virtual void update_coord(ECS::EntityManager&, ECS::EventManager&, ECS::EntityId, sf::Time, StrategyContext*) {}
-    virtual void attack(ECS::EntityManager&, ECS::EventManager&, ECS::EntityId, sf::Time, StrategyContext*) {}
-    virtual void update_and_check_state(ECS::EntityManager&, ECS::EventManager&, ECS::EntityId, sf::Time,
-                                        StrategyContext*) {}
+
+    /**
+     * @brief Обновляет координаты сущности в соответствии с текущей стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    virtual void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) {}
+
+    /**
+     * @brief Атакует сущности в соответствии с текущей стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    virtual void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) {}
+
+    /**
+     * @brief Обновляет состояние и проверяет условия в соответствии с текущей стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    virtual void update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) {}
+
+    /**
+     * @brief Оператор сравнения для проверки равенства стратегий.
+     * @param other Другая стратегия для сравнения.
+     * @return True, если стратегии равны, иначе false.
+     */
     virtual bool operator==(Strategy const& other) const {
         return typeid(*this) == typeid(other);
     }
 };
 
+/**
+ * @brief Контекст стратегии, управляющий текущей стратегией сущности.
+ */
 class StrategyContext {
 protected:
-    std::shared_ptr<Strategy> strategy_;
+    std::shared_ptr<Strategy> strategy_; ///< Текущая стратегия.
 
 public:
+    /**
+     * @brief Конструктор контекста стратегии.
+     * @param strategy Указатель на стратегию, которой будет управлять контекст.
+     */
     StrategyContext(std::shared_ptr<Strategy> strategy) : strategy_{strategy} {}
 
     virtual ~StrategyContext() {}
+
+    /**
+     * @brief Устанавливает текущую стратегию.
+     * @param v Указатель на новую стратегию.
+     */
     virtual void set_strategy(std::shared_ptr<Strategy> v) {
         strategy_ = v;
     }
 
+    /**
+     * @brief Обновляет координаты сущности в соответствии с текущей стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     */
     virtual void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t) {
         strategy_->update_coord(em, evm, eid, t, this);
     }
 
+    /**
+     * @brief Атакует сущности в соответствии с текущей стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     */
     virtual void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t) {
         strategy_->attack(em, evm, eid, t, this);
     }
 
+    /**
+     * @brief Обновляет состояние и проверяет условия в соответствии с текущей стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     */
     virtual void update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t) {
         strategy_->update_and_check_state(em, evm, eid, t, this);
     }
 
+    /**
+     * @brief Возвращает стратегию по умолчанию.
+     * @return Указатель на стратегию по умолчанию.
+     */
     virtual std::shared_ptr<Strategy> get_default_strategy() {
         return nullptr;
     }
 };
 
+/**
+ * @brief Класс Client представляет клиентскую стратегию.
+ */
 class Client : public StrategyContext {
 public:
     virtual ~Client() {}
 };
 
+/**
+ * @brief Класс SavedStateContext представляет контекст сохраненного состояния стратегии.
+ */
 class SavedStateContext : public StrategyContext {
 private:
-    std::shared_ptr<Strategy> default_strategy_;
+    std::shared_ptr<Strategy> default_strategy_; ///< Стратегия по умолчанию.
 
 public:
+    /**
+     * @brief Конструктор контекста сохраненного состояния стратегии.
+     * @param strategy Указатель на стратегию, которой будет управлять контекст.
+     */
     SavedStateContext(std::shared_ptr<Strategy> strategy) : StrategyContext(strategy), default_strategy_{strategy} {}
-    std::shared_ptr<Strategy> get_default_strategy() {
+
+    /**
+     * @brief Возвращает стратегию по умолчанию.
+     * @return Указатель на стратегию по умолчанию.
+     */
+    std::shared_ptr<Strategy> get_default_strategy() override {
         return default_strategy_;
     }
 
     virtual ~SavedStateContext() {}
 };
 
-class CowardStrategy;
-
+/**
+ * @brief Класс AggressiveStrategy представляет агрессивную стратегию.
+ */
 class AggressiveStrategy : public Strategy {
 public:
-    void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                      StrategyContext* context);
+    /**
+     * @brief Обновляет координаты сущности в соответствии с агрессивной стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override;
 
-    void update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                                StrategyContext* sc);
+    /**
+     * @brief Атакует сущности в соответствии с агрессивной стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override;
 
-    void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                StrategyContext* context);
+    /**
+     * @brief Обновляет состояние и проверяет условия в соответствии с агрессивной стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override;
 
     virtual ~AggressiveStrategy() {}
 };
 
+/**
+ * @brief Класс CowardStrategy представляет трусливую стратегию.
+ */
 class CowardStrategy : public Strategy {
 public:
-    void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                      StrategyContext* context);
+    /**
+     * @brief Обновляет координаты сущности в соответствии с трусливой стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override;
 
-    void attack(ECS::EntityManager&, ECS::EventManager&, ECS::EntityId, sf::Time, StrategyContext* context) {}
+    /**
+     * @brief Атакует сущности в соответствии с трусливой стратегией (пустая реализация).
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override {}
 
-    void update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t,
-                                StrategyContext* sc);
+    /**
+     * @brief Обновляет состояние и проверяет условия в соответствии с трусливой стратегией.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void update_and_check_state(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override;
 
     virtual ~CowardStrategy() {}
 };
 
+/**
+ * @brief Класс CalmStrategy представляет спокойную стратегию (пустые реализации методов).
+ */
 class CalmStrategy : public Strategy {
 public:
-    virtual void update_coord(ECS::EntityManager&, ECS::EventManager&, ECS::EntityId, sf::Time,
-                              StrategyContext* context) {}
-    virtual void attack(ECS::EntityManager&, ECS::EventManager&, ECS::EntityId, sf::Time, StrategyContext* context) {}
+    /**
+     * @brief Пустая реализация метода обновления координат.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override {}
+
+    /**
+     * @brief Пустая реализация метода атаки.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void attack(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override {}
 
     virtual ~CalmStrategy() {}
 };
 
+/**
+ * @brief Класс PatrolStrategy представляет стратегию патрулирования.
+ */
 class PatrolStrategy : public Strategy {
 private:
-    std::unordered_map<ECS::EntityId, std::size_t> id_next_point;
-    std::unordered_map<ECS::EntityId, std::vector<Vec2>> id_trajectory;
+    std::unordered_map<ECS::EntityId, std::size_t> id_next_point; ///< Карта следующей точки для каждой сущности.
+    std::unordered_map<ECS::EntityId, std::vector<Vec2>> id_trajectory; ///< Карта траекторий для каждой сущности.
 
+    /**
+     * @brief Возвращает ближайший индекс точки к заданной позиции.
+     * @tparam Subscript_type Тип индексации точек.
+     * @param input_vec Позиция для поиска ближайшей точки.
+     * @param point Координаты точки для сравнения.
+     * @return Индекс ближайшей точки.
+     */
     template <is_subscript Subscript_type>
-    std::size_t get_id_closest_point(Subscript_type&& input_vec, Vec2 point) {
-        std::size_t best_id = 0;
-        double min_distance = std::numeric_limits<double>::max();
-        Vec2 result = input_vec.at(0);
-        for (std::size_t id = 0; id < input_vec.size(); id++) {
-            double dist_between = input_vec[id].dist(point);
-            if (dist_between < min_distance) {
-                min_distance = dist_between;
-                best_id = id;
-            }
-            result = input_vec[id];
-        }
-        return best_id;
-    }
+    std::size_t get_id_closest_point(Subscript_type&& input_vec, Vec2 point);
 
-    std::size_t get_next_id(ECS::EntityId eid) {
-        std::size_t id = id_next_point[eid];
-        std::size_t num_points = id_trajectory[eid].size();
-        id = (id + 1) % num_points;
-        id_next_point[eid] = id;
-        return id;
-    }
+    /**
+     * @brief Возвращает следующий индекс для сущности.
+     * @param eid Идентификатор сущности.
+     * @return Следующий индекс точки для сущности.
+     */
+    std::size_t get_next_id(ECS::EntityId eid);
 
-    Vec2 get_point(ECS::EntityId eid) {
-        std::size_t id = id_next_point[eid];
-        return id_trajectory[eid][id];
-    }
+    /**
+     * @brief Возвращает точку по идентификатору сущности.
+     * @param eid Идентификатор сущности.
+     * @return Точка с заданным идентификатором сущности.
+     */
+    Vec2 get_point(ECS::EntityId eid);
 
 public:
-    void set_points(ECS::EntityId eid, Vec2 actual_pos, std::vector<Vec2> vec) {
-        if (vec.empty()) {
-            throw std::runtime_error("vector size > 0 !");
-        }
-        std::size_t closest_id = get_id_closest_point(vec, actual_pos);
-        id_trajectory[eid] = std::move(vec);
-        id_next_point[eid] = closest_id;
-    }
+    /**
+     * @brief Устанавливает точки патрулирования для сущности.
+     * @param eid Идентификатор сущности.
+     * @param actual_pos Текущая позиция сущности.
+     * @param vec Вектор точек патрулирования.
+     */
+    void set_points(ECS::EntityId eid, Vec2 actual_pos, std::vector<Vec2> vec);
 
-    void update_coord(ECS::EntityManager& em, ECS::EventManager&, ECS::EntityId eid, sf::Time,
-                      StrategyContext* context) override;
+    /**
+     * @brief Обновляет координаты сущности в соответствии с стратегией патрулирования.
+     * @param em Менеджер сущностей.
+     * @param evm Менеджер событий.
+     * @param eid Идентификатор сущности.
+     * @param t Время, прошедшее с предыдущего обновления.
+     * @param context Контекст стратегии.
+     */
+    void update_coord(ECS::EntityManager& em, ECS::EventManager& evm, ECS::EntityId eid, sf::Time t, StrategyContext* context) override;
 
     virtual ~PatrolStrategy() {}
 };

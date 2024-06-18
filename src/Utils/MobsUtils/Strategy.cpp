@@ -1,7 +1,7 @@
-#include "MobsUtils/Strategy.hpp"
 #include "Component.hpp"
 #include "EntitiesList.hpp"
 #include "EntityManager.hpp"
+#include "MobsUtils/Strategy.hpp"
 #include "Vec2.hpp"
 
 using namespace ECS;
@@ -114,6 +114,10 @@ void CowardStrategy::update_and_check_state(ECS::EntityManager& em, ECS::EventMa
     }
 }
 
+/////////////////////
+// Patrol Strategy //
+/////////////////////
+
 void PatrolStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager&, ECS::EntityId eid, sf::Time,
                                   StrategyContext* context) {
     Vec2 target_pos = get_point(eid);
@@ -145,4 +149,42 @@ void PatrolStrategy::update_coord(ECS::EntityManager& em, ECS::EventManager&, EC
     if (closer_player) {
         context->set_strategy(std::make_shared<AggressiveStrategy>());
     }
+}
+
+template <is_subscript Subscript_type>
+std::size_t PatrolStrategy::get_id_closest_point(Subscript_type&& input_vec, Vec2 point) {
+    std::size_t best_id = 0;
+    double min_distance = std::numeric_limits<double>::max();
+    Vec2 result = input_vec.at(0);
+    for (std::size_t id = 0; id < input_vec.size(); id++) {
+        double dist_between = input_vec[id].dist(point);
+        if (dist_between < min_distance) {
+            min_distance = dist_between;
+            best_id = id;
+        }
+        result = input_vec[id];
+    }
+    return best_id;
+}
+
+std::size_t PatrolStrategy::get_next_id(ECS::EntityId eid) {
+    std::size_t id = id_next_point[eid];
+    std::size_t num_points = id_trajectory[eid].size();
+    id = (id + 1) % num_points;
+    id_next_point[eid] = id;
+    return id;
+}
+
+Vec2 PatrolStrategy::get_point(ECS::EntityId eid) {
+    std::size_t id = id_next_point[eid];
+    return id_trajectory[eid][id];
+}
+
+void PatrolStrategy::set_points(ECS::EntityId eid, Vec2 actual_pos, std::vector<Vec2> vec) {
+    if (vec.empty()) {
+        throw std::runtime_error("vector size > 0 !");
+    }
+    std::size_t closest_id = get_id_closest_point(vec, actual_pos);
+    id_trajectory[eid] = std::move(vec);
+    id_next_point[eid] = closest_id;
 }

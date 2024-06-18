@@ -4,6 +4,7 @@
 #include "EngineDefs.hpp"
 #include "unordered_map"
 
+// Данные об инвентаре сущности
 struct InventoryData {
 
     static constexpr uint32_t BACKPACK_MAX_SIZE = 8;

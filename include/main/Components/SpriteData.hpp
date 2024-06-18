@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+// Данные о спрайте сущности
 struct SpriteData {
     std::shared_ptr<sf::Texture> texture;
     sf::Sprite sprite;

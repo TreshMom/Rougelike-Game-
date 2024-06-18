@@ -2,6 +2,7 @@
 
 #include "EngineDefs.hpp"
 
+// Данные предмета
 struct ItemData {
     int32_t damage{0};
     int32_t health{0};

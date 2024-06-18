@@ -4,6 +4,7 @@
 #include "EngineDefs.hpp"
 #include <vector>
 
+// Данные о сетке
 struct GridData {
     CoordsInfo left_up;
     CoordsInfo right_down;

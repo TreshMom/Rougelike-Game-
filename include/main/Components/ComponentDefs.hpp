@@ -2,6 +2,7 @@
 #include "Vec2.hpp"
 #include <stdexcept>
 
+// Сетка
 class Grid {
     std::size_t N_width_;
     std::size_t N_height_;

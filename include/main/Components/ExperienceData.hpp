@@ -2,6 +2,7 @@
 
 #include "EngineDefs.hpp"
 
+// Данные об опыте
 struct ExperienceData {
     uint32_t level_{0};
 

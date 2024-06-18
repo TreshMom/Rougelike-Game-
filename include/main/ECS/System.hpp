@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-// all events
+// Объявление всех событий
 struct CollisionEvent;
 struct AttackEvent;
 struct CollectEvent;
@@ -17,14 +17,15 @@ struct GenerateWorldEvent;
 
 namespace ECS {
 
-    // inner classes
+    // Предварительное объявление вложенных классов
     class EventManager;
     class EntityManager;
     class SystemManager;
 
-    //
+    // Абстрактный класс SystemHandle для обработки событий
     class SystemHandle {
     public:
+        // Виртуальные методы для обработки различных типов событий
         virtual void receive(CollisionEvent const&) {}
         virtual void receive(AttackEvent const&) {}
         virtual void receive(CollectEvent const&) {}
@@ -36,17 +37,19 @@ namespace ECS {
         virtual void receive(MobKilledEvent const&) {}
         virtual void receive(GenerateWorldEvent const&) {}
 
-        virtual ~SystemHandle() {}
+        virtual ~SystemHandle() {} // Виртуальный деструктор
     };
 
+    // Интерфейсный класс SystemInterface для систем игрового движка
     class SystemInterface {
     public:
+        // Инициализация системы
         virtual void init(const std::shared_ptr<SystemInterface>&, EventManager&, EntityManager&, SystemManager&) {}
+
+        // Обновление системы на основе событий и времени
         virtual void update(EventManager&, EntityManager&, SystemManager&, sf::Time) = 0;
-        virtual ~SystemInterface() {}
+
+        virtual ~SystemInterface() {} // Виртуальный деструктор
     };
 
 } // namespace ECS
-
-#undef NUMEVENT
-#undef NUMEVENTRECEIVE
